@@ -13,6 +13,7 @@ module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
   logic [weightPar-1:0] weightToMult;
   logic [2*weightPar-1:0] prodToAdd;
   logic [accumulationPar-1:0] pSumToAdd;
+  logic [accumulationPar-1:0] addToOutput;
 
   register #(weightPar) activationRegister (  .parallelIn(activation),
                                                     .parallelOut(activationToMult),
@@ -43,6 +44,14 @@ module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
   adder #(accumulationPar) add (.add1(pSumToAdd),
                                 .add0({{accumulationPar-2*weightPar{prodToAdd[2*weightPar-1]}},prodToAdd}),
                                 .carry_in(1'b0),
-                                .sum(outPartialSum));
+                                .sum(addToOutput));
+
+  //pSumRegister
+  register #(accumulationPar) outPartialSumRegister (  .parallelIn(addToOutput),
+                                                    .parallelOut(outPartialSum),
+                                                    .clk(clk),
+                                                    .rst_n(rst_n),
+                                                    .clear(1'b0),
+                                                    .sample_en(1'b1));
 
 endmodule //PE
