@@ -1,0 +1,2 @@
+define_design_lib WORK -path ./work
+set search_path [list . define design lib WORK -p]

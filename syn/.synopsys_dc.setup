@@ -1,0 +1,6 @@
+define_design_lib WORK -path ./work
+set search_path [list . /opt/asiclibs/UMK65LSCLLMVBBR_B03_TAPEOUTKIT/synopsys ]
+set link_library [list "*" "uk65lscllmvbbr_120c25_tc.db" ]
+set target_library [list "uk65lscllmvbbr_120c25_tc.db"]
+set symbol_library [list "u065gioll25mvir.sdb"]
+
