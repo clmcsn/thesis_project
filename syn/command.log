@@ -1,6 +1,6 @@
 #@ # 
 #@ # Running dc_shell Version M-2016.12 for linux64 -- Nov 21, 2016
-#@ # Date:   Thu Oct 17 12:50:45 2019
+#@ # Date:   Thu Oct 17 15:00:29 2019
 #@ # Run by: gmsarda@asic.ecs.tuwien.ac.at
 #@ 
 
@@ -41956,9 +41956,16 @@ gui_start
 #@ # -- End source /eda/synopsys/2016-17/RHELx86/SYN_2016.12/auxx/tcllib/lib/iwidgets4.1/watch.itk
 
 analyze -library WORK -format sverilog {/home/gmsarda/thesis/thesis_project/src/components/register.sv /home/gmsarda/thesis/thesis_project/src/components/multiplier.sv /home/gmsarda/thesis/thesis_project/src/components/adder.sv /home/gmsarda/thesis/thesis_project/src/part1/PE.sv}
-elaborate PE -architecture verilog -library DEFAULT
 set power_preserve_rtl_hier_names true
+elaborate PE -architecture verilog -library DEFAULT
+uplevel #0 { report_timing -path full -delay max -nworst 100 -max_paths 1 -significant_digits 3 -sort_by group }
+uplevel #0 { report_timing -path full -delay max -nworst 100 -max_paths 1 -significant_digits 3 -sort_by group }
 compile
-report_timing
-report_timing > report_timing.txt
-exit
+uplevel #0 { report_timing -path full -delay max -nworst 150 -max_paths 1 -significant_digits 2 -sort_by group } > TimingReport.txt
+ungroup -all -flatten
+change_names -hierarchy -rules verilog
+change_names -hierarchy -rules verilog
+write -f verilog -hierarchy -output ../PE_netlist.sv
+write sdc ../PE_netlist.sdc
+write sdc
+quit
