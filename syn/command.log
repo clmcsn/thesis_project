@@ -1,6 +1,6 @@
 #@ # 
 #@ # Running dc_shell Version M-2016.12 for linux64 -- Nov 21, 2016
-#@ # Date:   Thu Oct 17 18:09:09 2019
+#@ # Date:   Fri Oct 18 10:25:30 2019
 #@ # Run by: gmsarda@asic.ecs.tuwien.ac.at
 #@ 
 
@@ -41957,7 +41957,8 @@ gui_start
 
 analyze -library WORK -format sverilog {/home/gmsarda/thesis/thesis_project/src/components/register.sv /home/gmsarda/thesis/thesis_project/src/components/multiplier.sv /home/gmsarda/thesis/thesis_project/src/components/adder.sv /home/gmsarda/thesis/thesis_project/src/part1/PE.sv}
 elaborate PE -architecture verilog -library WORK
-create_clock -name "CLOCK" -period 5 {clk}
+create_clock -name "clock" -period 5 {clk}
 compile -exact_map
-report_timing -nworst 5 -significant_digits 10
-report_timing -nworst 3000 -significant_digits 10 > TimingReport3000.txt
+report_timing -unique_pins -nworst 3000
+report_timing -unique_pins -nworst 3000 -significant_digits 10
+report_timing -unique_pins -nworst 3000 -significant_digits 10 > TimingReportReal3000.txt
