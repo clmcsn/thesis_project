@@ -1,0 +1,136 @@
+Startpoint: weightRegister/temp_reg[0]
+            (rising edge-triggered flip-flop clocked by CLOCK)
+Endpoint: outPartialSumRegister/temp_reg[31]
+          (rising edge-triggered flip-flop clocked by CLOCK)
+Path Group: CLOCK
+Path Type: max
+
+Des/Clust/Port     Wire Load Model       Library
+------------------------------------------------
+PE                 wl0                   uk65lscllmvbbr_120c25_tc
+
+Point                                                   Incr       Path
+--------------------------------------------------------------------------
+clock CLOCK (rise edge)                             0.0000000000
+                                                               0.0000000000
+clock network delay (ideal)                         0.0000000000
+                                                               0.0000000000
+weightRegister/temp_reg[0]/CK (DFQRM2RA)            0.0000000000
+                                                               0.0000000000 r
+weightRegister/temp_reg[0]/Q (DFQRM2RA)             0.1031157970
+                                                               0.1031157970 r
+weightRegister/parallelOut[0] (register_width8_1)   0.0000000000
+                                                               0.1031157970 r
+mult/multiplier[0] (multiplier_parallelism8)        0.0000000000
+                                                               0.1031157970 r
+mult/mult_12/A[0] (multiplier_parallelism8_DW02_mult_0)
+                                                    0.0000000000
+                                                               0.1031157970 r
+mult/mult_12/U9/Z (INVM2R)                          0.0367884636
+                                                               0.1399042606 f
+mult/mult_12/U60/Z (NR2M1R)                         0.0535550117
+                                                               0.1934592724 r
+mult/mult_12/U29/Z (XOR2M2RA)                       0.0869657993
+                                                               0.2804250717 f
+mult/mult_12/S2_2_4/S (ADFM2RA)                     0.1195409298
+                                                               0.3999660015 r
+mult/mult_12/S2_3_3/S (ADFM2RA)                     0.1200432777
+                                                               0.5200092793 f
+mult/mult_12/S2_4_2/S (ADFM2RA)                     0.1224124432
+                                                               0.6424217224 r
+mult/mult_12/S2_5_1/S (ADFM2RA)                     0.1218001842
+                                                               0.7642219067 f
+mult/mult_12/S1_6_0/CO (ADFM2RA)                    0.0726506710
+                                                               0.8368725777 f
+mult/mult_12/S4_0/Z (XOR3M2RA)                      0.1595072746
+                                                               0.9963798523 r
+mult/mult_12/PRODUCT[7] (multiplier_parallelism8_DW02_mult_0)
+                                                    0.0000000000
+                                                               0.9963798523 r
+mult/product[7] (multiplier_parallelism8)           0.0000000000
+                                                               0.9963798523 r
+add/add0[7] (adder_parallelism32)                   0.0000000000
+                                                               0.9963798523 r
+add/add_16/B[7] (adder_parallelism32_DW01_add_0)    0.0000000000
+                                                               0.9963798523 r
+add/add_16/U1_7/CO (ADFM2RA)                        0.0901762247
+                                                               1.0865560770 r
+add/add_16/U1_8/CO (ADFM2RA)                        0.0760942698
+                                                               1.1626503468 r
+add/add_16/U1_9/CO (ADFM2RA)                        0.0760942698
+add/add_16/U1_9/CO (ADFM2RA)                        0.0733559132
+                                                               1.2387446165 r
+add/add_16/U1_10/CO (ADFM2RA)                       0.0760942698
+                                                               1.3148388863 r
+add/add_16/U1_11/CO (ADFM2RA)                       0.0760942698
+                                                               1.3909331560 r
+add/add_16/U1_12/CO (ADFM2RA)                       0.0760942698
+                                                               1.4670274258 r
+add/add_16/U1_13/CO (ADFM2RA)                       0.0733559132
+add/add_16/U1_13/CO (ADFM2RA)                       0.0760942698
+                                                               1.5403833389 r
+add/add_16/U1_14/CO (ADFM2RA)                       0.0760942698
+                                                               1.6164776087 r
+add/add_16/U1_15/CO (ADFM2RA)                       0.0760942698
+                                                               1.6925718784 r
+add/add_16/U1_16/CO (ADFM2RA)                       0.0760942698
+                                                               1.7686661482 r
+add/add_16/U1_17/CO (ADFM2RA)                       0.0760942698
+                                                               1.8447604179 r
+add/add_16/U1_18/CO (ADFM2RA)                       0.0760942698
+                                                               1.9208546877 r
+add/add_16/U1_19/CO (ADFM2RA)                       0.0760942698
+                                                               1.9969489574 r
+add/add_16/U1_20/CO (ADFM2RA)                       0.0760943890
+                                                               2.0730433464 r
+add/add_16/U1_21/CO (ADFM2RA)                       0.0760941505
+                                                               2.1491374969 r
+add/add_16/U1_22/CO (ADFM2RA)                       0.0760941505
+                                                               2.2252316475 r
+add/add_16/U1_23/CO (ADFM2RA)                       0.0760941505
+                                                               2.3013257980 r
+add/add_16/U1_24/CO (ADFM2RA)                       0.0760941505
+                                                               2.3774199486 r
+add/add_16/U1_25/CO (ADFM2RA)                       0.0760943890
+                                                               2.4535143375 r
+add/add_16/U1_26/CO (ADFM2RA)                       0.0760941505
+                                                               2.5296084881 r
+add/add_16/U1_27/CO (ADFM2RA)                       0.0760941505
+                                                               2.6057026386 r
+add/add_16/U1_28/CO (ADFM2RA)                       0.0760943890
+                                                               2.6817970276 r
+add/add_16/U1_29/CO (ADFM2RA)                       0.0760941505
+                                                               2.7578911781 r
+add/add_16/U1_30/CO (ADFM2RA)                       0.0658800602
+                                                               2.8237712383 r
+add/add_16/U1_31/Z (XOR3M2RA)                       0.0737519264
+                                                               2.8975231647 f
+add/add_16/SUM[31] (adder_parallelism32_DW01_add_0) 0.0000000000
+                                                               2.8975231647 f
+add/U8/Z (AO22M1RA)                                 0.0837821960
+                                                               2.9813053608 f
+add/sum[31] (adder_parallelism32)                   0.0000000000
+                                                               2.9813053608 f
+outPartialSumRegister/parallelIn[31] (register_width32_1)
+                                                    0.0000000000
+                                                               2.9813053608 f
+outPartialSumRegister/U10/Z (AO22M1RA)              0.0761723518
+                                                               3.0574777126 f
+outPartialSumRegister/temp_reg[31]/D (DFQRM2RA)     0.0000000000
+                                                               3.0574777126 f
+data arrival time                                              3.0574777126
+
+clock CLOCK (rise edge)                             5.0000000000
+                                                               5.0000000000
+clock network delay (ideal)                         0.0000000000
+                                                               5.0000000000
+outPartialSumRegister/temp_reg[31]/CK (DFQRM2RA)    0.0000000000
+                                                               5.0000000000 r
+library setup time                                  -0.0054680263
+                                                               4.9945321083
+data required time                                             4.9945321083
+--------------------------------------------------------------------------
+data required time                                             4.9945321083
+data arrival time                                              -3.0574777126
+--------------------------------------------------------------------------
+slack (MET)                                                    1.9370543957
