@@ -1,66 +1,35 @@
 # Loading project tb_PE
-# Compile of tb_PE.sv failed with 1 errors.
-# Compile of PE.sv was successful.
-# Compile of adder.sv was successful.
-# Compile of multiplier.sv failed with 1 errors.
-# Compile of register.sv was successful.
-# 5 compiles, 2 failed with 2 errors.
-# Compile of tb_PE.sv failed with 1 errors.
-# Compile of PE.sv was successful.
-# Compile of adder.sv was successful.
-# Compile of multiplier.sv was successful.
-# Compile of register.sv was successful.
-# 5 compiles, 1 failed with 1 error.
-# Error opening /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/project/(vlog-13069) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv
-# Path name '/home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/project/(vlog-13069) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv' doesn't exist.
-# Compile of tb_PE.sv failed with 13 errors.
-# Compile of PE.sv was successful.
-# Compile of adder.sv was successful.
-# Compile of multiplier.sv was successful.
-# Compile of register.sv was successful.
-# 5 compiles, 1 failed with 13 errors.
-# Compile of tb_PE.sv was successful.
-# Compile of PE.sv was successful.
-# Compile of adder.sv was successful.
-# Compile of multiplier.sv was successful.
-# Compile of register.sv was successful.
-# 5 compiles, 0 failed with no errors.
-# Load canceled
-# Compile of tb_PE.sv was successful.
-# Compile of PE.sv was successful.
-# Compile of adder.sv was successful.
-# Compile of multiplier.sv was successful.
-# Compile of register.sv was successful.
-# 5 compiles, 0 failed with no errors.
-vsim work.tb_PE
-# vsim work.tb_PE 
-# Start time: 14:46:59 on Oct 15,2019
+# reading /home/clmcasino/intel_lite/18.1/modelsim_ase/linuxaloem/../modelsim.ini
+# Loading project tb_csaRow
+# Compile of tb_csaRow.sv failed with 4 errors.
+# Compile of csaRow.sv failed with 3 errors.
+# Compile of fullAdder.sv failed with 2 errors.
+# 3 compiles, 3 failed with 9 errors.
+# Compile of tb_csaRow.sv was successful.
+# Compile of csaRow.sv failed with 1 errors.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 1 failed with 1 error.
+# Compile of tb_csaRow.sv was successful.
+# Compile of csaRow.sv failed with 1 errors.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 1 failed with 1 error.
+# Compile of tb_csaRow.sv was successful.
+# Compile of csaRow.sv failed with 1 errors.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 1 failed with 1 error.
+# Compile of tb_csaRow.sv was successful.
+# Compile of csaRow.sv was successful.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_csaRow
+# vsim work.tb_csaRow 
+# Start time: 12:18:30 on Oct 19,2019
 # Loading sv_std.std
-# Loading work.tb_PE
-# ** Error: (vsim-3033) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv(15): Instantiation of 'syncCounter' failed. The design unit was not found.
-#    Time: 0 ps  Iteration: 0  Instance: /tb_PE File: /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv
-#         Searched libraries:
-#             /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/project/work
-# Error loading design
-# End time: 14:46:59 on Oct 15,2019, Elapsed time: 0:00:00
-# Errors: 1, Warnings: 0
-# Compile of tb_PE.sv was successful.
-# Compile of PE.sv was successful.
-# Compile of adder.sv was successful.
-# Compile of multiplier.sv was successful.
-# Compile of register.sv was successful.
-# 5 compiles, 0 failed with no errors.
-vsim work.tb_PE
-# vsim work.tb_PE 
-# Start time: 14:47:33 on Oct 15,2019
-# Loading sv_std.std
-# Loading work.tb_PE
-# Loading work.PE
-# Loading work.register
-# Loading work.multiplier
-# Loading work.adder
+# Loading work.tb_csaRow
+# Loading work.csaRow
+# Loading work.fullAdder
 # WARNING: No extended dataflow license exists
-add wave sim:/tb_PE/*
+add wave sim:/tb_csaRow/*
 run
 # ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
 run
@@ -72,28 +41,24 @@ run
 run
 run
 run
+restart
+quit -sim
+# End time: 12:20:18 on Oct 19,2019, Elapsed time: 0:01:48
+# Errors: 0, Warnings: 2
+# Compile of tb_csaRow.sv was successful.
+# Compile of csaRow.sv was successful.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_csaRow
+# vsim work.tb_csaRow 
+# Start time: 12:21:00 on Oct 19,2019
+# Loading sv_std.std
+# Loading work.tb_csaRow
+# Loading work.csaRow
+# Loading work.fullAdder
+# WARNING: No extended dataflow license exists
+add wave sim:/tb_csaRow/*
 run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-run
-# End time: 14:48:32 on Oct 15,2019, Elapsed time: 0:00:59
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# End time: 12:21:46 on Oct 19,2019, Elapsed time: 0:00:46
 # Errors: 0, Warnings: 2

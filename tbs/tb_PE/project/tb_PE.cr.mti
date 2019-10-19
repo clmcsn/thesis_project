@@ -12,13 +12,6 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	register
 
-} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module tb_PE
-
-Top level modules:
-	tb_PE
-
 } {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/multiplier.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/multiplier.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
 -- Compiling module multiplier
@@ -26,11 +19,11 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	multiplier
 
-} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/part1/PE.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/part1/PE.sv
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module PE
+-- Compiling module tb_PE
 
 Top level modules:
-	PE
+	tb_PE
 
 } {} {}}

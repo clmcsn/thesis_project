@@ -37,7 +37,8 @@ module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
                                                     .clear(1'b0),
                                                     .sample_en(1'b1));
   //multiplier
-  multiplier #(weightPar) mult ( .multiplier(weightToMult),
+  multiplier #( .parallelism(weightPar),
+                .ARCH_TYPE(0)) mult ( .multiplier(weightToMult),
                                  .multiplicand(activationToMult),
                                  .product(prodToAdd));
   //adder
