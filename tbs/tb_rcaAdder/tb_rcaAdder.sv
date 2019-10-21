@@ -1,20 +1,20 @@
 `timescale 1ns/1ns
 module tb_rcaAdder();
   parameter parallelism=8;
-  logic [parallelism-1:0] a;
-  logic [parallelism-1:0] b;
-  logic [parallelism-1:0] ci;
-  logic [parallelism-1:0] s;
-  logic [parallelism-1:0] co;
+  logic [parallelism-1:0] add1;
+  logic [parallelism-1:0] add0;
+  logic carry_in;
+  logic [parallelism-1:0] sum;
 
   //DUT instance
-  adder #(parallelism) DUT(.*);
+  adder #(  .parallelism(parallelism),
+            .ARCH_TYPE(1)) DUT(.*);
 
   //rst_n stimulus
   initial begin
-    a=  8'b00101100;
-    b=  8'b01011101;
-    ci= 8'b00011000;
+    add0=  8'b00101100;
+    add1=  8'b01011101;
+    carry_in= 1'b0;
   end
 
 endmodule

@@ -1,0 +1,103 @@
+# Loading project tb_csaRow
+# reading /home/clmcasino/intel_lite/18.1/modelsim_ase/linuxaloem/../modelsim.ini
+# Loading project tb_rcaAdder
+# Compile of tb_rcaAdder.sv was successful.
+# Compile of adder.sv failed with 2 errors.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 1 failed with 2 errors.
+# Compile of tb_rcaAdder.sv was successful.
+# Compile of adder.sv failed with 1 errors.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 1 failed with 1 error.
+# Compile of tb_rcaAdder.sv was successful.
+# Compile of adder.sv failed with 1 errors.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 1 failed with 1 error.
+# Compile of tb_rcaAdder.sv was successful.
+# Compile of adder.sv was successful with warnings.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_rcaAdder
+# vsim work.tb_rcaAdder 
+# Start time: 09:37:47 on Oct 21,2019
+# Loading sv_std.std
+# Loading work.tb_rcaAdder
+# Loading work.adder
+# Loading work.fullAdder
+# ** Error: (vsim-3694) The implicit port connection (.*) did not find a matching port, net, variable or interface instance in tb_rcaAdder for port 'add1'.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_rcaAdder/DUT File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# ** Error: (vsim-3694) The implicit port connection (.*) did not find a matching port, net, variable or interface instance in tb_rcaAdder for port 'add0'.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_rcaAdder/DUT File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# ** Error: (vsim-3694) The implicit port connection (.*) did not find a matching port, net, variable or interface instance in tb_rcaAdder for port 'carry_in'.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_rcaAdder/DUT File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# ** Error: (vsim-3694) The implicit port connection (.*) did not find a matching port, net, variable or interface instance in tb_rcaAdder for port 'sum'.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_rcaAdder/DUT File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# ** Warning: (vsim-3017) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_rcaAdder/tb_rcaAdder.sv(11): [TFMPC] - Too few port connections. Expected 4, found 0.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_rcaAdder/DUT File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# ** Warning: (vsim-3722) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_rcaAdder/tb_rcaAdder.sv(11): [TFMPC] - Missing connection for port 'add1'.
+# ** Warning: (vsim-3722) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_rcaAdder/tb_rcaAdder.sv(11): [TFMPC] - Missing connection for port 'add0'.
+# ** Warning: (vsim-3722) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_rcaAdder/tb_rcaAdder.sv(11): [TFMPC] - Missing connection for port 'carry_in'.
+# ** Warning: (vsim-3722) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_rcaAdder/tb_rcaAdder.sv(11): [TFMPC] - Missing connection for port 'sum'.
+# Error loading design
+# End time: 09:37:48 on Oct 21,2019, Elapsed time: 0:00:01
+# Errors: 4, Warnings: 5
+# Compile of tb_rcaAdder.sv failed with 3 errors.
+# Compile of adder.sv was successful with warnings.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 1 failed with 3 errors.
+# Compile of tb_rcaAdder.sv failed with 1 errors.
+# Compile of adder.sv was successful with warnings.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 1 failed with 1 error.
+# Compile of tb_rcaAdder.sv was successful.
+# Compile of adder.sv was successful with warnings.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_rcaAdder
+# vsim work.tb_rcaAdder 
+# Start time: 09:39:55 on Oct 21,2019
+# Loading sv_std.std
+# Loading work.tb_rcaAdder
+# Loading work.adder
+# Loading work.fullAdder
+# ** Error: (vsim-8378) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_rcaAdder/tb_rcaAdder.sv(10): Port size (1) does not match connection size (8) for implicit .name connection port 'carry_in'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv(2).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_rcaAdder/DUT File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# Error loading design
+# End time: 09:39:55 on Oct 21,2019, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# Compile of tb_rcaAdder.sv was successful.
+# Compile of adder.sv was successful with warnings.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_rcaAdder
+# vsim work.tb_rcaAdder 
+# Start time: 09:40:42 on Oct 21,2019
+# Loading sv_std.std
+# Loading work.tb_rcaAdder
+# Loading work.adder
+# Loading work.fullAdder
+# ** Warning: (vsim-3839) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv(24): Variable '/tb_rcaAdder/DUT/temp_sum', driven via a port connection, is multiply driven. See /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv(34).
+#    Time: 0 ns  Iteration: 0  Region: /tb_rcaAdder/DUT/genblk1 File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# ** Warning: (vsim-3839) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv(22): Variable '/tb_rcaAdder/DUT/temp_sum', driven via a port connection, is multiply driven. See /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv(34).
+#    Time: 0 ns  Iteration: 0  Region: /tb_rcaAdder/DUT/genblk1 File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# WARNING: No extended dataflow license exists
+quit -sim
+# End time: 09:41:31 on Oct 21,2019, Elapsed time: 0:00:49
+# Errors: 0, Warnings: 3
+# Compile of tb_rcaAdder.sv was successful.
+# Compile of adder.sv was successful with warnings.
+# Compile of fullAdder.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_rcaAdder
+# vsim work.tb_rcaAdder 
+# Start time: 09:43:57 on Oct 21,2019
+# Loading sv_std.std
+# Loading work.tb_rcaAdder
+# Loading work.adder
+# Loading work.fullAdder
+# WARNING: No extended dataflow license exists
+add wave sim:/tb_rcaAdder/*
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# End time: 09:45:07 on Oct 21,2019, Elapsed time: 0:01:10
+# Errors: 0, Warnings: 2
