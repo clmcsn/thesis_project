@@ -2,9 +2,10 @@
 
 import sys
 sys.path.append('../')
-from common.hw_arith_lib import *
+from common.hw_lib import *
 
 csa=multiplier(8)
-csa.setWeightValBits("11111011")
+csa.setWeightValBits("11111111")
 csa.genCsaStructure()
-csa.printCsaStructure()
+#csa.printCsaStructure()
+csa.writeCsaTree_sv()
