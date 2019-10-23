@@ -1,7 +1,7 @@
 FH_template="fullAdder fh{} (.a({}),.b({}),.ci({}),.s({}),.co({}));\n"
 assign_template="assign {} = {};\n"
 RCA_template="adder #(.parallelism({}),.ARCH_TYPE({})) adder (.add1({}),.add0({}),.carry_in({}),.sum({}));\n"
-product_bit="porduct[{}]"
+product_bit="product[{}]"
 product_bus="product[{}:{}]"
 sums_bit="sums[{}][{}]"
 sums_bus="sums[{}][{}:{}]"

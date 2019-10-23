@@ -1,0 +1,107 @@
+# ERROR: No extended dataflow license exists
+# vsim . 
+# Start time: 10:24:07 on Oct 23,2019
+# ** Error (suppressible): (vsim-19) Failed to access library '' at "".
+# No such file or directory. (errno = ENOENT)
+# Error loading design
+# End time: 10:24:07 on Oct 23,2019, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# Loading project tb_autoCsaMultiplier
+# Compile of tb_autoCsaMultiplier.sv was successful.
+# Compile of adder.sv was successful.
+# Compile of csaRow.sv was successful.
+# Compile of fullAdder.sv was successful.
+# Compile of multiplier.sv failed with 2 errors.
+# 5 compiles, 1 failed with 2 errors.
+# Compile of tb_autoCsaMultiplier.sv was successful.
+# Compile of adder.sv was successful.
+# Compile of csaRow.sv was successful.
+# Compile of fullAdder.sv was successful.
+# Compile of multiplier.sv failed with 1 errors.
+# 5 compiles, 1 failed with 1 error.
+# Compile of tb_autoCsaMultiplier.sv was successful.
+# Compile of adder.sv was successful.
+# Compile of csaRow.sv was successful.
+# Compile of fullAdder.sv was successful.
+# Compile of multiplier.sv failed with 2 errors.
+# 5 compiles, 1 failed with 2 errors.
+# Compile of tb_autoCsaMultiplier.sv was successful.
+# Compile of adder.sv was successful.
+# Compile of csaRow.sv was successful.
+# Compile of fullAdder.sv was successful.
+# Compile of multiplier.sv was successful.
+# 5 compiles, 0 failed with no errors.
+vsim work.tb_autoCsaMultiplier
+# vsim work.tb_autoCsaMultiplier 
+# Start time: 10:43:38 on Oct 23,2019
+# Loading sv_std.std
+# Loading work.tb_autoCsaMultiplier
+# Loading work.multiplier
+# Loading work.fullAdder
+# Loading work.adder
+add wave sim:/tb_autoCsaMultiplier/DUT/*
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+run
+add wave  \
+sim:/tb_autoCsaMultiplier/DUT/pps \
+sim:/tb_autoCsaMultiplier/DUT/sums \
+sim:/tb_autoCsaMultiplier/DUT/carrys
+restart
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+quit -sim
+# End time: 10:46:53 on Oct 23,2019, Elapsed time: 0:03:15
+# Errors: 0, Warnings: 2
+# Compile of tb_autoCsaMultiplier.sv was successful.
+# Compile of adder.sv was successful.
+# Compile of csaRow.sv was successful.
+# Compile of fullAdder.sv was successful.
+# Compile of multiplier.sv was successful.
+# 5 compiles, 0 failed with no errors.
+vsim work.tb_autoCsaMultiplier
+# vsim work.tb_autoCsaMultiplier 
+# Start time: 10:47:06 on Oct 23,2019
+# Loading sv_std.std
+# Loading work.tb_autoCsaMultiplier
+# Loading work.multiplier
+# Loading work.fullAdder
+# Loading work.adder
+# WARNING: No extended dataflow license exists
+add wave sim:/tb_autoCsaMultiplier/DUT/*
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+restart
+add wave  \
+sim:/tb_autoCsaMultiplier/DUT/pps \
+sim:/tb_autoCsaMultiplier/DUT/sums \
+sim:/tb_autoCsaMultiplier/DUT/carrys
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+restart
+add wave sim:/tb_autoCsaMultiplier/DUT/csaAuto/adder/*
+restart
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Compile of tb_autoCsaMultiplier.sv was successful.
+# Compile of adder.sv was successful.
+# Compile of csaRow.sv was successful.
+# Compile of fullAdder.sv was successful.
+# Compile of multiplier.sv was successful.
+# 5 compiles, 0 failed with no errors.
+vsim work.tb_autoCsaMultiplier
+# End time: 10:56:42 on Oct 23,2019, Elapsed time: 0:09:36
+# Errors: 0, Warnings: 4
+# vsim work.tb_autoCsaMultiplier 
+# Start time: 10:56:42 on Oct 23,2019
+# Loading sv_std.std
+# Loading work.tb_autoCsaMultiplier
+# Loading work.multiplier
+# Loading work.fullAdder
+# Loading work.adder
+# WARNING: No extended dataflow license exists
+add wave sim:/tb_autoCsaMultiplier/DUT/*
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# End time: 11:02:39 on Oct 23,2019, Elapsed time: 0:05:57
+# Errors: 0, Warnings: 2

@@ -3,7 +3,6 @@
 import os
 import subproccess
 
-
 #class for changing context as:
 #with cd() as "newPath":
 #   ...

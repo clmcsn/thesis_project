@@ -1,2 +1,5 @@
 csa_outPath="./csaTemp.txt"
+templatePath="../src/template/"
+componentsPath="../src/components/"
+srcPath="../src/"
 signal_string="//AUTO_PRINT"

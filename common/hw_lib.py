@@ -1,5 +1,57 @@
 import common.verilog_template as vt
 import common.settings as s
+from operator import xor
+import os
+
+def twos_comp(value, bits):
+    if (value & (1<<(bits-1))) != 0:
+        value=value - (1<<bits)
+    return value
+
+def FH(A,B,C):
+    propagate=xor(A,B)
+    sum=xor(propagate,C)
+    carry=((A and B) or (C and propagate))
+    res=str(sum)+str(carry)
+    return res
+
+def printer_2s(value,bits):
+    if value>=0:
+        sign_flag=True
+        string=format(value,'b')
+    else:
+        sign_flag=False
+        temp=format(value,'b')
+        i=len(temp)-1
+        inv=""
+        while i>0:
+            if (temp[i]=='1'):
+                inv='0'+inv
+            else:
+                inv='1'+inv
+            i-=1
+        if len(inv)<bits:
+            inv='1'+inv
+        out=FH(int(inv[len(inv)-1]),0,1)
+        string=""
+        string=out[0]+string
+        for bit in range(len(inv)-2,0,-1):
+            out=FH(int(inv[bit]),0,int(out[1]))
+            string=out[0]+string
+        if out[1]=='1':
+            string=out[1]+string
+    while len(string)<bits:
+        if sign_flag:
+            string='0'+string
+        else:
+            string='1'+string
+    return string
+
+def integerTo2sFileConverter(infile,outfile,outpar):
+    with open(infile,"r") as fin_pointer, open(outfile,"w") as fout_pointer:
+        for line in fin_pointer:
+            fout_pointer.write(printer_2s(int(line),outpar)+'\n')
+
 """Multiplier class for multiplication architecture analysis"""
 
 class multiplier:
@@ -126,7 +178,7 @@ class multiplier:
             self.prod_index+=1
             #write adder
             fout_pointer.write(vt.RCA_template.format(      sum_indexes[1],
-                                                            3,
+                                                            1,
                                                             "{1'b0,"+vt.sums_bus.format(i+1,sum_indexes[1]-1,1)+"}",
                                                             vt.carrys_bus.format(i+1,sum_indexes[1]-1,0),
                                                             "1'b0",
@@ -136,3 +188,22 @@ class multiplier:
             while(self.prod_index<2*self.parallelism):
                 fout_pointer.write(vt.assign_template.format(vt.product_bit.format(self.prod_index),"1'b0"))
                 self.prod_index+=1
+    #generates and put the multiplier in the component directory
+    def genCsaMultiplier(self):
+        fileName="multiplier.sv"
+        self.writeCsaTree_sv()
+        with open(fileName,"w") as fout_pointer, open(s.templatePath+fileName,"r") as fin_pointer, open(s.csa_outPath,"r") as auto_pointer:
+            line=fin_pointer.readline()
+            while (not(s.signal_string in line)):
+                fout_pointer.write(line)
+                line=fin_pointer.readline()
+            for line in auto_pointer:
+                fout_pointer.write(line)
+            for line in fin_pointer:
+                fout_pointer.write(line)
+        os.remove(s.csa_outPath)
+        try:
+            os.remove(s.componentsPath+fileName)
+        except:
+            pass
+        os.rename(fileName,s.componentsPath+fileName)
