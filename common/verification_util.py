@@ -1,5 +1,5 @@
 import random
-import subprocecss
+import subprocess
 from common.hw_lib import twos_comp, printer_2s
 
 # binStimFileGen(fname,lineNum,stimInLine,sign,bitDyn,nBit,delimiter):
