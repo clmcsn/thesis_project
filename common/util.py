@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-import subproccess
+import subprocess
 
 #class for changing context as:
 #with cd() as "newPath":

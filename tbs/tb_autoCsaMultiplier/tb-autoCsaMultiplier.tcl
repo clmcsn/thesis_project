@@ -1,5 +1,6 @@
 if {[info exists env(NO_GUI)]} {
     set sim_mode "no_gui"
+    puts "sim_mode set no_gui"
 } else {
     set sim_mode "gui"
 }
@@ -24,5 +25,7 @@ if {$sim_mode == "gui"} {
 } else {
   puts "Error. Wrong envvironment variable"
 }
+
+vsim -c ../work.tb_autoCsaMultiplier
 
 run -all

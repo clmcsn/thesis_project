@@ -15,11 +15,11 @@ module tb_autoCsaMultiplier();
   always #1 fake_clk=~fake_clk;
 
   //rst_n stimulus
-  initial begin
-    clk=0
-    multiplier=  8'b0;
-    multiplicand=  8'b0;
-    `ifdef NO_GUI
+  `ifdef NO_GUI
+    initial begin
+      fake_clk=0;
+      multiplier=  8'b0;
+      multiplicand=  8'b0;
       fin_pointer= $fopen("../tb_autoCsaMultiplier.txt","r");
       fout_pointer= $fopen("../HWresult_autoCsaMultiplier.txt","w");
       while (! $feof(fin_pointer)) begin
@@ -32,9 +32,14 @@ module tb_autoCsaMultiplier();
       $finish;
       $fclose(fin_pointer);
       $fclose(fout_pointer);
-    `else
+    end
+  `else
+    initial begin
       multiplier=  8'b00010001;
       multiplicand=  8'b00010001;
-    `endif
-  end
+      @(posedge fake_clk);
+      @(posedge fake_clk);
+      $finish;
+    end
+  `endif
 endmodule

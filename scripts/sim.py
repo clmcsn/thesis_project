@@ -2,10 +2,13 @@
 
 import sys
 sys.path.append('../')
+import os
 
 from common.verification_util import binStimFileGen,runSimulation
 import common.settings as s
 import common.util as util
+import subprocess
+import common.hw_lib as hwl
 
 def displayMenu():
     print("Welcome to the tester, what do you want ot simulate:")
@@ -41,14 +44,16 @@ while (loop):
                     if(printFlag==True):
                         fout_pointer.write("{0:08b} {1:08b}\n".format(i,j))
         #generate multiplier
-        csa=multiplier(s.weight_width)
+        csa=hwl.multiplier(s.weight_width)
         csa.setWeightValBits(weightMask[::-1])
         csa.genCsaStructure()
         csa.genCsaMultiplier()
         #run simulation
         with util.cd(s.tbsPath+"tb_autoCsaMultiplier/project/"):
-            subprocess.call(["export","NOGUI=1"])
-            subprocess.call(["vsim", "-c", "-do", "./tb_autoCsaMultiplier.tcl"])
+            new_env=os.environ.copy()
+            new_env["NO_GUI"]="1"
+            process=subprocess.Popen(["vsim -c -do ../tb-autoCsaMultiplier.tcl"],shell=True,cwd=os.getcwd(),env=new_env)
+            process.wait()
     elif (c=="2"):
         print("Bye bye!")
         loop=False
