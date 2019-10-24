@@ -161,7 +161,9 @@ class multiplier:
             trace.pop(0)
         #assign 0s to LSB in case we don't have
         with open(s.csa_outPath,"w") as fout_pointer:
+            i=0
             while(self.colBufferState(buffer,i)==1):
+                i+=1
                 fout_pointer.write(vt.assign_template.format(vt.product_bit.format(self.prod_index),"1'b0"))
                 self.prod_index+=1
             for i in range(len(trace)):
@@ -182,7 +184,7 @@ class multiplier:
                                                             "{1'b0,"+vt.sums_bus.format(i+1,sum_indexes[1]-1,1)+"}",
                                                             vt.carrys_bus.format(i+1,sum_indexes[1]-1,0),
                                                             "1'b0",
-                                                            vt.product_bus.format(sum_indexes[1]+sum_indexes[0],sum_indexes[0]+1)))
+                                                            vt.product_bus.format(sum_indexes[1]+self.prod_index-1,self.prod_index)))
             self.prod_index+=sum_indexes[1]
             #case in which last bit is 0
             while(self.prod_index<2*self.parallelism):

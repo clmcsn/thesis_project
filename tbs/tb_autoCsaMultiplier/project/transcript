@@ -1,7 +1,7 @@
 # do ../tb-autoCsaMultiplier.tcl
 # ** Warning: (vlib-34) Library already exists at "../work".
 # Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 12:00:42 on Oct 24,2019
+# Start time: 14:40:34 on Oct 24,2019
 # vlog -work ../work ../../../src/components/adder.sv ../../../src/components/csaRow.sv ../../../src/components/fullAdder.sv ../../../src/components/multiplier.sv ../../../src/components/register.sv 
 # -- Compiling module adder
 # -- Compiling module csaRow
@@ -12,31 +12,30 @@
 # Top level modules:
 # 	multiplier
 # 	register
-# End time: 12:00:42 on Oct 24,2019, Elapsed time: 0:00:00
+# End time: 14:40:34 on Oct 24,2019, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 12:00:42 on Oct 24,2019
+# Start time: 14:40:34 on Oct 24,2019
 # vlog -work ../work "+define+NO_GUI=1" ../tb_autoCsaMultiplier.sv 
 # -- Compiling module tb_autoCsaMultiplier
 # 
 # Top level modules:
 # 	tb_autoCsaMultiplier
-# End time: 12:00:42 on Oct 24,2019, Elapsed time: 0:00:00
+# End time: 14:40:34 on Oct 24,2019, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # vsim -c ../work.tb_autoCsaMultiplier 
-# Start time: 12:00:42 on Oct 24,2019
+# Start time: 14:40:34 on Oct 24,2019
 # Loading sv_std.std
 # Loading ../work.tb_autoCsaMultiplier
 # Loading ../work.multiplier
 # Loading ../work.fullAdder
 # Loading ../work.adder
+# ** Warning: (vsim-PLI-3691) ../tb_autoCsaMultiplier.sv(26): Expected a system task, not a system function '$fscanf'.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_autoCsaMultiplier File: ../tb_autoCsaMultiplier.sv
 # ** Warning: (vsim-PLI-3691) ../tb_autoCsaMultiplier.sv(27): Expected a system task, not a system function '$fscanf'.
 #    Time: 0 ns  Iteration: 0  Instance: /tb_autoCsaMultiplier File: ../tb_autoCsaMultiplier.sv
-# ** Warning: (vsim-PLI-3691) ../tb_autoCsaMultiplier.sv(28): Expected a system task, not a system function '$fscanf'.
-#    Time: 0 ns  Iteration: 0  Instance: /tb_autoCsaMultiplier File: ../tb_autoCsaMultiplier.sv
 # ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
-# Ce l'ammu fatta!
-# ** Note: $finish    : ../tb_autoCsaMultiplier.sv(33)
-#    Time: 262147 ns  Iteration: 1  Instance: /tb_autoCsaMultiplier
-# End time: 12:00:50 on Oct 24,2019, Elapsed time: 0:00:08
+# ** Note: $finish    : ../tb_autoCsaMultiplier.sv(32)
+#    Time: 65539 ns  Iteration: 1  Instance: /tb_autoCsaMultiplier
+# End time: 14:40:36 on Oct 24,2019, Elapsed time: 0:00:02
 # Errors: 0, Warnings: 3
