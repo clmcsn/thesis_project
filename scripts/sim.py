@@ -73,6 +73,6 @@ while (loop):
                 i+=1
         if(error_count==0):
             print("Yeeeeee")
-    elif (c=="2"):
+    elif (c==str(l)):
         print("Bye bye!")
         loop=False

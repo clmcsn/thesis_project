@@ -22,20 +22,28 @@ class cd:
 
 class ssh_session:
     #initialize a connection through
-    def __init__(self, user, host, port=22, avoidTimeout=False):
+    def __init__(self, user , host, port=22, avoidTimeout=False):
         print('\nOpen tunnel connection to server.')
         self.user_host = '{}@{}'.format(user, host)
         self.port = port
         self.socket = '~/.ssh/{}'.format(self.user_host)
         if avoidTimeout:
-            option = '-o serverAliveInterval=120'
+            self.option = '-o serverAliveInterval=120'
         else:
-            option = ''
-        os.system('ssh -M -f -N -o ControlPath={} {} -p {} {}'.format(self.socket, option, self.port, self.user_host))
+            self.option = ''
+        print('ssh -M -f -N -o ControlPath={} {} -p {} {}'.format(self.socket, self.option, self.port, self.user_host))
+
+    def __enter__(self):
+        subprocess.call('ssh -M -f -N -o ControlPath={} {} -p {} {}'.format(self.socket, self.option, self.port, self.user_host).split())
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        pass
+
 
     def __del__(self):
         print('\nClose connection.')
-        os.system('ssh -S {} -O exit {}'.format(self.socket, self.user_host))
+        subprocess.call('ssh -S {} -O exit {}'.format(self.socket, self.user_host).split())
 
     def get_param(self):
         return 'ssh -S {} -p {} {}'.format(self.socket, self.port, self.user_host)
@@ -43,30 +51,59 @@ class ssh_session:
     def run_commands(self, cmd):
         with open('ssh_commands.sh', 'w') as cmd_file:
             cmd_file.write(cmd)
-        os.system(
-            'cat ssh_commands.sh | ssh -T -S {} -p {} {}'.format(self.socket, self.port, self.user_host))
+        subprocess.call('cat ssh_commands.sh | ssh -T -S {} -p {} {}'.format(self.socket, self.port, self.user_host).split(),shell=True)
         os.remove('ssh_commands.sh')
 
     def copy_to(self, source, destination):
-        os.system('rsync -avz -e "ssh -o ControlPath={socket} -p {port}" {source} {server}:{dest}'.format(
+        subprocess.call('scp -o ControlPath={socket} -P {port} {source} {server}:{dest}'.format(
             socket=self.socket,
             port=self.port,
             source=source,
             server=self.user_host,
             dest=destination
-        ))
+        ).split())
 
     def copy_from(self, source, destination):
-        os.system('rsync -avz -e "ssh -o ControlPath={socket} -p {port}" {server}:{source} {dest}'.format(
+        subprocess.call('scp -o ControlPath={socket} -P {port} {server}:{source} {dest}'.format(
             socket=self.socket,
             port=self.port,
             source=source,
             server=self.user_host,
             dest=destination
-        ))
+        ).split())
 
     def clean(self, folderPath):
         rmCmd = 'rm -r {folderPath}'.format(folderPath=folderPath)
         mkdirCmd = 'mkdir {folderPath}'.format(folderPath=folderPath)
         self.run_commands(rmCmd)
         self.run_commands(mkdirCmd)
+
+def get_choice(options, msg='Type the number corresponding to your choice and press enter:\n', str_val=False, print_menu=True):
+    if type(options).__name__ == 'range':
+        str_val = False
+        print_menu = False
+
+    #prints all options in a menu like fashion
+    if print_menu:
+        for item in options:
+            print('\t{}) {}'.format(options.index(item) + 1, item))
+
+    choice = ''
+    while True:
+        choice = input(msg)
+        if choice.isdigit():
+            if type(options).__name__ == 'range':
+                if int(choice) in options:
+                    return int(choice)
+                else:
+                    print('Error. Invalid option. Try again.')
+            elif 0 < int(choice) <= len(options):
+                return int(choice)
+            else:
+                print('Error. Invalid option. Try again.')
+        #in case I want a string choice
+        #
+        elif str_val:
+            return choice
+        else:
+            print('Error. Invalid option. Try again.')
