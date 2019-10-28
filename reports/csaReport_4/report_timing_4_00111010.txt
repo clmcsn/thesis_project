@@ -1,0 +1,109 @@
+Information: Updating design information... (UID-85)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : PE
+Version: M-2016.12
+Date   : Mon Oct 28 12:40:35 2019
+****************************************
+
+Operating Conditions: uk65lscllmvbbr_120c25_tc   Library: uk65lscllmvbbr_120c25_tc
+Wire Load Model Mode: top
+
+  Startpoint: activationRegister/temp_reg[2]
+              (rising edge-triggered flip-flop clocked by clock)
+  Endpoint: outPartialSumRegister/temp_reg[18]
+            (rising edge-triggered flip-flop clocked by clock)
+  Path Group: clock
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  PE                 wl0                   uk65lscllmvbbr_120c25_tc
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  activationRegister/temp_reg[2]/CK (DFQRM8RA)        0.0000000000
+                                                                 0.0000000000 r
+  activationRegister/temp_reg[2]/Q (DFQRM8RA)         0.1136096194
+                                                                 0.1136096194 r
+  U272/Z (ND2M4R)                                     0.0231596604
+                                                                 0.1367692798 f
+  U560/Z (XNR2M8RA)                                   0.0843801647
+                                                                 0.2211494446 r
+  U587/Z (OA21M2RA)                                   0.0404530168
+                                                                 0.2616024613 r
+  U318/Z (XOR2M3RA)                                   0.0887081325
+                                                                 0.3503105938 f
+  U648/Z (AOI21M4R)                                   0.0481185913
+                                                                 0.3984291852 r
+  U298/Z (INVM3R)                                     0.0164855719
+                                                                 0.4149147570 f
+  U498/Z (CKND2M2R)                                   0.0218794942
+                                                                 0.4367942512 r
+  U499/Z (ND2M4R)                                     0.0258182287
+                                                                 0.4626124799 f
+  U481/Z (CKINVM4R)                                   0.0233559012
+                                                                 0.4859683812 r
+  U366/Z (OAI21B01M6RA)                               0.0289370120
+                                                                 0.5149053931 f
+  U340/Z (CKINVM6R)                                   0.0175080299
+                                                                 0.5324134231 r
+  U584/Z (ND4B1M2R)                                   0.0523080826
+                                                                 0.5847215056 f
+  U653/Z (OAI211M2R)                                  0.0687891245
+                                                                 0.6535106301 r
+  U312/Z (INVM4R)                                     0.0388732553
+                                                                 0.6923838854 f
+  add_1_root_add/add_20_2/B[10] (PE_DW01_add_1)       0.0000000000
+                                                                 0.6923838854 f
+  add_1_root_add/add_20_2/U33/Z (NR2B1M8R)            0.0367552042
+                                                                 0.7291390896 r
+  add_1_root_add/add_20_2/U92/Z (OAI21M12RA)          0.0327993035
+                                                                 0.7619383931 f
+  add_1_root_add/add_20_2/U54/Z (NR2M8R)              0.0293066502
+                                                                 0.7912450433 r
+  add_1_root_add/add_20_2/U122/Z (NR2B1M8R)           0.0174017549
+                                                                 0.8086467981 f
+  add_1_root_add/add_20_2/U106/Z (NR2B1M12RA)         0.0251798034
+                                                                 0.8338266015 r
+  add_1_root_add/add_20_2/U47/Z (ND2M12RA)            0.0209796429
+                                                                 0.8548062444 f
+  add_1_root_add/add_20_2/U46/Z (CKINVM12R)           0.0189453363
+                                                                 0.8737515807 r
+  add_1_root_add/add_20_2/U58/Z (OAI21M2R)            0.0281382799
+                                                                 0.9018898606 f
+  add_1_root_add/add_20_2/U156/Z (XNR2M2RA)           0.0676602721
+                                                                 0.9695501328 r
+  add_1_root_add/add_20_2/SUM[18] (PE_DW01_add_1)     0.0000000000
+                                                                 0.9695501328 r
+  U558/Z (OA211M4RA)                                  0.0674301386
+                                                                 1.0369802713 r
+  outPartialSumRegister/temp_reg[18]/D (DFRM2RA)      0.0000000000
+                                                                 1.0369802713 r
+  data arrival time                                              1.0369802713
+
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  outPartialSumRegister/temp_reg[18]/CK (DFRM2RA)     0.0000000000
+                                                                 0.0000000000 r
+  library setup time                                  -0.0141872261
+                                                                 -0.0141872261
+  data required time                                             -0.0141872261
+  --------------------------------------------------------------------------
+  data required time                                             -0.0141872261
+  data arrival time                                              -1.0369802713
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                               -1.0511674881
+
+
+1

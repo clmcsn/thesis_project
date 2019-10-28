@@ -34,7 +34,7 @@ class ssh_session:
         print('ssh -M -f -N -o ControlPath={} {} -p {} {}'.format(self.socket, self.option, self.port, self.user_host))
 
     def __enter__(self):
-        subprocess.call('ssh -M -f -N -o ControlPath={} {} -p {} {}'.format(self.socket, self.option, self.port, self.user_host).split())
+        #subprocess.call('ssh -M -f -N -o ControlPath={} {} -p {} {}'.format(self.socket, self.option, self.port, self.user_host).split())
         return self
 
     def __exit__(self, etype, value, traceback):
@@ -51,7 +51,12 @@ class ssh_session:
     def run_commands(self, cmd):
         with open('ssh_commands.sh', 'w') as cmd_file:
             cmd_file.write(cmd)
-        subprocess.call('cat ssh_commands.sh | ssh -T -S {} -p {} {}'.format(self.socket, self.port, self.user_host).split(),shell=True)
+        #subprocess.call('cat ssh_commands.sh | ssh -T asic_tuwien_gateway1'.split(),shell=True)
+        #subprocess.call('cat ssh_commands.sh | ssh -T -S {} -p {} {}'.format(self.socket, self.port, self.user_host).split(),shell=True)
+        proc1 = subprocess.Popen('cat ssh_commands.sh'.split(), stdout=subprocess.PIPE)
+        proc2 = subprocess.Popen('ssh -T -S {} -p {} {}'.format(self.socket, self.port, self.user_host).split(), stdin=proc1.stdout, stdout=subprocess.PIPE)
+        proc1.wait()
+        proc2.wait()
         os.remove('ssh_commands.sh')
 
     def copy_to(self, source, destination):

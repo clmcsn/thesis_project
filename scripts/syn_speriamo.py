@@ -14,7 +14,7 @@ with util.ssh_session(s.ecs_user,s.ecs_host):
     with util.ssh_session(s.asic_user,s.asic_host) as asic_server:
         csa=hwl.multiplier(8)
         #creating multiplier
-        bin_str="11110111"
+        bin_str="11111111"
         zeros=bin_str.count("0")
         csa.setWeightValBits(bin_str)
         csa.genCsaStructure()
@@ -33,9 +33,10 @@ with util.ssh_session(s.ecs_user,s.ecs_host):
         asic_server.copy_to("./syn.tcl",destination=s.synPart1Path+"syn/")
         #run synthesis
         print("Runnin synthesis. Blocked bits:{} String:{}".format(zeros,bin_str))
-        asic_server.run_commands("""cd {}syn
+        asic_server.run_commands("""cd ~/syn_part1/syn
             {setEnvironment}
             dc_shell-xg-t -f syn.tcl""".format(s.synPart1Path,setEnvironment=s.cmdSetSynEnv))
+        print("Circuit synthesized")
         try:
             os.mkdir(s.reportsPath+"csaReport_{}".format(zeros))
         except FileExistsError:

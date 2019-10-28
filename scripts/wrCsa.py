@@ -5,6 +5,6 @@ sys.path.append('../')
 from common.hw_lib import *
 
 csa=multiplier(8)
-csa.setWeightValBits("11111111")
+csa.setWeightValBits("00011100")
 csa.genCsaStructure()
 csa.genCsaMultiplier()
