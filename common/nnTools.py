@@ -32,8 +32,8 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     plt.xlabel('Predicted label')
     plt.show(block=True)
 
-@torch.no_grad() #means that everytime the function is called that setting is chosen
-def get_all_preds(model, loader):
+
+def get_all_preds(model, loader,eval_mode=False):
     all_preds = torch.tensor([]) #new pytorch sensor
     for batch in loader:
         images, labels = batch
