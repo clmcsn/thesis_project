@@ -5,15 +5,17 @@
 #########SETTINGS#########
 epochs_num = 200
 batch_size = 50
-preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
-preTrainedQuantModelPath="../models/checkpoints/QuantLeNet_CIFAR10_epoch200.tar"
+#preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
+preTrainedModelPath=None
+preTrainedQuantModelPath="../models/checkpoints/QuantLeNetVal_CIFAR10_epoch200.tar"
+device="cpu"
 
 import sys
 sys.path.append("../")
 sys.path.append("../../distiller")
 import os
 
-from common.nnTools import get_all_preds
+from common.nnTools import get_all_preds,train,test
 import models.cifar10.LeNet as LeNet
 
 import torch
@@ -44,6 +46,17 @@ test_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
     ,transform=transforms.Compose([transforms.ToTensor()])
 )
 
+#creating data loaders
+test_data_loader= torch.utils.data.DataLoader(
+    test_set
+    ,shuffle=False
+    ,batch_size=batch_size)
+
+train_data_loader= torch.utils.data.DataLoader(
+    train_set
+    ,shuffle=True
+    ,batch_size=batch_size)
+
 if preTrainedModelPath:
     if os.path.isfile(preTrainedModelPath):
         with torch.no_grad():
@@ -51,15 +64,6 @@ if preTrainedModelPath:
             preTrainedNetwork = LeNet.LeNet()
             checkpoint = torch.load(preTrainedModelPath)
             preTrainedNetwork.load_state_dict(checkpoint['model_state_dict'])
-
-            #creating data loaders
-            test_data_loader= torch.utils.data.DataLoader(
-                test_set
-                ,batch_size=batch_size)
-            
-            train_data_loader= torch.utils.data.DataLoader(
-                train_set
-                ,batch_size=batch_size)
 
             #forward pass
             train_preds = get_all_preds(preTrainedNetwork, train_data_loader)
@@ -94,13 +98,12 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
 dummy_input = (torch.zeros([1,3,32,32]))
 quant_net.prepare_model(dummy_input)
 quant_net.quantize_params()
+quant_net.model.to(device)
 
 if os.path.isfile(preTrainedQuantModelPath):
     print("Checkpoint found!")
     checkpoint = torch.load(preTrainedQuantModelPath)
     quant_net.model.load_state_dict(checkpoint['model_state_dict'])
-    
-
     start_epoch=checkpoint['epoch']+1
     if start_epoch==epochs_num:
         print("Model fully trained!")
@@ -125,27 +128,14 @@ if toTrain:
 
     #training loop
     for epoch in range(start_epoch,epochs_num):
-        total_loss = 0
-        total_correct = 0
-        for batch_num, batch in enumerate(train_data_loader):
-            images, labels = batch
-            hack_step(quant_net.moddel,epoch,batch_num,total_loss)
-            preds = quant_net.model(images)     #forward pass    
-            loss = criterion(preds,labels)      
-            quant_net.optimizer.zero_grad()     
-            loss.backward()                     #compute gradients
-            quant_net.optimizer.step()          #update weights
-            quant_net.quantize_params()         #update quantized parameters
-
-            total_loss += loss.item()*batch_size
-            total_correct += preds.argmax(dim=1).eq(labels).sum().item()
-
+        train(10,quant_net.model,device,train_data_loader,quant_net.optimizer,criterion,epoch)
+        test(quant_net.model,device,test_data_loader)
         for param_group in optimizer.param_groups:
             lr=param_group['lr']
         scheduler.step() #lr scheduler
         
         #print feedback to screen
-        print("epoch:",epoch,"total_correct:",total_correct,"loss:",total_loss,"lr",lr)
+        #print("epoch:",epoch,"total_correct:",total_correct,"loss:",total_loss,"lr",lr)
 
         #saving network state in case process will crash
         torch.save({
@@ -158,15 +148,6 @@ if toTrain:
         if (epoch!=0):
             os.remove("../models/checkpoints/QuantLeNet_CIFAR10_epoch{}.tar".format(epoch))
 #test
-
-#creating data loaders
-test_data_loader= torch.utils.data.DataLoader(
-    test_set
-    ,batch_size=batch_size)
-
-train_data_loader= torch.utils.data.DataLoader(
-    train_set
-    ,batch_size=batch_size)
 
 #forward pass
 train_preds = get_all_preds(quant_net.model, train_data_loader)
