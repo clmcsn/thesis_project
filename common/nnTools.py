@@ -58,6 +58,7 @@ def train(log_interval, model, device, train_loader, optimizer, criterion, epoch
         accuracy = correct / len(target) 
         loss.backward()
         optimizer.step()
+        quant_net.quantize_params()
         if batch_idx % log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\tAccuracy: {}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
