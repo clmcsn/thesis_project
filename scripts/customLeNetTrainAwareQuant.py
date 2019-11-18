@@ -143,7 +143,6 @@ if toTrain:
                 'model_state_dict': quant_net.model.state_dict(),
                 'optimizer_state_dict': quant_net.optimizer.state_dict(),
                 'scheduler_state_dict': scheduler.state_dict(),
-                'loss': total_loss,
                 }, "../models/checkpoints/QuantLeNet_CIFAR10_epoch{}.tar".format(epoch+1))
         if (epoch!=0):
             os.remove("../models/checkpoints/QuantLeNet_CIFAR10_epoch{}.tar".format(epoch))
