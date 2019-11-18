@@ -24,7 +24,7 @@ network.load_state_dict(checkpoint['model_state_dict'])
 
 train_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
     root='../../data/CIFAR10'
-    ,train=True  #where data will be located
+    ,train=False  #where data will be located
     ,download=True              #download if is not present offline(run only the first time)
     ,transform=transforms.Compose([ #transformation of data to tensor
         transforms.ToTensor()
@@ -51,6 +51,10 @@ dummy_input = (torch.zeros([1,3,32,32]))
 quantizer.prepare_model(dummy_input)
 quantizer.model.eval()
 train_preds = get_all_preds(quantizer.model, data_loader)
+torch.save({
+        'epoch': checkpoint['epoch'],
+        'model_state_dict': network.state_dict()
+        }, "../models/checkpoints/LeNet_postTrainQuant_CIFAR10.tar")
 #gives the number of correct predictions
 preds_correct = train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print('total correct:', preds_correct)
@@ -59,3 +63,5 @@ print('accuracy:', preds_correct/len(train_set),'len:',len(train_set))
 #dummy_input = (torch.zeros(1,1).to(dtype=torch.long), checkpoint.init_hidden(1))
 #quantizer.prepare_model(dummy_input)
 #print(quantizer.model)
+#print(network.state_dict())
+#print(quantizer.model.state_dict())

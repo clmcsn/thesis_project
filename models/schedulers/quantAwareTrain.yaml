@@ -1,0 +1,12 @@
+version: 1
+quantizers:
+  rangelinear_quantizer:
+    class: QuantAwareTrainRangeLinearQuantizer
+    bits_activations: 8
+    bits_weights: 8
+policies:
+  - quantizer:
+        instance_name: rangelinear_quantizer
+      starting_epoch: 0
+      ending_epoch: 200
+      frequency: 1

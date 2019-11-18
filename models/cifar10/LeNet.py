@@ -30,4 +30,5 @@ class LeNet(nn.Module):
         x = self.relu3(x)
         x = self.fc2(x)
         x = self.relu4(x)
+        x = self.fc3(x)
         return x

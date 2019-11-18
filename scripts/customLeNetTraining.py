@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #########SETTINGS#########
-epochs_num = 90
+epochs_num = 200
 batch_size = 32
 #lr=[0.001,0.0005,0.000025]
 import sys
@@ -13,7 +13,6 @@ import models.cifar10.LeNet as LeNet
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim #needed for optimizing the cost function
 import torchvision
 import torchvision.transforms as transforms
@@ -33,16 +32,16 @@ data_loader = torch.utils.data.DataLoader(
     train_set
     ,batch_size = batch_size)
 #setting optimizer
-optimizer = optim.Adam(network.parameters(), lr=0.001)
+optimizer = optim.Adam(network.parameters(), lr=0.0005)
 #setting optimizer scheduler
 scheduler = optim.lr_scheduler.StepLR(
     optimizer
-    ,step_size=30
+    ,step_size=75
     ,gamma=0.5)
 
 batch=next(iter(data_loader))
 images, labels = batch
-
+criterion = nn.CrossEntropyLoss()
 #tensorboard init
 tb = SummaryWriter()
 #grid = torchvision.utils.make_grid(images) #grid for images
@@ -57,7 +56,7 @@ for epoch in range(epochs_num):
         images, labels = batch
         optimizer.zero_grad() #clear gradients
         preds = network(images) #forward pass
-        loss = F.cross_entropy(preds,labels)
+        loss = criterion(preds,labels)
         loss.backward() #calculate gradients
         optimizer.step() #update weights
         total_loss += loss.item()*batch_size
