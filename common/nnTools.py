@@ -54,12 +54,14 @@ def train(log_interval, model, device, train_loader, optimizer, criterion, epoch
         optimizer.zero_grad()
         output = model(data)
         loss = criterion(output, target)
+        correct = output.argmax(dim=1).eq(target).sum().item()
+        accuracy = correct / len(target) 
         loss.backward()
         optimizer.step()
         if batch_idx % log_interval == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\tAccuracy: {}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.item()))
+                100. * batch_idx / len(train_loader), loss.item(), accuracy))
 
 def test(model, device, test_loader):
     model.eval()
