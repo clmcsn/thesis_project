@@ -3,12 +3,12 @@
 #tensorboard recap is not avelaible
 
 #########SETTINGS#########
-epochs_num = 200
+epochs_num = 100
 batch_size = 50
 #preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
 preTrainedModelPath=None
-preTrainedQuantModelPath="../models/checkpoints/QuantLeNetVal_CIFAR10_epoch200.tar"
-device="cpu"
+preTrainedQuantModelPath="../models/checkpoints/QuantLeNetVal_CIFAR10_epoch100.tar"
+device="cuda"
 
 import sys
 sys.path.append("../")
@@ -81,6 +81,7 @@ if preTrainedModelPath:
 toTrain=True
 start_epoch=0
 network=LeNet.LeNet()
+network.to(device)
 optimizer = optim.Adam(network.parameters(), lr=0.0005)
 quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,optimizer=optimizer
@@ -117,7 +118,7 @@ if toTrain:
     #setting optimizer scheduler
     scheduler = optim.lr_scheduler.StepLR(
         quant_net.optimizer
-        ,step_size=75
+        ,step_size=20
         ,gamma=0.5)
 
     if start_epoch!=0: #if checkpoint load scheduler state
@@ -144,8 +145,8 @@ if toTrain:
             quant_net.quantize_params()
             #if batch_idx % 50 == 0:
                 #print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\tAccuracy: {}'.format(
-                    epoch, batch_idx * len(images), len(train_data_loader.dataset),
-                    100. * batch_idx / len(train_data_loader), loss.item(), accuracy))
+                   # epoch, batch_idx * len(images), len(train_data_loader.dataset),
+                   # 100. * batch_idx / len(train_data_loader), loss.item(), accuracy))
     
         #validating loop
         quant_net.model.eval()
@@ -161,7 +162,7 @@ if toTrain:
         
         test_loss /= len(test_data_loader.dataset)
 
-        print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+        print('\nTest set: Epoch: {} Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(epoch,
             test_loss, correct, len(test_data_loader.dataset),
             100. * correct / len(test_data_loader.dataset)))
 
@@ -184,12 +185,14 @@ if toTrain:
 #test
 
 #forward pass
-train_preds = get_all_preds(quant_net.model, train_data_loader)
-correct_train_predictions=train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
-train_accuracy=correct_train_predictions/len(train_set)
+quant_net.model.eval()
+with torch.no_grad():
+	train_preds = get_all_preds(quant_net.model, train_data_loader)
+	correct_train_predictions=train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+	train_accuracy=correct_train_predictions/len(train_set)
 
-test_preds = get_all_preds(quant_net.model, test_data_loader)
-correct_test_predictions=test_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
-test_accuracy=correct_test_predictions/len(test_set)
+	test_preds = get_all_preds(quant_net.model, test_data_loader)
+	correct_test_predictions=test_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
+	test_accuracy=correct_test_predictions/len(test_set)
 
 print(train_accuracy,test_accuracy)
