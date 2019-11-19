@@ -20,6 +20,7 @@ import models.cifar10.LeNet as LeNet
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim #needed for optimizing the cost function
 import torchvision
 import torchvision.transforms as transforms
@@ -128,8 +129,42 @@ if toTrain:
 
     #training loop
     for epoch in range(start_epoch,epochs_num):
-        train(10,quant_net.model,device,train_data_loader,quant_net.optimizer,criterion,epoch)
-        test(quant_net.model,device,test_data_loader)
+        quant_net.model.train()
+        for batch_idx, batch in enumerate(train_data_loader):
+            images, labels = batch
+            images = images.to(device)
+            labels = labels.to(device)
+            quant_net.optimizer.zero_grad()
+            preds = quant_net.model(images)
+            loss = criterion(preds, labels)
+            correct = preds.argmax(dim=1).eq(labels).sum().item()
+            accuracy = correct/len(labels)
+            loss.backward()
+            quant_net.optimizer.step()
+            quant_net.quantize_params()
+            #if batch_idx % 50 == 0:
+                #print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\tAccuracy: {}'.format(
+                    epoch, batch_idx * len(images), len(train_data_loader.dataset),
+                    100. * batch_idx / len(train_data_loader), loss.item(), accuracy))
+    
+        #validating loop
+        quant_net.model.eval()
+        test_loss = 0
+        correct = 0
+        with torch.no_grad():
+            for images, labels in test_data_loader:
+                images = images.to(device)
+                labels = labels.to(device)
+                preds = quant_net.model(images)
+                test_loss += F.nll_loss(preds, labels, reduction='sum').item()  # sum up batch loss
+                correct += preds.argmax(dim=1).eq(labels).sum().item()
+        
+        test_loss /= len(test_data_loader.dataset)
+
+        print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+            test_loss, correct, len(test_data_loader.dataset),
+            100. * correct / len(test_data_loader.dataset)))
+
         for param_group in optimizer.param_groups:
             lr=param_group['lr']
         scheduler.step() #lr scheduler
