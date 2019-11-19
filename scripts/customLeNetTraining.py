@@ -14,6 +14,7 @@ import models.cifar10.LeNet as LeNet
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim #needed for optimizing the cost function
 import torchvision
 import torchvision.transforms as transforms
@@ -63,7 +64,7 @@ criterion = nn.CrossEntropyLoss()
 for epoch in range(epochs_num):
     total_loss = 0
     total_correct = 0
-    for batch in data_loader:
+    for batch in train_data_loader:
         images, labels = batch
         images=images.to(device)
         labels=labels.to(device)
@@ -85,16 +86,21 @@ for epoch in range(epochs_num):
 
     #validating loop
     network.eval()
-    test_loss=0
-    currect=0
+    test_loss = 0
+    correct = 0
     with torch.no_grad():
         for images, labels in test_data_loader:
                 images = images.to(device)
                 labels = labels.to(device)
-                preds = quant_net.model(images)
+                preds = network(images)
                 test_loss += F.nll_loss(preds, labels, reduction='sum').item()  # sum up batch loss
                 correct += preds.argmax(dim=1).eq(labels).sum().item()
+    
+    test_loss /= len(test_data_loader.dataset)
 
+    print('\nTest set: Epoch: {} Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(epoch,
+            test_loss, correct, len(test_data_loader.dataset),
+            100. * correct / len(test_data_loader.dataset)))
     #recording gradient + loss
     #for name, weight in network.named_parameters():
         #tb.add_histogram(name, weight, epoch)
