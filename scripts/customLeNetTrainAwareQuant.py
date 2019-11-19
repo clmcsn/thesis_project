@@ -187,11 +187,11 @@ if toTrain:
 #forward pass
 quant_net.model.eval()
 with torch.no_grad():
-	train_preds = get_all_preds(quant_net.model, train_data_loader)
+	train_preds = get_all_preds(quant_net.model, train_data_loader, device)
 	correct_train_predictions=train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 	train_accuracy=correct_train_predictions/len(train_set)
 
-	test_preds = get_all_preds(quant_net.model, test_data_loader)
+	test_preds = get_all_preds(quant_net.model, test_data_loader, device)
 	correct_test_predictions=test_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
 	test_accuracy=correct_test_predictions/len(test_set)
 

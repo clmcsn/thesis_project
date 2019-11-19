@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 #########SETTINGS#########
-epochs_num = 200
+epochs_num = 100
 batch_size = 32
 #lr=[0.001,0.0005,0.000025]
+device="cuda"
 import sys
 sys.path.append("../")
 
@@ -21,29 +22,39 @@ from torch.utils.tensorboard import SummaryWriter
 torch.set_grad_enabled(True) #now gradient computation and storing result is needed
 
 network = LeNet.LeNet()
-
+network.to(device)
 #train the network
 train_set = torchvision.datasets.CIFAR10(
     root="../../data/CIFAR10"
     ,train=True
     ,download=True
     ,transform=transforms.Compose([transforms.ToTensor()]))
-data_loader = torch.utils.data.DataLoader(
+train_data_loader = torch.utils.data.DataLoader(
     train_set
+    ,shuffle=True
     ,batch_size = batch_size)
+
+test_set = torchvision.datasets.CIFAR10(
+    root="../../data/CIFAR10"
+    ,train=False
+    ,download=True
+    ,transform=transforms.Compose([transforms.ToTensor()]))
+test_data_loader = torch.utils.data.DataLoader(
+    test_set
+    ,shuffle=False
+    ,batch_size = batch_size)
+
 #setting optimizer
-optimizer = optim.Adam(network.parameters(), lr=0.0005)
+optimizer = optim.Adam(network.parameters(), lr=0.001)
 #setting optimizer scheduler
 scheduler = optim.lr_scheduler.StepLR(
     optimizer
-    ,step_size=75
+    ,step_size=20
     ,gamma=0.5)
 
-batch=next(iter(data_loader))
-images, labels = batch
 criterion = nn.CrossEntropyLoss()
 #tensorboard init
-tb = SummaryWriter()
+#tb = SummaryWriter()
 #grid = torchvision.utils.make_grid(images) #grid for images
 #tb.add_image('images',grid)
 #tb.add_graph(network,images)
@@ -54,6 +65,8 @@ for epoch in range(epochs_num):
     total_correct = 0
     for batch in data_loader:
         images, labels = batch
+        images=images.to(device)
+        labels=labels.to(device)
         optimizer.zero_grad() #clear gradients
         preds = network(images) #forward pass
         loss = criterion(preds,labels)
@@ -66,9 +79,21 @@ for epoch in range(epochs_num):
     scheduler.step() #lr scheduler
     print("epoch:",epoch,"total_correct:",total_correct,"loss:",total_loss,"lr",lr)
     #saving the epoch stat in tensorboard
-    tb.add_scalar('Loss',total_loss, epoch)
-    tb.add_scalar('Number Correct',total_correct, epoch)
-    tb.add_scalar('Accuracy', total_correct/len(train_set), epoch)
+    #tb.add_scalar('Loss',total_loss, epoch)
+    #tb.add_scalar('Number Correct',total_correct, epoch)
+    #tb.add_scalar('Accuracy', total_correct/len(train_set), epoch)
+
+    #validating loop
+    network.eval()
+    test_loss=0
+    currect=0
+    with torch.no_grad():
+        for images, labels in test_data_loader:
+                images = images.to(device)
+                labels = labels.to(device)
+                preds = quant_net.model(images)
+                test_loss += F.nll_loss(preds, labels, reduction='sum').item()  # sum up batch loss
+                correct += preds.argmax(dim=1).eq(labels).sum().item()
 
     #recording gradient + loss
     #for name, weight in network.named_parameters():
