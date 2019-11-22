@@ -26,10 +26,6 @@ import torchvision
 import torchvision.transforms as transforms
 import distiller
 
-def hack_step(model,epoch,batch_num):
-    print("Halooo")
-    #with("../report/quantWei")
-
 
 #fetching train_set
 train_set = torchvision.datasets.CIFAR10( #
