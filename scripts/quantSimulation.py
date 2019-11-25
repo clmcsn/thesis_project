@@ -76,7 +76,7 @@ quant_parameter[0][0][0]=torch.tensor([127])
 masked_quant_parameter2 = quant_parameter.clone().flatten().to(torch.int)
 print(type(masked_quant_parameter2),type(quant_parameter))
 for element in masked_quant_parameter2:
-    #voglio mascherare il 4o bit
+    #voglio mascherare il 4o bit ---> tutti i 3 vanno parametrizzati
     toMask = element & (1<<3)
     if toMask:
         toSum = element & (1<<(3-1))

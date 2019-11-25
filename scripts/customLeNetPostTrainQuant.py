@@ -18,7 +18,7 @@ from distiller.data_loggers import collect_quant_stats
 
 
 network = LeNet.LeNet()
-checkpoint = torch.load('../models/checkpoints/LeNet_CIFAR10_epoch90.tar')
+checkpoint = torch.load('../models/checkpoints/LeNet_CIFAR10_epoch41.tar', map_location='cpu')
 network.load_state_dict(checkpoint['model_state_dict'])
 
 
@@ -41,7 +41,7 @@ train_preds = get_all_preds(network, data_loader)
 preds_correct = train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print('total correct:', preds_correct)
 print('accuracy:', preds_correct/len(train_set),'len:',len(train_set))
-
+print
 #distiller.utils.assign_layer_fq_names(checkpoint)
 #collector = QuantCalibrationStatsCollector(checkpoint)
 #stats_file = './acts_quantization_stats.yaml'
