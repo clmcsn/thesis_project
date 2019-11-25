@@ -63,6 +63,8 @@ zero_point += 2 ** (8 - 1)
 #scale * input - zero_point
 #quantize
 quant_parameter = torch.round(scale* fp_parameter - zero_point)
+
+"""from here on were just tries for masking """
 shape=quant_parameter.size()
 t = quant_parameter.dtype
 masked_quant_parameter1 = quant_parameter.clone().flatten().to(torch.int)

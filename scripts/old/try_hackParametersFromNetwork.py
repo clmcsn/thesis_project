@@ -100,6 +100,11 @@ with open("../reports/hackReport.txt", "w") as log_pointer:
     log_pointer.write("Parameters param_fp type:\n")
     for parameter in quant_net.params_to_quantize:
         log_pointer.write("\t\t\t{}\n".format(type(getattr(parameter.module, parameter.fp_attr_name))))
+    
+    #IMPORTANTISSIMA SCOPERTA!
+    print(id(quant_net.model.conv1))
+    print(id(quant_net.params_to_quantize[0].module))
+    
     exit()
     for epoch in range(epochs_num):
         quant_net.model.train()

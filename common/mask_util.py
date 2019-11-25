@@ -23,14 +23,14 @@ class MaskType(Enum):
 
 def num_in_range(num, dynamic, signed):
     if signed:
-        if (num>(2**(dynamic-1)-1)) or (num<(-2**(dynamic-1))): 
+        if (int(num)>(2**(dynamic-1)-1)) or (int(num)<(-2**(dynamic-1))): 
             return False
     else:
-        if (num>2**(dynamic)-1):
+        if (int(num)>2**(dynamic)-1):
             return False
     return True
 
-"""_stringMask_to_list(stringMask)
+"""stringMask_to_list(stringMask)
 
  DESCRIPTION
     Converts a string indicating which bits have to be masked to a list of same bit positions.
@@ -40,7 +40,7 @@ def num_in_range(num, dynamic, signed):
        stringMask:  string of bit, MSB first, where '1' indicates which bit has to be masked
  OUTPUT
     bit to mask: list of positions of bit that have to be masked. MSB first."""
-def _stringMask_to_list(stringMask):
+def stringMask_to_list(stringMask):
     bit_to_mask=[]
     for i, char in enumerate(stringMask[::-1]):
         if char=='1':
@@ -91,37 +91,61 @@ def _elm_mask_round_down(element, bit_to_mask):
         bit to mask: list of positions of bit that have to be masked. MSB first.
  OUTPUT
     No outputs, operation done in place in element input parameter"""
-def _elm_mask_round_up(element, bit_to_mask, dynamic, signed):
+def _elm_mask_round_up(element, bit_to_mask, original_bit_mask, dynamic, signed):
     mask = 2**bit_to_mask[0] -1
     element.sub_(element & mask)
     element.add_(2**bit_to_mask[0])
+
     #negative numbers never overflow
-    if ~num_in_range(element.data,dynamic,signed):
-        mask=_make_mask(bit_to_mask)
-        element=((2**(dynamic-int(signed))-1) & mask) #this line assignes the maximum allowd positive value masked
+    if (not num_in_range(element.data,dynamic,signed)):
+        element.zero_()
+        mask=_make_mask(original_bit_mask)
+        element.add_((2**(dynamic-int(signed))-1) & mask) #this line assignes the maximum allowd positive value masked
 
-
-def get_masked_param(quant_param, bit_to_mask, mask_type=MaskType.MASK, dynamic=0 , signed=None):
-    #quant_param pre processing
-    temp_param=quant_param.clone().flatten().to(torch.int)
+def mask_param(quant_param, bit_to_mask, mask_type=MaskType.MASK, dynamic=0 , signed=None):
+    if bit_to_mask==[]:
+        return quant_param
     if mask_type==MaskType.MASK:
         mask=_make_mask(bit_to_mask)
-        for element in temp_param:
+        for element in quant_param:
             element&=mask
     elif mask_type==MaskType.ROUND_DOWN:
-        for element in temp_param:
-            toMask = element & (1<<bit_to_mask[0])
-            if toMask:
-                _elm_mask_round_down(element, bit_to_mask)
+        for element in quant_param:
+            done=False
+            while ((bit_to_mask) and (not done)):
+                toMask = element & (1<<bit_to_mask[0])
+                if toMask:
+                    _elm_mask_round_down(element, bit_to_mask)
+                    done=True
+                bit_to_mask.pop(0)
     elif mask_type==MaskType.MINIMUM_DISTANCE:
         if dynamic==0 or signed==None:
             raise ValueError("For Minimum Distance masking policy 'dynamic' and 'signed' parameters must be specified.\n Got: DYNAMIC={}\tSIGNED{}\n".format(dynamic,signed))
-        for element in temp_param:
-            toMask = element & (1<<bit_to_mask[0])
-            if toMask:
-                toSum = element & (1<<(bit_to_mask[0]-1))
-                if toSum:
-                    _elm_mask_round_up(element, bit_to_mask, dynamic, signed)
-                else:
-                    _elm_mask_round_down(element, bit_to_mask)
-    return temp_param.view(quant_parameter.size()).to(quant_parameter.dtype)
+        for element in quant_param:
+            done=False
+            original_bit_mask=bit_to_mask.copy()
+            recheck=False
+            while ((bit_to_mask) and (not done)):
+                toMask = element & (1<<bit_to_mask[0])
+                if toMask:
+                    done=True
+                    if bit_to_mask[0]==0:
+                        mask=1
+                        element&=(~mask)
+                    else:
+                        toSum = element & (1<<(bit_to_mask[0]-1))
+                        if toSum:
+                            recheck=True
+                            _elm_mask_round_up(element, bit_to_mask, original_bit_mask, dynamic, signed)
+                        else:
+                            _elm_mask_round_down(element, bit_to_mask)
+                bit_to_mask.pop(0)
+            if (recheck):
+                done=False
+                while ((original_bit_mask) and (not done)): #needed in case summing up we make mistakes!
+                    toMask = element & (1<<original_bit_mask[0])
+                    if toMask:
+                        _elm_mask_round_down(element, original_bit_mask)
+                        done=True
+                    original_bit_mask.pop(0)
+    return quant_param
