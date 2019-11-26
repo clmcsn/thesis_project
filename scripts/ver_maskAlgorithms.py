@@ -8,7 +8,15 @@ import torch
 #########SETTINGS##########
 m_type=[MaskType.MINIMUM_DISTANCE]
 bits=4
-signed=True
+signed=False
+
+if signed:
+    start_point=-2**(bits-1)
+    end_point=2**(bits-1)-1
+else:
+    start_point=0
+    end_point=2**(bits)-1 
+
 ver=True
 
 def bit_string_inverter(string):
@@ -27,7 +35,7 @@ if ver==True:
                 string="{0:b}".format(i)
                 string = bit_string_inverter(string)
                 out_log.write("\tAll combination for {} mask.\n".format(string))
-                for i in range(2**bits):
+                for i in range(start_point,end_point):
                     t = torch.tensor([i], dtype=torch.int)
                     mask_param(t
                                 ,stringMask_to_list(string)

@@ -133,7 +133,7 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.MASK, dynamic=0 , si
                         mask=1
                         element&=(~mask)
                     else:
-                        toSum = element & (1<<(bit_to_mask[0]-1))
+                        toSum = (element & (1<<(bit_to_mask[0]-1))) ^ int(signed) 
                         if toSum:
                             recheck=True
                             _elm_mask_round_up(element, bit_to_mask, original_bit_mask, dynamic, signed)
