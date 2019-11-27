@@ -4,9 +4,10 @@ from enum import Enum
 import torch
 
 class MaskType(Enum):
-     MASK = 1
+     SIMPLE_MASK = 1
      ROUND_DOWN = 2
-     MINIMUM_DISTANCE = 3
+     ROUND_UP = 3
+     MINIMUM_DISTANCE = 4
 
 """num_in_range(num, dynamic, signed)
 
@@ -102,13 +103,16 @@ def _elm_mask_round_up(element, bit_to_mask, original_bit_mask, dynamic, signed)
         mask=_make_mask(original_bit_mask)
         element.add_((2**(dynamic-int(signed))-1) & mask) #this line assignes the maximum allowd positive value masked
 
-def mask_param(quant_param, bit_to_mask, mask_type=MaskType.MASK, dynamic=0 , signed=None):
+def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic=0 , signed=None):
     if bit_to_mask==[]:
         return quant_param
-    if mask_type==MaskType.MASK:
+    shape = quant_param.size()
+    ty = quant_param.dtype
+    quant_param = quant_param.flatten().to(torch.int)
+    if mask_type==MaskType.SIMPLE_MASK:
         mask=_make_mask(bit_to_mask)
         for element in quant_param:
-            element&=mask
+            element.data&=mask
     elif mask_type==MaskType.ROUND_DOWN:
         for element in quant_param:
             done=False
@@ -133,7 +137,7 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.MASK, dynamic=0 , si
                         mask=1
                         element&=(~mask)
                     else:
-                        toSum = (element & (1<<(bit_to_mask[0]-1))) ^ int(signed) 
+                        toSum = int(bool(element & (1<<(bit_to_mask[0]-1))))
                         if toSum:
                             recheck=True
                             _elm_mask_round_up(element, bit_to_mask, original_bit_mask, dynamic, signed)
@@ -148,4 +152,38 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.MASK, dynamic=0 , si
                         _elm_mask_round_down(element, original_bit_mask)
                         done=True
                     original_bit_mask.pop(0)
+    elif mask_type==MaskType.ROUND_UP:
+        if dynamic==0 or signed==None:
+            raise ValueError("For Minimum Distance masking policy 'dynamic' and 'signed' parameters must be specified.\n Got: DYNAMIC={}\tSIGNED{}\n".format(dynamic,signed))
+        for element in quant_param:
+            done=False
+            original_bit_mask=bit_to_mask.copy()
+            recheck=False
+            while ((bit_to_mask) and (not done)):
+                toMask = element & (1<<bit_to_mask[0])
+                if toMask:
+                    done=True
+                    recheck=True
+                    _elm_mask_round_up(element, bit_to_mask, original_bit_mask, dynamic, signed)
+                bit_to_mask.pop(0)
+            if (recheck):
+                done=False
+                while ((original_bit_mask) and (not done)): #needed in case summing up we make mistakes!
+                    toMask = element & (1<<original_bit_mask[0])
+                    if toMask:
+                        _elm_mask_round_down(element, original_bit_mask)
+                        done=True
+                    original_bit_mask.pop(0)
+    quant_param = quant_param.view(shape).to(ty)
+    return quant_param
+
+def mask_param_adv(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic=0 , signed=None):
+    if bit_to_mask==[]:
+        return quant_param
+    ty=quant_param.dtype
+    quant_param = quant_param.to(torch.int)
+    if mask_type==MaskType.SIMPLE_MASK:
+        mask=_make_mask(bit_to_mask)
+        quant_param = quant_param & mask
+    quant_param = quant_param.to(ty)
     return quant_param

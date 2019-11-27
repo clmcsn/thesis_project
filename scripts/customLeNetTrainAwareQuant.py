@@ -7,12 +7,12 @@ epochs_num = 100
 batch_size = 50
 #preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
 preTrainedModelPath=None
-preTrainedQuantModelPath="../models/checkpoints/QuantLeNetVal_CIFAR10_epoch100.tar"
-device="cuda"
+preTrainedQuantModelPath="../models/checkpoints/MaskLeNetVal_CIFAR10_epoch100.tar"
+device="cpu"
 
 import sys
 sys.path.append("../")
-sys.path.append("../../distiller")
+sys.path.append("../../distiller_modified")
 import os
 
 from common.nnTools import get_all_preds,train,test
@@ -114,7 +114,7 @@ if toTrain:
     #setting optimizer scheduler
     scheduler = optim.lr_scheduler.StepLR(
         quant_net.optimizer
-        ,step_size=20
+        ,step_size=25
         ,gamma=0.5)
 
     if start_epoch!=0: #if checkpoint load scheduler state

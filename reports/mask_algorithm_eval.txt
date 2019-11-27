@@ -1,0 +1,40 @@
+Report analysis for MaskType.SIMPLE_MASK type.
+	Max error distance=			 -124.
+	Norm max error distance=	 -0.9763779527559056.
+	Max relative error distance= 124.0.
+	Mean error distance=		 -30.1625.
+	Sum of error distance=		 -926592.
+	Sum of abs error distance=	 926592.
+	Norm mean error distance=	 -0.23750000000000002.
+	Mean relative error distance=0.8172279032399221.
+
+Report analysis for MaskType.ROUND_DOWN type.
+	Max error distance=			 -124.
+	Norm max error distance=	 -0.9763779527559056.
+	Max relative error distance= 124.0.
+	Mean error distance=		 -23.74765625.
+	Sum of error distance=		 -729528.
+	Sum of abs error distance=	 729528.
+	Norm mean error distance=	 -0.18698941929133858.
+	Mean relative error distance=0.7822716695003519.
+
+Report analysis for MaskType.ROUND_UP type.
+	Max error distance=			 -124.
+	Norm max error distance=	 -0.9763779527559056.
+	Max relative error distance= -1.0.
+	Mean error distance=		 -5.037760416666667.
+	Sum of error distance=		 -154760.
+	Sum of abs error distance=	 554918.
+	Norm mean error distance=	 -0.039667404855643046.
+	Mean relative error distance=-0.24647534528323528.
+
+Report analysis for MaskType.MINIMUM_DISTANCE type.
+	Max error distance=			 -124.
+	Norm max error distance=	 -0.9763779527559056.
+	Max relative error distance= 2.787878787878788.
+	Mean error distance=		 -14.416373697916667.
+	Sum of error distance=		 -442871.
+	Sum of abs error distance=	 545763.
+	Norm mean error distance=	 -0.11351475352690289.
+	Mean relative error distance=-0.11614332602537651.
+
