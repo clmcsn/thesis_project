@@ -1,0 +1,291 @@
+Parameters cointener: params_to_quantize
+Container attributes:
+			__add__
+			__class__
+			__contains__
+			__delattr__
+			__delitem__
+			__dir__
+			__doc__
+			__eq__
+			__format__
+			__ge__
+			__getattribute__
+			__getitem__
+			__gt__
+			__hash__
+			__iadd__
+			__imul__
+			__init__
+			__init_subclass__
+			__iter__
+			__le__
+			__len__
+			__lt__
+			__mul__
+			__ne__
+			__new__
+			__reduce__
+			__reduce_ex__
+			__repr__
+			__reversed__
+			__rmul__
+			__setattr__
+			__setitem__
+			__sizeof__
+			__str__
+			__subclasshook__
+			append
+			clear
+			copy
+			count
+			extend
+			index
+			insert
+			pop
+			remove
+			reverse
+			sort
+Parameters :
+			ParamToQuant(module_name=conv1,num_bits=8)
+			ParamToQuant(module_name=conv1,num_bits=8)
+			ParamToQuant(module_name=conv2,num_bits=8)
+			ParamToQuant(module_name=conv2,num_bits=8)
+			ParamToQuant(module_name=fc1,num_bits=8)
+			ParamToQuant(module_name=fc1,num_bits=8)
+			ParamToQuant(module_name=fc2,num_bits=8)
+			ParamToQuant(module_name=fc2,num_bits=8)
+			ParamToQuant(module_name=fc3,num_bits=8)
+			ParamToQuant(module_name=fc3,num_bits=8)
+Parameter 0 attributes:
+			__class__
+			__delattr__
+			__dict__
+			__dir__
+			__doc__
+			__eq__
+			__format__
+			__ge__
+			__getattribute__
+			__gt__
+			__hash__
+			__init__
+			__init_subclass__
+			__le__
+			__lt__
+			__module__
+			__ne__
+			__new__
+			__reduce__
+			__reduce_ex__
+			__repr__
+			__setattr__
+			__sizeof__
+			__str__
+			__subclasshook__
+			__weakref__
+			fp_attr_name
+			module
+			module_name
+			num_bits
+			q_attr_name
+Parameters names:
+			conv1
+			conv1
+			conv2
+			conv2
+			fc1
+			fc1
+			fc2
+			fc2
+			fc3
+			fc3
+Parameters fp_attr_name s:
+			float_weight
+			float_bias
+			float_weight
+			float_bias
+			float_weight
+			float_bias
+			float_weight
+			float_bias
+			float_weight
+			float_bias
+Parameters module s:
+			Conv2d(
+  3, 6, kernel_size=(5, 5), stride=(1, 1), 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Conv2d(
+  3, 6, kernel_size=(5, 5), stride=(1, 1), 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Conv2d(
+  6, 16, kernel_size=(5, 5), stride=(1, 1), 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Conv2d(
+  6, 16, kernel_size=(5, 5), stride=(1, 1), 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Linear(
+  in_features=400, out_features=120, bias=True, 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Linear(
+  in_features=400, out_features=120, bias=True, 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Linear(
+  in_features=120, out_features=84, bias=True, 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Linear(
+  in_features=120, out_features=84, bias=True, 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Linear(
+  in_features=84, out_features=10, bias=True, 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+			Linear(
+  in_features=84, out_features=10, bias=True, 
+  Distiller_QuantAwareTrain: weight --> 8 bits ; bias --> 8 bits
+)
+Parameters q_attr_name s:
+			weight
+			bias
+			weight
+			bias
+			weight
+			bias
+			weight
+			bias
+			weight
+			bias
+Module 0 attributes:
+			__call__
+			__class__
+			__constants__
+			__delattr__
+			__dict__
+			__dir__
+			__doc__
+			__eq__
+			__format__
+			__ge__
+			__getattr__
+			__getattribute__
+			__gt__
+			__hash__
+			__init__
+			__init_subclass__
+			__le__
+			__lt__
+			__module__
+			__ne__
+			__new__
+			__reduce__
+			__reduce_ex__
+			__repr__
+			__setattr__
+			__setstate__
+			__sizeof__
+			__slotnames__
+			__str__
+			__subclasshook__
+			__weakref__
+			_apply
+			_backend
+			_backward_hooks
+			_buffers
+			_forward_hooks
+			_forward_pre_hooks
+			_get_name
+			_load_from_state_dict
+			_load_state_dict_pre_hooks
+			_modules
+			_named_members
+			_parameters
+			_register_load_state_dict_pre_hook
+			_register_state_dict_hook
+			_slow_forward
+			_state_dict_hooks
+			_tracing_name
+			_version
+			add_module
+			apply
+			bias
+			bias_scale
+			bias_zero_point
+			buffers
+			children
+			cpu
+			cuda
+			dilation
+			distiller_name
+			double
+			dump_patches
+			eval
+			extra_repr
+			extra_repr
+			float
+			float_bias
+			float_weight
+			forward
+			groups
+			half
+			in_channels
+			kernel_size
+			load_state_dict
+			modules
+			named_buffers
+			named_children
+			named_modules
+			named_parameters
+			original_extra_repr
+			out_channels
+			output_padding
+			padding
+			padding_mode
+			parameters
+			register_backward_hook
+			register_buffer
+			register_forward_hook
+			register_forward_pre_hook
+			register_parameter
+			repr_mod
+			reset_parameters
+			share_memory
+			state_dict
+			stride
+			to
+			train
+			training
+			transposed
+			type
+			weight
+			weight_scale
+			weight_zero_point
+			zero_grad
+New attributes:
+			bias_scale
+			bias_zero_point
+			distiller_name
+			float_bias
+			float_weight
+			original_extra_repr
+			repr_mod
+			weight_scale
+			weight_zero_point
+Parameters param_fp type:
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
+			<class 'torch.nn.parameter.Parameter'>
