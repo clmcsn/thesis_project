@@ -7,8 +7,8 @@ epochs_num = 100
 batch_size = 50
 #preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
 preTrainedModelPath=None
-preTrainedQuantModelPath="../models/checkpoints/MaskLeNetVal_CIFAR10_epoch100.tar"
-device="cpu"
+preTrainedQuantModelPath="../models/checkpoints/QuantLeNet_CIFAR10_epoch100.tar"
+device="cuda"
 
 import sys
 sys.path.append("../")
@@ -139,10 +139,10 @@ if toTrain:
             loss.backward()
             quant_net.optimizer.step()
             quant_net.quantize_params()
-            #if batch_idx % 50 == 0:
-                #print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\tAccuracy: {}'.format(
-                   # epoch, batch_idx * len(images), len(train_data_loader.dataset),
-                   # 100. * batch_idx / len(train_data_loader), loss.item(), accuracy))
+            if batch_idx % 50 == 0:
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\tAccuracy: {}'.format(
+                    epoch, batch_idx * len(images), len(train_data_loader.dataset),
+                    100. * batch_idx / len(train_data_loader), loss.item(), accuracy))
     
         #validating loop
         quant_net.model.eval()
@@ -183,12 +183,13 @@ if toTrain:
 #forward pass
 quant_net.model.eval()
 with torch.no_grad():
-	train_preds = get_all_preds(quant_net.model, train_data_loader, device)
-	correct_train_predictions=train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+	train_preds = get_all_preds(quant_net.model, train_data_loader, device=device)
+	correct_train_predictions=train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets).to(device)).sum().item()
 	train_accuracy=correct_train_predictions/len(train_set)
 
-	test_preds = get_all_preds(quant_net.model, test_data_loader, device)
-	correct_test_predictions=test_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
+	test_preds = get_all_preds(quant_net.model, test_data_loader, device=device)
+	correct_test_predictions=test_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets).to(device)).sum().item()
 	test_accuracy=correct_test_predictions/len(test_set)
-
+print(len(train_preds))
+print(len(train_set.targets))
 print(train_accuracy,test_accuracy)
