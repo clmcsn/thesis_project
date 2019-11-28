@@ -35,8 +35,8 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     plt.show(block=True)
 
 
-def get_all_preds(model, loader,eval_mode=False, device="cpu"):
-    all_preds = torch.tensor([]) #new pytorch sensor
+def get_all_preds(model, loader, device="cpu"):
+    all_preds = torch.tensor([]).to(device) #new pytorch sensor
     for batch in loader:
         images, labels = batch
         images = images.to(device)
