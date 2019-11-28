@@ -3,11 +3,11 @@
 #tensorboard recap is not avelaible
 
 #########SETTINGS#########
-epochs_num = 100
+epochs_num = 120
 batch_size = 50
 #preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
 preTrainedModelPath=None
-preTrainedQuantModelPath="../models/checkpoints/QuantLeNet_CIFAR10_epoch100.tar"
+preTrainedQuantModelPath="../models/checkpoints/QuantLeNet_CIFAR10_epoch100a.tar"
 device="cuda"
 
 import sys
@@ -16,7 +16,7 @@ sys.path.append("../../distiller_modified")
 import os
 
 from common.nnTools import get_all_preds,train,test
-import models.cifar10.LeNet as LeNet
+import models.mnist.LeNet as LeNet
 
 import torch
 import torch.nn as nn
@@ -28,16 +28,16 @@ import distiller
 
 
 #fetching train_set
-train_set = torchvision.datasets.CIFAR10( #
-    root='../../data/CIFAR10'
+train_set = torchvision.datasets.FashionMNIST( #
+    root='../../data/FashionMNIST'
     ,train=True  
     ,download=True              
     ,transform=transforms.Compose([transforms.ToTensor()])
 )
 
 #fetching test_set
-test_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
-    root='../../data/CIFAR10'
+test_set = torchvision.datasets.FashionMNIST( #we are fetching our datasets
+    root='../../data/FashionMNIST'
     ,train=False
     ,download=True
     ,transform=transforms.Compose([transforms.ToTensor()])
@@ -78,7 +78,7 @@ toTrain=True
 start_epoch=0
 network=LeNet.LeNet()
 network.to(device)
-optimizer = optim.Adam(network.parameters(), lr=0.0005)
+optimizer = optim.Adam(network.parameters(), lr=0.001)
 quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,optimizer=optimizer
                                                                         ,bits_activations=8
@@ -93,7 +93,7 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
 )
 
 #setting up the distiller 
-dummy_input = (torch.zeros([1,3,32,32]))
+dummy_input = (torch.zeros([1,1,28,28]))
 quant_net.prepare_model(dummy_input)
 quant_net.quantize_params()
 quant_net.model.to(device)
@@ -111,11 +111,11 @@ if toTrain:
     if start_epoch!=0:
         quant_net.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
-    #setting optimizer scheduler
+    """#setting optimizer scheduler
     scheduler = optim.lr_scheduler.StepLR(
         quant_net.optimizer
-        ,step_size=25
-        ,gamma=0.5)
+        ,step_size=30
+        ,gamma=0.5)"""
 
     if start_epoch!=0: #if checkpoint load scheduler state
         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
@@ -164,7 +164,7 @@ if toTrain:
 
         for param_group in optimizer.param_groups:
             lr=param_group['lr']
-        scheduler.step() #lr scheduler
+        #scheduler.step() #lr scheduler
         
         #print feedback to screen
         #print("epoch:",epoch,"total_correct:",total_correct,"loss:",total_loss,"lr",lr)
@@ -174,10 +174,10 @@ if toTrain:
                 'epoch': epoch,
                 'model_state_dict': quant_net.model.state_dict(),
                 'optimizer_state_dict': quant_net.optimizer.state_dict(),
-                'scheduler_state_dict': scheduler.state_dict(),
-                }, "../models/checkpoints/QuantLeNet_CIFAR10_epoch{}.tar".format(epoch+1))
+               # 'scheduler_state_dict': scheduler.state_dict(),
+                }, "../models/checkpoints/QuantLeNet_FashionMNIST_epoch{}.tar".format(epoch+1))
         if (epoch!=0):
-            os.remove("../models/checkpoints/QuantLeNet_CIFAR10_epoch{}.tar".format(epoch))
+            os.remove("../models/checkpoints/QuantLeNet_FashionMNIST_epoch{}.tar".format(epoch))
 #test
 
 #forward pass

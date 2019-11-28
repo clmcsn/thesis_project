@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 #########SETTINGS#########
-epochs_num = 100
-batch_size = 32
-#lr=[0.001,0.0005,0.000025]
+epochs_num = 120
+batch_size = 50
 device="cuda"
 import sys
 sys.path.append("../")
@@ -10,7 +9,7 @@ sys.path.append("../")
 import os
 
 from common.nnTools import get_all_preds
-import models.cifar10.LeNet as LeNet
+import models.mnist.LeNet as LeNet
 
 import torch
 import torch.nn as nn
@@ -25,8 +24,8 @@ torch.set_grad_enabled(True) #now gradient computation and storing result is nee
 network = LeNet.LeNet()
 network.to(device)
 #train the network
-train_set = torchvision.datasets.CIFAR10(
-    root="../../data/CIFAR10"
+train_set = torchvision.datasets.FashionMNIST(
+    root="../../data/FashionMNIST"
     ,train=True
     ,download=True
     ,transform=transforms.Compose([transforms.ToTensor()]))
@@ -35,8 +34,8 @@ train_data_loader = torch.utils.data.DataLoader(
     ,shuffle=True
     ,batch_size = batch_size)
 
-test_set = torchvision.datasets.CIFAR10(
-    root="../../data/CIFAR10"
+test_set = torchvision.datasets.FashionMNIST(                                                            
+    root="../../data/FashionMNIST"
     ,train=False
     ,download=True
     ,transform=transforms.Compose([transforms.ToTensor()]))
@@ -46,12 +45,12 @@ test_data_loader = torch.utils.data.DataLoader(
     ,batch_size = batch_size)
 
 #setting optimizer
-optimizer = optim.Adam(network.parameters(), lr=0.001)
-#setting optimizer scheduler
+optimizer = optim.Adam(network.parameters(), lr=0.0005)
+"""#setting optimizer scheduler
 scheduler = optim.lr_scheduler.StepLR(
     optimizer
-    ,step_size=20
-    ,gamma=0.5)
+    ,step_size=40
+    ,gamma=0.5)"""
 
 criterion = nn.CrossEntropyLoss()
 #tensorboard init
@@ -77,7 +76,7 @@ for epoch in range(epochs_num):
         total_correct += preds.argmax(dim=1).eq(labels).sum().item()
     for param_group in optimizer.param_groups:
         lr=param_group['lr']
-    scheduler.step() #lr scheduler
+    #scheduler.step() #lr scheduler
     print("epoch:",epoch,"total_correct:",total_correct,"loss:",total_loss,"lr",lr)
     #saving the epoch stat in tensorboard
     #tb.add_scalar('Loss',total_loss, epoch)
@@ -111,6 +110,6 @@ for epoch in range(epochs_num):
             'model_state_dict': network.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': total_loss,
-            }, "../models/checkpoints/LeNet_CIFAR10_epoch{}.tar".format(epoch+1))
+            }, "../models/checkpoints/LeNet_FashionMNIST_epoch{}.tar".format(epoch+1))
     if (epoch!=0):
-        os.remove("../models/checkpoints/LeNet_CIFAR10_epoch{}.tar".format(epoch))
+        os.remove("../models/checkpoints/LeNet_FashionMNIST_epoch{}.tar".format(epoch))
