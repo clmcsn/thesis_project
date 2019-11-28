@@ -185,5 +185,17 @@ def mask_param_adv(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dyn
     if mask_type==MaskType.SIMPLE_MASK:
         mask=_make_mask(bit_to_mask)
         quant_param = quant_param & mask
+    if mask_type==MaskType.ROUND_DOWN:
+        complete_mask=_make_mask(bit_to_mask)
+        for bit in bit_to_mask:
+            fakeList = [bit]
+            mask = ~_make_mask(fakeList)
+            quasiAndTensor = quant_param & mask #quant_param.device should be equal to quasiAndTensor.device (THEY MUST BE!)
+            boolTensor = quasiAndTensor.to(torch.bool) # creates a correspondent boolean mask
+            andTensor = quasiAndTensor ^ torch.zeros(quant_param.size(),dtype=torch.int).fill_(~0).to(quant_param.device)
+            orMask = 2**bit-1
+            quasiOrTensor = torch.ones(quant_param.size(),dtype=torch.int).mul_(orMask).to(torch.int).to(quant_param.device)
+            orTensor = quasiOrTensor * boolTensor.to(torch.int)
+            quant_param = (quant_param & andTensor) | orTensor 
     quant_param = quant_param.to(ty)
     return quant_param

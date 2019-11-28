@@ -2,11 +2,11 @@
 
 import sys
 sys.path.append("../")
-from common.mask_util import mask_param, MaskType, stringMask_to_list
+from common.mask_util import mask_param, MaskType, stringMask_to_list, mask_param_adv
 import torch
 
 #########SETTINGS##########
-m_type=[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MINIMUM_DISTANCE]
+m_type=[MaskType.ROUND_DOWN] #[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MINIMUM_DISTANCE]
 bits=8
 signed=True
 
@@ -18,7 +18,7 @@ else:
     end_point=2**(bits) 
 
 ver=True
-rep=True
+rep=False
 def bit_string_inverter(string):
     new=""
     for i in string:
@@ -51,6 +51,7 @@ if ver:
                 ones=string.count("1")
                 if(ones<=bits-3):
                     out_log.write("\tAll combination for {} mask.\n".format(string))
+                    compare_tensor = torch.tensor([])
                     for i in range(start_point,end_point):
                         t = torch.tensor([i], dtype=torch.int)
                         mask_param(t
@@ -58,8 +59,17 @@ if ver:
                                     ,mask_type = mask_t
                                     ,dynamic=bits
                                     ,signed=signed)
+                        compare_tensor = torch.cat((compare_tensor,t.to(torch.float)),0)
                         out_log.write("\t\t{0} ---> {1}.\n".format(i,int(t)))
-
+                    all_value = list(range(start_point,end_point))
+                    tensor_all_value = torch.tensor(all_value)
+                    tensor_all_value = mask_param_adv(tensor_all_value
+                                                        ,stringMask_to_list(string)
+                                                        ,mask_type = mask_t
+                                                        ,dynamic=bits
+                                                        ,signed=signed)
+                    if (not torch.all(torch.eq(tensor_all_value.to(torch.float),compare_tensor))):
+                        print("Different!")
 if rep:
     with open("../reports/mask_algorithm_eval.txt","w") as log_pointer:
         for mask_t in m_type:
