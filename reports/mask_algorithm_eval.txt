@@ -78,3 +78,19 @@ Report analysis for MaskType.MINIMUM_DISTANCE type.
 
 	Mean relative error distance=-0.27194196884127625.
 
+Report analysis for MaskType.MINIMUM_DISTANCE_2 type.
+
+	Max error distance=			 124.
+	Norm max error distance=	 0.9763779527559056.
+	Expected= -124	 Had= 0	 Mask= 01111100.
+
+	Max relative error distance= 31.0.
+
+	Mean error distance=		 5.226920572916667.
+	Norm mean error distance=	 0.04115685490485564.
+
+	Sum of error distance=		 160571.
+	Sum of abs error distance=	 756455.
+
+	Mean relative error distance=-0.2692802573202405.
+

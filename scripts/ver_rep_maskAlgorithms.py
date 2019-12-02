@@ -6,7 +6,7 @@ from common.mask_util import mask_param, MaskType, stringMask_to_list, _make_mas
 import torch
 
 #########SETTINGS##########
-m_type=[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE] #[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
+m_type=[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE,MaskType.MINIMUM_DISTANCE_2] #[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 bits=8
 signed=True
 
@@ -34,17 +34,18 @@ def bit_string_inverter(string):
     return new
 """
 #############SINGLE TRY#################
-t = torch.tensor([-124],dtype=torch.int)
-mask_list = [6,5,4,3,2]
+#t = torch.tensor([-124],dtype=torch.int)
+t = torch.tensor(list(range(start_point,end_point)), dtype=torch.int)
+mask_list = [3,2]
 bits = 8
 signed = True
-mask_t = MaskType.ROUND_UP
+mask_t = MaskType.MINIMUM_DISTANCE
 t_m = mask_param( t
                     ,mask_list
                     ,mask_type = mask_t
                     ,dynamic=bits
                     ,signed=signed)
-print(t,t_m)
+#print(t,t_m)
 exit()
 #"""
 if ver:
@@ -58,7 +59,7 @@ if ver:
                 ones=string.count("1")
                 if(ones<=bits-3):
                     all_value = list(range(start_point,end_point))
-                    tensor_all_value = torch.tensor(all_value)
+                    tensor_all_value = torch.tensor(all_value,dtype=torch.int)
                     tensor_all_value = mask_param(tensor_all_value
                                                         ,stringMask_to_list(string)
                                                         ,mask_type = mask_t
@@ -103,7 +104,7 @@ if rep:
                 ones=string.count("1")
                 if(ones<=bits-3):
                     all_value = list(range(start_point,end_point))
-                    normTensor = torch.tensor(all_value)
+                    normTensor = torch.tensor(all_value,dtype=torch.int)
                     maskTensor = mask_param(normTensor
                                             ,stringMask_to_list(string)
                                             ,mask_type = mask_t

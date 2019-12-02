@@ -9,6 +9,7 @@ class MaskType(Enum):
      ROUND_UP = 3
      MOD_ROUND_UP = 4
      MINIMUM_DISTANCE = 5
+     MINIMUM_DISTANCE_2 = 6
 
 
 """stringMask_to_list(stringMask)
@@ -75,13 +76,16 @@ def _get_bool_tensor(quant_param, bit):
     boolTensor = quasiAndTensor.to(torch.bool) 
     return boolTensor
 
-def _mask_bit_round_down(quant_param, bit, complete_mask):
+def _mask_bit_round_down(quant_param, bit, complete_mask, priority=True):
     fakeList = [bit]
     mask = ~_make_mask(fakeList)
     quasiAndTensor = quant_param & mask #quant_param.device should be equal to quasiAndTensor.device (THEY MUST BE!)
     boolTensor = quasiAndTensor.to(torch.bool).to(torch.int) # creates a correspondent boolean mask
     andTensor = quasiAndTensor ^ torch.zeros(quant_param.size(),dtype=torch.int).fill_(~0).to(quant_param.device)
-    orMask = (2**bit-1) & complete_mask #orMask already take care of future masking for less significant bit
+    if priority:
+        orMask = (2**bit-1) & complete_mask #orMask already take care of future masking for less significant bit
+    else:
+        orMask = (2**bit-1)
     quasiOrTensor = torch.ones(quant_param.size(),dtype=torch.int).mul_(orMask).to(torch.int).to(quant_param.device)
     orTensor = quasiOrTensor * boolTensor
     quant_param = (quant_param & andTensor) | orTensor
@@ -96,7 +100,7 @@ def _mask_bit_round_up(quant_param, bit, priority=True):
         fakeList = [bit - 1] #previous one
         mask = ~_make_mask(fakeList)
         boolTensor2 = (quant_param & mask).to(torch.bool).to(torch.int)
-        boolTensor = boolTensor * boolTensor2 
+        boolTensor = boolTensor * boolTensor2
     notBoolTensor = boolTensor ^ 1 #elementwise invert operation
     andMask = ~(2**bit - 1)
     partialAndTensor1 = andMask * boolTensor
@@ -146,10 +150,6 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
         #round up operations
         for bit in round_up_mask:
             quant_param = _mask_bit_round_up(quant_param, bit)
-        #round down correction
-        for bit in bit_to_mask:
-            quant_param = _mask_bit_round_down(quant_param, bit, complete_mask)
-        #sat
         quant_param = _sat_to_max(quant_param,max_int)
     if mask_type==MaskType.MINIMUM_DISTANCE:
         complete_mask=_make_mask(bit_to_mask)
@@ -160,6 +160,17 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
         #round down correction
         for bit in bit_to_mask:
             quant_param = _mask_bit_round_down(quant_param, bit, complete_mask)
+        #sat
+        quant_param = _sat_to_max(quant_param,max_int)
+    quant_param = quant_param.to(ty)
+    if mask_type==MaskType.MINIMUM_DISTANCE_2: #with true round up algorithm
+        complete_mask=_make_mask(bit_to_mask)
+        max_int = 2**(dynamic-int(signed))-1 & complete_mask
+        round_up_mask = bit_to_mask[::-1]
+        #round up operations
+        for bit in round_up_mask:
+            quant_param = _mask_bit_round_up(quant_param, bit, priority=False)
+            quant_param = _mask_bit_round_down(quant_param, bit, complete_mask, priority=True)
         #sat
         quant_param = _sat_to_max(quant_param,max_int)
     quant_param = quant_param.to(ty)
