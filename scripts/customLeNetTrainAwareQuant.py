@@ -8,7 +8,7 @@ batch_size = 50
 #preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
 preTrainedModelPath=None
 preTrainedQuantModelPath="../models/checkpoints/QuantLeNet_CIFAR10_epoch100a.tar"
-device="cuda"
+device="cpu"
 
 import sys
 sys.path.append("../")

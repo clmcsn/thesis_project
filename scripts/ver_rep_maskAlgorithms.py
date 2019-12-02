@@ -2,23 +2,28 @@
 
 import sys
 sys.path.append("../")
-from common.mask_util import mask_param, MaskType, stringMask_to_list, mask_param_adv
+from common.mask_util import mask_param, MaskType, stringMask_to_list, _make_mask
 import torch
 
 #########SETTINGS##########
-m_type=[MaskType.ROUND_DOWN] #[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MINIMUM_DISTANCE]
+m_type=[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE] #[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 bits=8
 signed=True
 
 if signed:
-    start_point=-2**(bits-1)
-    end_point=2**(bits-1)
+    start_point = -2**(bits-1)
+    start_string = 2**(bits-1)
+    end_point = 2**(bits-1)
 else:
-    start_point=0
-    end_point=2**(bits) 
+    start_point = 0
+    start_string = 1
+    end_point = 2**(bits)
 
+#############WHAT TO DO#################                       
 ver=True
-rep=False
+rep=True
+conf=False
+
 def bit_string_inverter(string):
     new=""
     for i in string:
@@ -27,54 +32,61 @@ def bit_string_inverter(string):
         else:
             new+="0"
     return new
-##########single try##############
 """
-for i in range(start_point,end_point):
-    t =torch.tensor([i], dtype=torch.int)
-    mask="00110111"
-    mask_t=MaskType.MINIMUM_DISTANCE
-    mask_param(t
-                ,stringMask_to_list(mask)
-                ,mask_type = mask_t
-                ,dynamic=bits
-                ,signed=signed)
-    print(i,"{0:b}".format(int(t)))
-exit()"""
-##################################
+#############SINGLE TRY#################
+t = torch.tensor([-124],dtype=torch.int)
+mask_list = [6,5,4,3,2]
+bits = 8
+signed = True
+mask_t = MaskType.ROUND_UP
+t_m = mask_param( t
+                    ,mask_list
+                    ,mask_type = mask_t
+                    ,dynamic=bits
+                    ,signed=signed)
+print(t,t_m)
+exit()
+#"""
 if ver:
-    with open("../reports/mask_examples.txt","w") as out_log:    
+    with open("../reports/mask_algorithm_rep.txt","w") as out_rep:
+        good=True    
         for mask_t in m_type:
-            out_log.write("All combination for {} type.\n".format(mask_t))
-            for i in range(2**(bits-1),2**bits):
+            error_count=0
+            for i in range(start_string,2**bits):
                 string="{0:b}".format(i)
                 string = bit_string_inverter(string)
                 ones=string.count("1")
                 if(ones<=bits-3):
-                    out_log.write("\tAll combination for {} mask.\n".format(string))
-                    compare_tensor = torch.tensor([])
-                    for i in range(start_point,end_point):
-                        t = torch.tensor([i], dtype=torch.int)
-                        mask_param(t
-                                    ,stringMask_to_list(string)
-                                    ,mask_type = mask_t
-                                    ,dynamic=bits
-                                    ,signed=signed)
-                        compare_tensor = torch.cat((compare_tensor,t.to(torch.float)),0)
-                        out_log.write("\t\t{0} ---> {1}.\n".format(i,int(t)))
                     all_value = list(range(start_point,end_point))
                     tensor_all_value = torch.tensor(all_value)
-                    tensor_all_value = mask_param_adv(tensor_all_value
+                    tensor_all_value = mask_param(tensor_all_value
                                                         ,stringMask_to_list(string)
                                                         ,mask_type = mask_t
                                                         ,dynamic=bits
                                                         ,signed=signed)
-                    if (not torch.all(torch.eq(tensor_all_value.to(torch.float),compare_tensor))):
-                        print("Different!")
+                    mask = ~_make_mask(stringMask_to_list(string))
+                    checkTensor= tensor_all_value & mask
+                    res = torch.all(torch.eq(checkTensor.to(torch.float),torch.zeros(checkTensor.size())))
+                    if not res:
+                        out_rep.write("\nDIFFERENCE FOUND:\n")
+                        out_rep.write("\tMASK:\n\t\t{}\n".format(string))
+                        out_rep.write("\tMASK_TYPE:\n\t\t{}\n".format(mask_t))
+                        out_rep.write("\tTENSORWISE:\n\t\t{}\n".format(compare_tensor))
+                        error_count += 1
+                        good=False
+            if error_count:
+                print("\t{} errors for mask:{}".format(error_count,mask_t))
+        if good:
+            print("All algorithms seem to mask properly! Let's go to the party")
+
 if rep:
     with open("../reports/mask_algorithm_eval.txt","w") as log_pointer:
         for mask_t in m_type:
             log_pointer.write("Report analysis for {} type.\n".format(mask_t))
             max_distance=0
+            max_expected=0
+            max_had=0
+            max_string=0
             sum_dist=0
             sum_dist_abs=0
             norm_max_distance=0
@@ -84,39 +96,49 @@ if rep:
             norm_mean_distance=0
             mean_rel_distance=0
             num=0
-            for i in range(2**(bits-1),2**bits): #all possible masks
+            for i in range(start_string,2**bits): #all possible masks
             #for i in range(2**(bits-1)+63,2**(bits-1)+64): #for a single case
                 string="{0:b}".format(i)
                 string = bit_string_inverter(string)
                 ones=string.count("1")
                 if(ones<=bits-3):
-                    for i in range(start_point,end_point):
-                        t = torch.tensor([i], dtype=torch.int)
-                        mask_param(t
-                                    ,stringMask_to_list(string)
-                                    ,mask_type = mask_t
-                                    ,dynamic=bits
-                                    ,signed=signed)
-                        el=int(t)
-                        dist=el-i
+                    all_value = list(range(start_point,end_point))
+                    normTensor = torch.tensor(all_value)
+                    maskTensor = mask_param(normTensor
+                                            ,stringMask_to_list(string)
+                                            ,mask_type = mask_t
+                                            ,dynamic=bits
+                                            ,signed=signed)
+                    for i,j in zip(normTensor,maskTensor):
+                        wq=int(i)
+                        wm=int(j)
+                        dist=j-i
                         if i!=0:
                             rel_dist=float(dist)/float(i)
                         else:
                             rel_dist=0
-                        
                         if abs(dist)>abs(max_distance):
                             max_distance=dist
+                            max_expected=i
+                            max_had=j
+                            max_string=string
                         if abs(rel_dist)>abs(max_rel_distance):
                             max_rel_distance=rel_dist
                         num+=1
                         sum_dist+=dist
                         sum_dist_abs+=abs(dist)
                         sum_rel_dist+=rel_dist
+            log_pointer.write("\n")            
             log_pointer.write("\tMax error distance=\t\t\t {}.\n".format(max_distance))
-            log_pointer.write("\tNorm max error distance=\t {}.\n".format(max_distance/(end_point-1)))
+            log_pointer.write("\tNorm max error distance=\t {}.\n".format(float(max_distance)/(end_point-1)))
+            log_pointer.write("\tExpected= {}\t Had= {}\t Mask= {}.\n".format(max_expected,max_had,max_string))
+            log_pointer.write("\n")
             log_pointer.write("\tMax relative error distance= {}.\n".format(max_rel_distance))
-            log_pointer.write("\tMean error distance=\t\t {}.\n".format(sum_dist/num))
+            log_pointer.write("\n")
+            log_pointer.write("\tMean error distance=\t\t {}.\n".format(float(sum_dist)/num))
+            log_pointer.write("\tNorm mean error distance=\t {}.\n".format(float(sum_dist)/num/(end_point-1)))
+            log_pointer.write("\n")
             log_pointer.write("\tSum of error distance=\t\t {}.\n".format(sum_dist))
             log_pointer.write("\tSum of abs error distance=\t {}.\n".format(sum_dist_abs))
-            log_pointer.write("\tNorm mean error distance=\t {}.\n".format(sum_dist/num/(end_point-1)))
+            log_pointer.write("\n")
             log_pointer.write("\tMean relative error distance={}.\n\n".format(sum_rel_dist/num))
