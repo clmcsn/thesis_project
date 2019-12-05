@@ -18,7 +18,7 @@ from enum import Enum
 import torch
 import sys
 sys.path.append("../thesis_project/")
-from common.mask_util import mask_param_adv, MaskType
+from common.mask_util import mask_param, MaskType
 
 def _prep_saturation_val_tensor(sat_val):
     is_scalar = not isinstance(sat_val, torch.Tensor)

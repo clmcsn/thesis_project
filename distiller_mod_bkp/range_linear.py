@@ -25,6 +25,12 @@ import os
 from copy import deepcopy
 import warnings
 
+from enum import Enum
+import torch
+import sys
+sys.path.append("../thesis_project/")
+from common.mask_util import mask_param, MaskType
+
 import distiller
 import distiller.utils
 from .quantizer import Quantizer, QBits
@@ -34,6 +40,7 @@ import distiller.modules
 import distiller.model_transforms as mt
 
 msglogger = logging.getLogger()
+
 
 
 def _quant_param_to_str(val):
@@ -316,6 +323,8 @@ class RangeLinearQuantWrapper(nn.Module):
         self.output_quant_settings = QuantSettings(num_bits_acts, mode, clip_acts, clip_n_stds, clip_half_range, False)
         self.accum_quant_settings = QuantSettings(num_bits_accum, LinearQuantMode.SYMMETRIC,
                                                   ClipMode.NONE, None, False, False)
+
+        #how reqires_quantized_inputs is connected with input_overrides
         if self.requires_quantized_inputs:
             self.inputs_quant_settings_overrides = OrderedDict()
             for k, v in input_overrides.items():
@@ -343,11 +352,15 @@ class RangeLinearQuantWrapper(nn.Module):
         #  so other than inspecting the contents there's not much to do with it)
         self._dequant_out = True
 
-        signed = mode != LinearQuantMode.ASYMMETRIC_UNSIGNED
+        signed = mode != LinearQuantMode.ASYMMETRIC_UNSIGNED #bello
+
         self.acts_min_q_val, self.acts_max_q_val = get_quantized_range(num_bits_acts, signed=signed)
+        
         # The accumulator is always signed
         self.accum_min_q_val, self.accum_max_q_val = get_quantized_range(num_bits_accum, signed=True)
 
+
+        ####Part for activation stats
         if activation_stats:
             self.preset_act_stats = True
 
@@ -376,6 +389,8 @@ class RangeLinearQuantWrapper(nn.Module):
         self.register_buffer('num_forwards', torch.zeros(1, dtype=torch.long))
 
     def forward(self, *inputs):
+
+        #works only in evaluation mode!!!
         if self.training:
             raise RuntimeError(self.__class__.__name__ + " can only be used in eval mode")
 
@@ -383,6 +398,8 @@ class RangeLinearQuantWrapper(nn.Module):
         for buffer_name, buffer in self._buffers.items():
             setattr(self, buffer_name, buffer.to(device))
 
+
+        #requires_quantized_inputs
         if self.requires_quantized_inputs:
             self._prepare_inputs_for_quantization(inputs)
 
@@ -398,7 +415,7 @@ class RangeLinearQuantWrapper(nn.Module):
             inputs_q = inputs
 
         # Forward through wrapped module
-        accum = self.quantized_forward(*inputs_q)
+        accum = self.quantized_forward(*inputs_q) #quantized_forward è definita in ogni sottoclasse!
 
         if self.clip_half_range:
             accum = f.relu(accum)
@@ -559,7 +576,7 @@ class RangeLinearQuantParamLayerWrapper(RangeLinearQuantWrapper):
         scale_approx_mult_bits (int): See RangeLinearQuantWrapper
     """
     def __init__(self, wrapped_module, num_bits_acts, num_bits_params, num_bits_accum=32,
-                 mode=LinearQuantMode.SYMMETRIC, clip_acts=ClipMode.NONE, per_channel_wts=False, activation_stats=None,
+                 mode=LinearQuantMode.SYMMETRIC, mask=None, maskList=None, clip_acts=ClipMode.NONE, per_channel_wts=False, activation_stats=None,
                  clip_n_stds=None, clip_half_range=False, scale_approx_mult_bits=None,
                  input_overrides=None, inputs_quant_auto_fallback=False):
         super(RangeLinearQuantParamLayerWrapper, self).__init__(wrapped_module, num_bits_acts, num_bits_accum, mode,
@@ -571,13 +588,17 @@ class RangeLinearQuantParamLayerWrapper(RangeLinearQuantWrapper):
 
         if not isinstance(wrapped_module, (nn.Conv2d, nn.Conv3d, nn.Linear)):
             raise ValueError(self.__class__.__name__ + ' can wrap only Conv2D, Conv3D and Linear modules')
-
+        
+        self.mask=mask
+        self.maskList=maskList
         self.wts_quant_settings = QuantSettings(num_bits_params, mode, ClipMode.NONE, None, False, per_channel_wts)
 
+        ###QUI DEFINISCE IL RANGE##### #potrei agire qui riducendo il MASSIMO
         self.params_min_q_val, self.params_max_q_val = get_quantized_range(
             self.wts_quant_settings.num_bits,
             self.wts_quant_settings.quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED)
 
+        ###QUI OTTIENE I PARAMETRI PER LA QUANTIZZAZION#####
         # Quantize weights - overwrite FP32 weights
         w_scale, w_zero_point = _get_quant_params_from_tensor(wrapped_module.weight,
                                                               self.wts_quant_settings.num_bits,
@@ -586,9 +607,16 @@ class RangeLinearQuantParamLayerWrapper(RangeLinearQuantWrapper):
 
         self.register_buffer('w_scale', w_scale)
         self.register_buffer('w_zero_point', w_zero_point)
+        ###### QUI QUANTIZZA E CLAMPA######
         linear_quantize_clamp(wrapped_module.weight.data, self.w_scale, self.w_zero_point, self.params_min_q_val,
                               self.params_max_q_val, inplace=True)
-
+        ########Masking operations##########
+        if mask:
+            wrapped_module.weight.data = mask_param( wrapped_module.weight.data
+                        ,self.maskList
+                        ,self.mask
+                        ,dynamic=self.wts_quant_settings.num_bits
+                        ,signed=self.wts_quant_settings.quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED )
         self.has_bias = hasattr(wrapped_module, 'bias') and wrapped_module.bias is not None
         device = self.w_scale.device
 
@@ -1039,7 +1067,7 @@ class PostTrainLinearQuantizer(Quantizer):
         to the set floating point precision, regardless of bits_activations/parameters/accum.
     """
     def __init__(self, model, bits_activations=8, bits_parameters=8, bits_accum=32,
-                 overrides=None, mode=LinearQuantMode.SYMMETRIC, clip_acts=ClipMode.NONE,
+                 overrides=None, mode=LinearQuantMode.SYMMETRIC,mask=None, maskList=None, clip_acts=ClipMode.NONE,
                  per_channel_wts=False, model_activation_stats=None, fp16=False,
                  clip_n_stds=None, clip_half_range=False,
                  scale_approx_mult_bits=None, inputs_quant_auto_fallback=True,
@@ -1048,13 +1076,19 @@ class PostTrainLinearQuantizer(Quantizer):
         super(PostTrainLinearQuantizer, self).__init__(model, bits_activations=bits_activations,
                                                        bits_weights=bits_parameters, bits_bias=bits_accum,
                                                        overrides=overrides, train_with_fp_copy=False)
+        # checking mistakes on floating point weights
         if fp16 and str(fpq_module) not in ('16', 'None'):
             raise ValueError('Conflict - fp16 set to true and fpq_module set to other than 16.')
+        
+        #verification of the enum quant mode and clip mode!
         mode = verify_quant_mode(mode)
         clip_acts = verify_clip_mode(clip_acts)
+
+        #???
         if clip_acts == ClipMode.N_STD and clip_n_stds is None:
             raise ValueError('clip_n_stds must not be None when clip_acts set to N_STD')
 
+        #
         if model_activation_stats is not None:
             if isinstance(model_activation_stats, str):
                 if not os.path.isfile(model_activation_stats):
@@ -1111,7 +1145,8 @@ class PostTrainLinearQuantizer(Quantizer):
                                                        fpq_module=fpq_module)
 
             return RangeLinearQuantParamLayerWrapper(module, qbits_map[name].acts, qbits_map[name].wts,
-                                                     num_bits_accum=self.bits_accum, mode=mode, clip_acts=clip_acts,
+                                                     num_bits_accum=self.bits_accum, mode=mode, 
+                                                     mask=mask, maskList=maskList, clip_acts=clip_acts,
                                                      per_channel_wts=per_channel_wts,
                                                      activation_stats=self.model_activation_stats.get(norm_name, None),
                                                      clip_n_stds=clip_n_stds, clip_half_range=clip_half_range,

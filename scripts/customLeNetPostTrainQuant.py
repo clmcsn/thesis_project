@@ -2,7 +2,7 @@
 
 import sys
 sys.path.append("../")
-sys.path.append("../../distiller")
+sys.path.append("../../distiller_modified")
 
 import torch
 import distiller
@@ -12,13 +12,13 @@ from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 from copy import deepcopy
 from common.nnTools import get_all_preds
 import models.cifar10.LeNet as LeNet
-
+from common.mask_util import MaskType
 import distiller.utils
 from distiller.data_loggers import collect_quant_stats
 
 
 network = LeNet.LeNet()
-checkpoint = torch.load('../models/checkpoints/LeNet_CIFAR10_epoch41.tar', map_location='cpu')
+checkpoint = torch.load('../models/checkpoints/LeNet_CIFAR10_epoch100.tar', map_location='cpu')
 network.load_state_dict(checkpoint['model_state_dict'])
 
 
@@ -46,7 +46,9 @@ print
 #collector = QuantCalibrationStatsCollector(checkpoint)
 #stats_file = './acts_quantization_stats.yaml'
 
-quantizer = PostTrainLinearQuantizer(deepcopy(network))
+quantizer = PostTrainLinearQuantizer(deepcopy(network), bits_activations=8, bits_parameters=8, bits_accum=32,
+                 mode=LinearQuantMode.SYMMETRIC,mask=MaskType.MINIMUM_DISTANCE, maskList=[4],
+                 scale_approx_mult_bits=8)
 dummy_input = (torch.zeros([1,3,32,32]))
 quantizer.prepare_model(dummy_input)
 quantizer.model.eval()
@@ -57,6 +59,7 @@ torch.save({
         }, "../models/checkpoints/LeNet_postTrainQuant_CIFAR10.tar")
 #gives the number of correct predictions
 preds_correct = train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+#print(train_preds.argmax(dim=1))
 print('total correct:', preds_correct)
 print('accuracy:', preds_correct/len(train_set),'len:',len(train_set))
 #stats_before_prepare = deepcopy(quantizer.model_activation_stats)
