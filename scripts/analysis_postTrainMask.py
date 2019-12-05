@@ -81,4 +81,3 @@ with open("../reports/analysis_postTrainMasking.txt","w") as log_pointer:
                     accuracy =  preds_correct/len(train_set)
                     log_pointer.write(rep_string.format(quant_mode,mask_mode,mask,preds_correct,accuracy))
                     del quantizer
-                    exit()

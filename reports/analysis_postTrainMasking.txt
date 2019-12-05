@@ -1,0 +1,10 @@
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01111100	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01111010	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01111001	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01111000	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01110110	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01110101	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01110100	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01110011	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01110010	 Correct: 1000	 Accuracy: 0.1
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01110001	 Correct: 1000	 Accuracy: 0.1
