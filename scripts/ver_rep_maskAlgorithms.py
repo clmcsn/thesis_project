@@ -4,6 +4,7 @@ import sys
 sys.path.append("../")
 from common.mask_util import mask_param, MaskType, stringMask_to_list, _make_mask
 import torch
+from common.hw_lib import printer_2s
 
 #########SETTINGS##########
 m_type=[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE,MaskType.MINIMUM_DISTANCE_2] #[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
@@ -54,7 +55,7 @@ if ver:
         for mask_t in m_type:
             error_count=0
             for i in range(start_string,2**bits):
-                string="{0:b}".format(i)
+                string=printer_2s(i,8)
                 string = bit_string_inverter(string)
                 ones=string.count("1")
                 if(ones<=bits-3):
@@ -99,7 +100,7 @@ if rep:
             num=0
             for i in range(start_string,2**bits): #all possible masks
             #for i in range(2**(bits-1)+63,2**(bits-1)+64): #for a single case
-                string="{0:b}".format(i)
+                string=printer_2s(i,8)
                 string = bit_string_inverter(string)
                 ones=string.count("1")
                 if(ones<=bits-3):

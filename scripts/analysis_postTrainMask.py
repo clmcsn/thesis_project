@@ -17,6 +17,8 @@ import distiller.utils
 import models.cifar10.LeNet as LeNet
 from common.nnTools import get_all_preds
 from common.mask_util import MaskType, stringMask_to_list, _make_mask
+from common.hw_lib import printer_2s
+
 
 device='cpu'
 batch_size=50
@@ -66,7 +68,7 @@ with open("../reports/analysis_postTrainMasking.txt","w") as log_pointer:
             start_string = 1
         for mask_mode in mask_mode_list:
             for i in range(start_string,2**bits): #all possible mask
-                mask = "{0:b}".format(i)
+                mask = printer_2s(i,bits)
                 mask = bit_string_inverter(mask)
                 ones = mask.count("1")
                 if(ones<=bits-3):
