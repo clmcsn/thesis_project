@@ -59,7 +59,7 @@ quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED
 mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 dummy_input = (torch.zeros([1,3,32,32]))
 
-with open("../reports/analysis_postTrainMasking.txt","w") as log_pointer:
+with open("../reports/analysis_postTrainMaskingfake.txt","w") as log_pointer:
     for quant_mode in quant_mode_list:
         signed= quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED
         if signed:
@@ -71,7 +71,7 @@ with open("../reports/analysis_postTrainMasking.txt","w") as log_pointer:
                 mask = printer_2s(i,bits)
                 mask = bit_string_inverter(mask)
                 ones = mask.count("1")
-                if(ones<=bits-3):
+                if(ones<=bits-3 and ones!=0):
                     #instance the quantized
                     quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                                             mode=quant_mode,mask=mask_mode, maskList=stringMask_to_list(mask),
@@ -83,3 +83,4 @@ with open("../reports/analysis_postTrainMasking.txt","w") as log_pointer:
                     accuracy =  preds_correct/len(train_set)
                     log_pointer.write(rep_string.format(quant_mode,mask_mode,mask,preds_correct,accuracy))
                     del quantizer
+                    exit()

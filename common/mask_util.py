@@ -117,6 +117,13 @@ def _sat_to_max(quant_param, max_int):
     quant_param = (quant_param * notBoolTensor) + satTensor
     return quant_param
 
+def get_max_masked_val(num_bit, signed, bit_to_mask):
+    mask = _make_mask(bit_to_mask)
+    if signed:
+        return ((2 ** (num_bit - 1)) - 1) & mask
+    else:
+        return ((2 ** num_bit) - 1) & mask
+
 def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic=0 , signed=None):
     if bit_to_mask==[]:
         return quant_param

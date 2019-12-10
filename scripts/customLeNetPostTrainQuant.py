@@ -47,7 +47,7 @@ print
 #stats_file = './acts_quantization_stats.yaml'
 
 quantizer = PostTrainLinearQuantizer(deepcopy(network), bits_activations=8, bits_parameters=8, bits_accum=32,
-                 mode=LinearQuantMode.SYMMETRIC,mask=MaskType.MINIMUM_DISTANCE, maskList=[4],
+                 mode=LinearQuantMode.ASYMMETRIC_SIGNED,mask=MaskType.MINIMUM_DISTANCE, maskList=[1], correctRange=True,
                  scale_approx_mult_bits=8)
 dummy_input = (torch.zeros([1,3,32,32]))
 quantizer.prepare_model(dummy_input)

@@ -5,8 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
+#      http://www.apache.org/licenses/LICENSE-2.0open
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +28,7 @@ from enum import Enum
 import torch
 import sys
 sys.path.append("../thesis_project/")
-from common.mask_util import mask_param, MaskType
+from common.mask_util import mask_param, MaskType, get_max_masked_val
 
 import distiller
 import distiller.utils
@@ -117,7 +116,7 @@ def _get_saturation_fn(quant_mode, clip_mode, num_stds, num_bits=None):
 
 # TODO: Move to q_utils, add tests
 def _get_quant_params_from_tensor(tensor, num_bits, mode, clip=ClipMode.NONE, per_channel=False, num_stds=None,
-                                  half_range=False, scale_approx_mult_bits=None):
+                                  half_range=False, scale_approx_mult_bits=None, correctRange=False, mask=None):
     
     #check validity of the per_channel settings... Possible only for conv and linear layer
     if per_channel and tensor.dim() not in [2, 4]:
@@ -136,12 +135,12 @@ def _get_quant_params_from_tensor(tensor, num_bits, mode, clip=ClipMode.NONE, pe
     
     if mode == LinearQuantMode.SYMMETRIC:
         sat_val = sat_fn(tensor, dim)
-        scale, zp = symmetric_linear_quantization_params(num_bits, sat_val)
+        scale, zp = symmetric_linear_quantization_params(num_bits, sat_val, correctRange=correctRange, mask=mask)
     else:   # Asymmetric mode
         sat_min, sat_max = sat_fn(tensor, dim) if clip not in [ClipMode.GAUSS, ClipMode.LAPLACE] \
             else sat_fn(tensor, dim, half_range=half_range)
         signed = mode == LinearQuantMode.ASYMMETRIC_SIGNED
-        scale, zp = asymmetric_linear_quantization_params(num_bits, sat_min, sat_max, signed=signed)
+        scale, zp = asymmetric_linear_quantization_params(num_bits, sat_min, sat_max, signed=signed, correctRange=correctRange, mask=mask)
 
     if per_channel:
         # Reshape scale and zero_points so they can be broadcast properly with the weight tensor
@@ -576,7 +575,8 @@ class RangeLinearQuantParamLayerWrapper(RangeLinearQuantWrapper):
         scale_approx_mult_bits (int): See RangeLinearQuantWrapper
     """
     def __init__(self, wrapped_module, num_bits_acts, num_bits_params, num_bits_accum=32,
-                 mode=LinearQuantMode.SYMMETRIC, mask=None, maskList=None, clip_acts=ClipMode.NONE, per_channel_wts=False, activation_stats=None,
+                 mode=LinearQuantMode.SYMMETRIC, mask=None, maskList=None, correctRange=False, 
+                 clip_acts=ClipMode.NONE, per_channel_wts=False, activation_stats=None,
                  clip_n_stds=None, clip_half_range=False, scale_approx_mult_bits=None,
                  input_overrides=None, inputs_quant_auto_fallback=False):
         super(RangeLinearQuantParamLayerWrapper, self).__init__(wrapped_module, num_bits_acts, num_bits_accum, mode,
@@ -585,7 +585,7 @@ class RangeLinearQuantParamLayerWrapper(RangeLinearQuantWrapper):
                                                                 input_overrides=input_overrides,
                                                                 requires_quantized_inputs=True,
                                                                 inputs_quant_auto_fallback=inputs_quant_auto_fallback)
-
+        
         if not isinstance(wrapped_module, (nn.Conv2d, nn.Conv3d, nn.Linear)):
             raise ValueError(self.__class__.__name__ + ' can wrap only Conv2D, Conv3D and Linear modules')
         
@@ -603,7 +603,9 @@ class RangeLinearQuantParamLayerWrapper(RangeLinearQuantWrapper):
         w_scale, w_zero_point = _get_quant_params_from_tensor(wrapped_module.weight,
                                                               self.wts_quant_settings.num_bits,
                                                               self.wts_quant_settings.quant_mode,
-                                                              per_channel=self.wts_quant_settings.per_channel)
+                                                              per_channel=self.wts_quant_settings.per_channel,
+                                                              correctRange=correctRange,
+                                                              mask=maskList)
 
         self.register_buffer('w_scale', w_scale)
         self.register_buffer('w_zero_point', w_zero_point)
@@ -1067,7 +1069,7 @@ class PostTrainLinearQuantizer(Quantizer):
         to the set floating point precision, regardless of bits_activations/parameters/accum.
     """
     def __init__(self, model, bits_activations=8, bits_parameters=8, bits_accum=32,
-                 overrides=None, mode=LinearQuantMode.SYMMETRIC,mask=None, maskList=None, clip_acts=ClipMode.NONE,
+                 overrides=None, mode=LinearQuantMode.SYMMETRIC,mask=None, maskList=None, correctRange=False, clip_acts=ClipMode.NONE,
                  per_channel_wts=False, model_activation_stats=None, fp16=False,
                  clip_n_stds=None, clip_half_range=False,
                  scale_approx_mult_bits=None, inputs_quant_auto_fallback=True,
@@ -1146,7 +1148,8 @@ class PostTrainLinearQuantizer(Quantizer):
 
             return RangeLinearQuantParamLayerWrapper(module, qbits_map[name].acts, qbits_map[name].wts,
                                                      num_bits_accum=self.bits_accum, mode=mode, 
-                                                     mask=mask, maskList=maskList, clip_acts=clip_acts,
+                                                     mask=mask, maskList=maskList, 
+                                                     correctRange=correctRange, clip_acts=clip_acts,
                                                      per_channel_wts=per_channel_wts,
                                                      activation_stats=self.model_activation_stats.get(norm_name, None),
                                                      clip_n_stds=clip_n_stds, clip_half_range=clip_half_range,
@@ -1587,8 +1590,8 @@ class FakeQuantizationWrapper(nn.Module):
 
 class QuantAwareTrainRangeLinearQuantizer(Quantizer):
     def __init__(self, model, optimizer=None, bits_activations=32, bits_weights=32, bits_bias=32,
-                 overrides=None, mode=LinearQuantMode.SYMMETRIC, ema_decay=0.999, per_channel_wts=False,
-                 quantize_inputs=True, num_bits_inputs=None):
+                 overrides=None, mode=LinearQuantMode.SYMMETRIC, mask=None, maskList=None, correctRange=False, 
+                 ema_decay=0.999, per_channel_wts=False, quantize_inputs=True, num_bits_inputs=None):
         super(QuantAwareTrainRangeLinearQuantizer, self).__init__(model, optimizer=optimizer,
                                                                   bits_activations=bits_activations,
                                                                   bits_weights=bits_weights,
@@ -1621,10 +1624,11 @@ class QuantAwareTrainRangeLinearQuantizer(Quantizer):
 
             with torch.no_grad():
                 scale, zero_point = _get_quant_params_from_tensor(param_fp, param_meta.num_bits, mode,
-                                                                  per_channel=perch)
+                                                                  per_channel=perch, correctRange=correctRange,
+                                                                  mask=maskList)
             setattr(m, param_meta.q_attr_name + '_scale', scale)
             setattr(m, param_meta.q_attr_name + '_zero_point', zero_point)
-            out = LinearQuantizeSTE.apply(param_fp, scale, zero_point, True, False, True)
+            out = LinearQuantizeSTE.apply(param_fp, scale, zero_point, True, False,self.default_qbits.wts, mode != LinearQuantMode.ASYMMETRIC_UNSIGNED, mask, maskList)
             return out
 
         def activation_replace_fn(module, name, qbits_map):

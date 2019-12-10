@@ -26,6 +26,7 @@ import torchvision
 import torchvision.transforms as transforms
 import distiller
 
+from common.mask_util import MaskType
 
 #fetching train_set
 train_set = torchvision.datasets.FashionMNIST( #
@@ -86,6 +87,9 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,bits_bias=8
                                                                         ,overrides=None
                                                                         ,mode=distiller.quantization.LinearQuantMode.SYMMETRIC
+                                                                        ,mask=MaskType.MINIMUM_DISTANCE
+                                                                        ,maskList=[2] 
+                                                                        ,correctRange=True
                                                                         ,ema_decay=0.999
                                                                         ,per_channel_wts=False
                                                                         ,quantize_inputs=True

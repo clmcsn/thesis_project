@@ -18,7 +18,7 @@ from enum import Enum
 import torch
 import sys
 sys.path.append("../thesis_project/")
-from common.mask_util import mask_param, MaskType
+from common.mask_util import mask_param, MaskType, get_max_masked_val
 
 def _prep_saturation_val_tensor(sat_val):
     is_scalar = not isinstance(sat_val, torch.Tensor)
@@ -29,15 +29,21 @@ def _prep_saturation_val_tensor(sat_val):
         out = out.unsqueeze(0)
     return is_scalar, out
 
-
-def symmetric_linear_quantization_params(num_bits, saturation_val):
+#mask should be considered the list!
+def symmetric_linear_quantization_params(num_bits, saturation_val, correctRange=False ,mask=None):
     is_scalar, sat_val = _prep_saturation_val_tensor(saturation_val)
 
     if any(sat_val < 0):
         raise ValueError('Saturation value must be >= 0')
 
     # Leave one bit for sign
-    n = 2 ** (num_bits - 1) - 1
+    if correctRange:
+        if mask==None:
+            print("Please specify the mask")
+            exit()
+        n = get_max_masked_val(num_bits,True,mask)
+    else:
+        n = 2 ** (num_bits - 1) - 1
 
     # If float values are all 0, we just want the quantized values to be 0 as well. So overriding the saturation
     # value to 'n', so the scale becomes 1
@@ -52,7 +58,8 @@ def symmetric_linear_quantization_params(num_bits, saturation_val):
 
 
 def asymmetric_linear_quantization_params(num_bits, saturation_min, saturation_max,
-                                          integral_zero_point=True, signed=False):
+                                          integral_zero_point=True, signed=False,
+                                          correctRange=False ,mask=None):
     scalar_min, sat_min = _prep_saturation_val_tensor(saturation_min)
     scalar_max, sat_max = _prep_saturation_val_tensor(saturation_max)
     is_scalar = scalar_min and scalar_max
@@ -64,8 +71,14 @@ def asymmetric_linear_quantization_params(num_bits, saturation_min, saturation_m
 
     if any(sat_min > sat_max):
         raise ValueError('saturation_min must be smaller than saturation_max')
-
-    n = 2 ** num_bits - 1
+    
+    if correctRange:
+        if mask==None:
+            print("Please specify the mask")
+            exit()
+        n = get_max_masked_val(num_bits,False,mask)
+    else:
+        n = 2 ** num_bits - 1
 
     # Make sure 0 is in the range
     sat_min = torch.min(sat_min, torch.zeros_like(sat_min))
@@ -266,12 +279,12 @@ def get_quantized_range(num_bits, signed=True):
 
 class LinearQuantizeSTE(torch.autograd.Function): #noticed that inherits the property that when called (__call__) forward function is called
     @staticmethod
-    def forward(ctx, input, scale, zero_point, dequantize, inplace, toMask=False):
+    def forward(ctx, input, scale, zero_point, dequantize, inplace, num_bits=8,signed=False, mask_type=None, mask=None):
         if inplace:
             ctx.mark_dirty(input)
         output = linear_quantize(input, scale, zero_point, inplace)
-        if toMask:
-            output = mask_param(output, [3],MaskType.ROUND_DOWN)
+        if mask_type:
+            output = mask_param(output, mask, mask_type,num_bits, signed)
         if dequantize:
             output = linear_dequantize(output, scale, zero_point, inplace)
         return output
@@ -279,4 +292,4 @@ class LinearQuantizeSTE(torch.autograd.Function): #noticed that inherits the pro
     @staticmethod
     def backward(ctx, grad_output):
         # Straight-through estimator
-        return grad_output, None, None, None, None, None
+        return grad_output, None, None, None, None, None, None, None, None, None
