@@ -2,7 +2,7 @@ conv1:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -16,7 +16,7 @@ relu1:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -30,7 +30,7 @@ maxPool1:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -44,7 +44,7 @@ conv2:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -58,7 +58,7 @@ relu2:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -72,7 +72,7 @@ maxPool2:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -86,7 +86,7 @@ fc1:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -100,7 +100,7 @@ relu3:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -114,7 +114,7 @@ fc2:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -128,7 +128,7 @@ relu4:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
@@ -142,7 +142,7 @@ fc3:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
-  mode: SYMMETRIC
+  mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
