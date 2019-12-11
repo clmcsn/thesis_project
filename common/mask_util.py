@@ -3,6 +3,8 @@
 from enum import Enum
 import torch
 
+from common.nnTools import get_layersName_list
+
 class MaskType(Enum):
      SIMPLE_MASK = 1
      ROUND_DOWN = 2
@@ -10,6 +12,43 @@ class MaskType(Enum):
      MOD_ROUND_UP = 4
      MINIMUM_DISTANCE = 5
      MINIMUM_DISTANCE_2 = 6
+
+class MaskTable():
+    def __init__(model,mask=None,mask_type=MaskType.SIMPLE_MASK,correctRange=False):
+        self.model_class = model.__class__.__name__
+        self.Table = {}
+        self.mask_type = mask_type #future implementation may require a masking type for each mask/layer
+        self.correctRange = correctRange
+        create_table(model)
+        if mask:
+            set_default_mask(mask)
+
+    def create_table(model):
+        layers_name_list = get_layersName_list(model)
+        for layer_name in layers_name_list:
+            self.Table[layer_name] = []
+
+    def set_default_mask(mask):
+        for layer_name in layers_name_list:
+            self.Table[layer_name] = mask
+
+    #mask must be the list
+    def set_mask(layer_name,mask):
+        if not layer_name in Table:
+            raise ValueError(layer_name+'not found in'+self.model_class)
+        self.Table[layer_name] = mask
+
+    def set_mask_type(mask_type):
+        if not isinstance(mask_type, MaskType):
+            raise ValueError('Specify a correct mask type')
+        self.mask_type = mask_type
+
+    def get_layersName():
+        return list(Table.keys())
+
+    def clean_table():
+        for layer in self.Table:
+            self.Table[layer]=[]
 
 
 """stringMask_to_list(stringMask)
@@ -128,7 +167,7 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
     if bit_to_mask==[]:
         return quant_param
     if (dynamic==0 or signed==None) and (mask_type==MaskType.ROUND_UP or mask_type==MaskType.MINIMUM_DISTANCE):
-        error_string="For Minimum Distance masking policy 'dynamic' and 'signed' parameters must be specified. Got: DYNAMIC={}\tSIGNED{}\n".format(dynamic,signed)
+        error_string="For Minimum Distance masking policy 'dynamic' and 'signed' parameters must be specified. Got: DYNAMIC= {}  SIGNED= {}".format(dynamic,signed)
         raise ValueError(error_string)
     ty=quant_param.dtype
     quant_param = quant_param.to(torch.int)

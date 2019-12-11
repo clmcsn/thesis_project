@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import torch
 from torch import tensor
+import matplotlib
 import matplotlib.pyplot as plt
+import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+from scipy.stats import skewnorm
 
 #cm = confusion matrix
 #classes = classes that will be x and y axes
@@ -85,5 +88,74 @@ def test(model, device, test_loader):
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
+def get_layersName_list(model):
+    l=[]
+    for name, module in model.named_modules():
+        if isinstance(module, (nn.Conv2d, nn.Conv3d, nn.Linear)):
+            l+=[name]
+    return l
 
+"""def print_weight_dist(layer,path,name='layer1',multiple=False,conf_layer=None,num_bins=50):
+    x = torch.flatten(layer)
+    x = x.detach().numpy() 
+    fig, ax = plt.subplots()
+    n, bins, patches = ax.hist(x, num_bins)
+    if multiple:
+        y = torch.flatten(conf_layer)
+        y = y.detach().numpy()
+        n2, bins2, patches2 = ax.hist(y, num_bins)
+    ax.set_xlabel('Weight')
+    ax.set_ylabel('Occurrency')
+    ax.set_title(r'Histogram of {}: $\mu=100$, $\sigma=15$'.format(name))
+    # Tweak spacing to prevent clipping of ylabel
+    fig.tight_layout()  
+    plt.savefig(path+name+".svg")"""#deprecated
 
+def make_weightDistr_simpleHistogram(layer, name='layer', save=False, path=None):
+    x = torch.flatten(layer)
+    x = x.detach().numpy()
+    fig, ax = plt.subplots()
+    n, bins, patches = ax.hist(x, num_bins)
+    ax.set_xlabel('Weight')
+    ax.set_ylabel('Occurrency')
+    ax.set_title('Histogram of {}'.format(name))
+    fig.tight_layout()
+    if save:
+        plt.savefig(path+"/"+name+".svg")
+    else:
+        plt.show()
+
+def make_weightDistr_comparHistgram(layer, reflayer, name='layer', save=False, path=None, num_bins=100):
+    x = torch.flatten(layer)
+    x = x.detach().numpy()
+    y = torch.flatten(reflayer)
+    y = y.detach().numpy()
+    plt.hist(x, num_bins,facecolor='blue',label="unmasked")
+    plt.hist(y, num_bins,facecolor='grey',label="masked")
+    plt.legend(loc='upper right')
+    plt.xlabel('Weight')
+    plt.ylabel('Occurrencies')
+    plt.title('Histogram of {}'.format(name))
+    if save:
+        plt.savefig(path+"/"+name+".svg")
+    else:
+        plt.show()
+    plt.cla()
+    plt.clf()
+    plt.close()
+    
+
+#TODO to implement fitting curve
+def make_weightDistr_skewfitHistogram(layer, name='layer', save=False, path=None):
+    x = torch.flatten(layer)
+    x = x.detach().numpy()
+    fig, ax = plt.subplots()
+    n, bins, patches = ax.hist(x, num_bins)
+    ax.set_xlabel('Weight')
+    ax.set_ylabel('Occurrencies')
+    ax.set_title('Histogram of {}'.format(name))
+    fig.tight_layout()
+    if save:
+        plt.savefig(path+"/"+name+".svg")
+    else:
+        plt.show()

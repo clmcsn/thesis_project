@@ -1,0 +1,1 @@
+QuantMode: LinearQuantMode.SYMMETRIC	 MaskMode: MaskType.SIMPLE_MASK	 Mask: 01111000	 RangeCorrection:False	 Correct: 1000	 Accuracy: 0.1
