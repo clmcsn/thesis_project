@@ -22,7 +22,7 @@ from common.mask_util import MaskType, stringMask_to_list, _make_mask
 from common.hw_lib import printer_2s
 
 
-device='gpu'
+device='cpu'
 batch_size=50
 bits=8 #data bits
 aw_bits=8
@@ -68,7 +68,7 @@ quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED
 mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 dummy_input = (torch.zeros([1,3,32,32]))
 
-with open("../reports/analysis_postTrainMasking.txt","w") as log_pointer:
+with open("../reports/analysisCustomLeNet_postTrainMasking.txt","w") as log_pointer:
     for quant_mode in quant_mode_list:
         signed= quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED
         if signed:
@@ -92,7 +92,7 @@ with open("../reports/analysis_postTrainMasking.txt","w") as log_pointer:
                                                             correctRange=correct, scale_approx_mult_bits=bits)
                         quantizer.prepare_model(dummy_input)
                         quantizer.model.eval()
-                        test_preds = get_all_preds(quantizer.model, data_loader)
+                        test_preds = get_all_preds(quantizer.model, data_loader,device=device)
                         preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
                         accuracy =  preds_correct/len(train_set)
                         log_pointer.write(rep_string.format(quant_mode,mask_mode,mask,correct,preds_correct,accuracy))
