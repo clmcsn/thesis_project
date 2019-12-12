@@ -64,11 +64,12 @@ data_loader= torch.utils.data.DataLoader(
     train_set
     ,batch_size=batch_size)
 
-quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
+#quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
+quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
 mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 dummy_input = (torch.zeros([1,3,32,32]))
 
-with open("../reports/analysisCustomLeNet_postTrainMasking.txt","w") as log_pointer:
+with open("../reports/analysisCustomLeNet_postTrainMaskingfake.txt","w") as log_pointer:
     for quant_mode in quant_mode_list:
         signed= quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED
         if signed:

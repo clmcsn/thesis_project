@@ -14,22 +14,35 @@ class MaskType(Enum):
      MINIMUM_DISTANCE_2 = 6
 
 class MaskInfo():
-    def __init__(self,quant_mode,mask_type,mask,correctRange):
+    def __init__(   self, quant_mode, mask_type,
+                            mask, correctRange):
+    
         self.quant_mode = quant_mode
         self.mask_type = mask_type
         self.mask = mask
         self.correctRange = correctRange
 
 class MaskStat(MaskInfo):
-    def __init__(self,correct_preds,accuracy,model_name):
-        super(MaskStat, self).__init__()
+    def __init__(self, quant_mode, mask_type,
+                        mask, correctRange,
+                        correct_preds,  accuracy,
+                        model_name):
+        super(MaskStat, self).__init__( quant_mode,
+                                        mask_type,
+                                        mask,
+                                        correctRange)
         self.correct_preds = correct_preds
         self.accuracy = accuracy
         self.model_name = model_name
 
 class MaskTable(MaskInfo):
-    def __init__(self,model):
-        super(MaskTable, self).__init__()
+    def __init__(self, quant_mode, mask_type, 
+                        mask, correctRange, 
+                        model):
+        super(MaskStat, self).__init__( quant_mode,
+                                        mask_type,
+                                        mask,
+                                        correctRange)
         self.model_class = model.__class__.__name__
         self.Table = {}
         create_table(model)
