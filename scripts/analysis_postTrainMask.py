@@ -64,12 +64,11 @@ data_loader= torch.utils.data.DataLoader(
     train_set
     ,batch_size=batch_size)
 
-#quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
-quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
+quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
 mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 dummy_input = (torch.zeros([1,3,32,32]))
 
-with open("../reports/analysisCustomLeNet_postTrainMaskingfake.txt","w") as log_pointer:
+with open("../reports/analysisCustomLeNet_postTrainMasking.txt","w") as log_pointer:
     for quant_mode in quant_mode_list:
         signed= quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED
         if signed:
@@ -93,18 +92,17 @@ with open("../reports/analysisCustomLeNet_postTrainMaskingfake.txt","w") as log_
                                                             correctRange=correct, scale_approx_mult_bits=bits)
                         quantizer.prepare_model(dummy_input)
                         quantizer.model.eval()
-                        test_preds = get_all_preds(quantizer.model, data_loader,device=device)
-                        preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
-                        accuracy =  preds_correct/len(train_set)
-                        log_pointer.write(rep_string.format(quant_mode,mask_mode,mask,correct,preds_correct,accuracy))
-                        
-                        
                         for layer in get_layersName_list(network):
                             path=make_path(quant_mode,mask_mode,mask,j)
-                            pathlib.Path("../reports/weightDistribution_analysis_1/"+path).mkdir(parents=True, exist_ok=True)
+                            pathlib.Path("../reports/weightDistribution_customLeNet_analysis1/"+path).mkdir(parents=True, exist_ok=True)
                             make_weightDistr_comparHistgram(getattr(quantizer_ref.model,layer).wrapped_module.weight,
                                                             getattr(quantizer.model,layer).wrapped_module.weight,
                                                             name=layer,
                                                             save=True,
-                                                            path="../reports/weightDistribution_analysis_1/"+path)
+                                                            path="../reports/weightDistribution_customLeNet_analysis1/"+path)
+                        test_preds = get_all_preds(quantizer.model, data_loader,device=device)
+                        preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+                        accuracy =  preds_correct/len(train_set)
+                        log_pointer.write(rep_string.format(quant_mode,mask_mode,mask,correct,preds_correct,accuracy))
+                        del quantizer
         del quantizer_ref            
