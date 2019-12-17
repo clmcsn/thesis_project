@@ -141,3 +141,27 @@ Total cases:30	 Non significant cases:10
 	Correct: 00001111	 Winning count: 14
 
 
+Energy class 1 final evaluation
+	Best mask: ASYMMETRIC_UNSIGNED ROUND_UP 00000001 False
+	Mask accuracy: 0.5978 	 Equivalent quant architecture: 0.6033
+	Better maskings on same quantization type: 0
+
+
+Energy class 2 final evaluation
+	Best mask: ASYMMETRIC_UNSIGNED MOD_ROUND_UP 00000011 True
+	Mask accuracy: 0.5945 	 Equivalent quant architecture: 0.5925
+	Better maskings on same quantization type: 4
+
+
+Energy class 3 final evaluation
+	Best mask: ASYMMETRIC_UNSIGNED MOD_ROUND_UP 00000111 True
+	Mask accuracy: 0.5748 	 Equivalent quant architecture: 0.5549
+	Better maskings on same quantization type: 8
+
+
+Energy class 4 final evaluation
+	Best mask: ASYMMETRIC_UNSIGNED MOD_ROUND_UP 00001111 False
+	Mask accuracy: 0.5186 	 Equivalent quant architecture: 0.5214
+	Better maskings on same quantization type: 2
+
+

@@ -53,6 +53,7 @@ maskWinner=1
 quantModeWinner=1
 bestCorrection=1
 bestMask=1
+quantVsMask=1
 ####################SETTINGS###################################
 try: 
     os.remove(log_name) #remove file
@@ -233,5 +234,43 @@ if bestMask:
             log_pointer.write("Total cases:{}\t Non significant cases:{}\n".format(cycles,noneC))
             for key in dictionary.keys():
                 log_pointer.write("\tCorrect: {}\t Winning count: {}\n".format(key,dictionary[key]))
+            log_pointer.write("\n\n")
+
+def val(a):
+    return a
+
+
+#best accuracy for energy class
+quantDic={}
+quant_rep_file="../reports/data_CustomLeNet_postTrainQuantization.txt"
+with open(quant_rep_file,"r") as quant_pointer:
+    for line in quant_pointer:
+        data=line.split()
+        qm=data[1].split(".")[1]
+        eb=8-int(data[3])
+        ac=float(data[7])
+        if not (qm in quantDic.keys()):
+            quantDic[qm]={}
+        quantDic[qm][eb]=ac
+
+if quantVsMask:
+    for energy_class in range(1,bits-3):
+        best_accuracy=0
+        best_accuracy_data=None
+        mask_win=0
+        for entry in container:
+            ones=entry.mask.count("1")
+            if ((ones==energy_class) and (not (entry.mask[0]=="1"))):
+                if entry.accuracy > best_accuracy:
+                    best_accuracy=entry.accuracy
+                    best_accuracy_data = entry
+                if entry.accuracy > quantDic[entry.quant_mode][energy_class]:
+                    mask_win+=1
+        #print results
+        with open(log_name,"a") as log_pointer:
+            log_pointer.write("Energy class {} final evaluation\n".format(energy_class))
+            log_pointer.write("\tBest mask: {} {} {} {}\n".format(best_accuracy_data.quant_mode,best_accuracy_data.mask_type,best_accuracy_data.mask,best_accuracy_data.correctRange))
+            log_pointer.write("\tMask accuracy: {} \t Equivalent quant architecture: {}\n".format(best_accuracy_data.accuracy,quantDic[entry.quant_mode][energy_class]))
+            log_pointer.write("\tBetter maskings on same quantization type: {}\n".format(mask_win))
             log_pointer.write("\n\n")
 
