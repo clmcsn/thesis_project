@@ -115,4 +115,4 @@ for epoch in range(epochs_num):
             'loss': test_loss,
             }, "../models/checkpoints/{}_{}_bestLoss.tar".format(model,dataset))
 
-    print("Best Loss:",test_loss)
+    print("Best acc:{}".format(best_acc))
