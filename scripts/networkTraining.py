@@ -15,7 +15,7 @@ import models.mnist.LeNet as LeNet
 
 #import distiller for models
 import sys
-sys.path.append("../../distiller")
+sys.path.append("../../distiller_modified")
 import distiller
 import distiller.models.cifar10 as models
 
@@ -99,7 +99,7 @@ for epoch in range(epochs_num):
             'epoch': epoch,
             'model_state_dict': network.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
-            'loss': total_loss,
+            'loss': test_loss,
             }, "../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch+1))
     if (epoch!=0):
         os.remove("../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch))
@@ -109,5 +109,5 @@ for epoch in range(epochs_num):
             'epoch': epoch,
             'model_state_dict': network.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
-            'loss': total_loss,
+            'loss': test_loss,
             }, "../models/checkpoints/{}_{}_bestLoss.tar".format(model,dataset))
