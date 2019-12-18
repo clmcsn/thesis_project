@@ -1,0 +1,460 @@
+QUANT_MODE parameter analysis for energy class 1
+Swing parameters: mask_type - mask - correctRange 
+Total cases: 70
+	Masking type: SYMMETRIC	 Winning count: 8	 Total accuracy: 0.000 (Min: 20.056)
+	Masking type: ASYMMETRIC_UNSIGNED	 Winning count: 47	 Total accuracy: 1.550 (Min: 20.056)
+	Masking type: ASYMMETRIC_SIGNED	 Winning count: 49	 Total accuracy: 1.550 (Min: 20.056)
+
+
+MASK_TYPE parameter analysis for energy class 1
+Swing parameters: quant_mode - mask - correctRange 
+Total cases: 42
+	Masking type: SIMPLE_MASK	 Winning count: 0	 Total accuracy: 0.000 (Min: 10.406)
+	Masking type: ROUND_DOWN	 Winning count: 2	 Total accuracy: 1.889 (Min: 10.406)
+	Masking type: ROUND_UP	 Winning count: 33	 Total accuracy: 3.344 (Min: 10.406)
+	Masking type: MOD_ROUND_UP	 Winning count: 33	 Total accuracy: 3.344 (Min: 10.406)
+	Masking type: MINIMUM_DISTANCE	 Winning count: 14	 Total accuracy: 2.659 (Min: 10.406)
+
+
+MASK parameter analysis for energy class 1
+Swing parameters: quant_mode - mask_type - correctRange 
+Total cases: 30
+	Masking type: 01000000	 Winning count: 0	 Total accuracy: 0.077 (Min: 3.004)
+	Masking type: 00100000	 Winning count: 0	 Total accuracy: 0.000 (Min: 3.004)
+	Masking type: 00010000	 Winning count: 0	 Total accuracy: 0.396 (Min: 3.004)
+	Masking type: 00001000	 Winning count: 0	 Total accuracy: 4.354 (Min: 3.004)
+	Masking type: 00000100	 Winning count: 0	 Total accuracy: 9.858 (Min: 3.004)
+	Masking type: 00000010	 Winning count: 0	 Total accuracy: 13.223 (Min: 3.004)
+	Masking type: 00000001	 Winning count: 30	 Total accuracy: 14.330 (Min: 3.004)
+
+
+CORRECTRANGE parameter analysis for energy class 1
+Swing parameters: quant_mode - mask_type - mask 
+Total cases: 105
+	Masking type: True	 Winning count: 42	 Total accuracy: 0.000 (Min: 31.373)
+	Masking type: False	 Winning count: 45	 Total accuracy: 0.521 (Min: 31.373)
+
+
+QUANT_MODE parameter analysis for energy class 2
+Swing parameters: mask_type - mask - correctRange 
+Total cases: 210
+	Masking type: SYMMETRIC	 Winning count: 16	 Total accuracy: 0.000 (Min: 31.387)
+	Masking type: ASYMMETRIC_UNSIGNED	 Winning count: 96	 Total accuracy: 2.868 (Min: 31.387)
+	Masking type: ASYMMETRIC_SIGNED	 Winning count: 97	 Total accuracy: 2.868 (Min: 31.387)
+
+
+MASK_TYPE parameter analysis for energy class 2
+Swing parameters: quant_mode - mask - correctRange 
+Total cases: 126
+	Masking type: SIMPLE_MASK	 Winning count: 0	 Total accuracy: 0.000 (Min: 15.401)
+	Masking type: ROUND_DOWN	 Winning count: 9	 Total accuracy: 1.169 (Min: 15.401)
+	Masking type: ROUND_UP	 Winning count: 14	 Total accuracy: 3.857 (Min: 15.401)
+	Masking type: MOD_ROUND_UP	 Winning count: 67	 Total accuracy: 9.954 (Min: 15.401)
+	Masking type: MINIMUM_DISTANCE	 Winning count: 13	 Total accuracy: 7.910 (Min: 15.401)
+
+
+MASK parameter analysis for energy class 2
+Swing parameters: quant_mode - mask_type - correctRange 
+Total cases: 30
+	Masking type: 01100000	 Winning count: 0	 Total accuracy: 0.002 (Min: 2.998)
+	Masking type: 01010000	 Winning count: 0	 Total accuracy: 0.000 (Min: 2.998)
+	Masking type: 01001000	 Winning count: 0	 Total accuracy: 0.002 (Min: 2.998)
+	Masking type: 01000100	 Winning count: 0	 Total accuracy: 0.033 (Min: 2.998)
+	Masking type: 01000010	 Winning count: 0	 Total accuracy: 0.051 (Min: 2.998)
+	Masking type: 01000001	 Winning count: 0	 Total accuracy: 0.059 (Min: 2.998)
+	Masking type: 00110000	 Winning count: 0	 Total accuracy: 0.009 (Min: 2.998)
+	Masking type: 00101000	 Winning count: 0	 Total accuracy: 0.009 (Min: 2.998)
+	Masking type: 00100100	 Winning count: 0	 Total accuracy: 0.002 (Min: 2.998)
+	Masking type: 00100010	 Winning count: 0	 Total accuracy: 0.003 (Min: 2.998)
+	Masking type: 00100001	 Winning count: 0	 Total accuracy: 0.003 (Min: 2.998)
+	Masking type: 00011000	 Winning count: 0	 Total accuracy: 0.489 (Min: 2.998)
+	Masking type: 00010100	 Winning count: 0	 Total accuracy: 0.098 (Min: 2.998)
+	Masking type: 00010010	 Winning count: 0	 Total accuracy: 0.110 (Min: 2.998)
+	Masking type: 00010001	 Winning count: 0	 Total accuracy: 0.125 (Min: 2.998)
+	Masking type: 00001100	 Winning count: 0	 Total accuracy: 3.276 (Min: 2.998)
+	Masking type: 00001010	 Winning count: 0	 Total accuracy: 2.916 (Min: 2.998)
+	Masking type: 00001001	 Winning count: 0	 Total accuracy: 3.266 (Min: 2.998)
+	Masking type: 00000110	 Winning count: 0	 Total accuracy: 7.215 (Min: 2.998)
+	Masking type: 00000101	 Winning count: 0	 Total accuracy: 7.928 (Min: 2.998)
+	Masking type: 00000011	 Winning count: 30	 Total accuracy: 11.349 (Min: 2.998)
+
+
+CORRECTRANGE parameter analysis for energy class 2
+Swing parameters: quant_mode - mask_type - mask 
+Total cases: 315
+	Masking type: True	 Winning count: 65	 Total accuracy: 0.000 (Min: 49.511)
+	Masking type: False	 Winning count: 114	 Total accuracy: 0.875 (Min: 49.511)
+
+
+QUANT_MODE parameter analysis for energy class 3
+Swing parameters: mask_type - mask - correctRange 
+Total cases: 350
+	Masking type: SYMMETRIC	 Winning count: 30	 Total accuracy: 0.000 (Min: 40.241)
+	Masking type: ASYMMETRIC_UNSIGNED	 Winning count: 85	 Total accuracy: 2.580 (Min: 40.241)
+	Masking type: ASYMMETRIC_SIGNED	 Winning count: 82	 Total accuracy: 2.577 (Min: 40.241)
+
+
+MASK_TYPE parameter analysis for energy class 3
+Swing parameters: quant_mode - mask - correctRange 
+Total cases: 210
+	Masking type: SIMPLE_MASK	 Winning count: 0	 Total accuracy: 0.000 (Min: 21.218)
+	Masking type: ROUND_DOWN	 Winning count: 3	 Total accuracy: 0.047 (Min: 21.218)
+	Masking type: ROUND_UP	 Winning count: 22	 Total accuracy: 0.486 (Min: 21.218)
+	Masking type: MOD_ROUND_UP	 Winning count: 88	 Total accuracy: 11.185 (Min: 21.218)
+	Masking type: MINIMUM_DISTANCE	 Winning count: 20	 Total accuracy: 8.072 (Min: 21.218)
+
+
+MASK parameter analysis for energy class 3
+Swing parameters: quant_mode - mask_type - correctRange 
+Total cases: 30
+	Masking type: 01110000	 Winning count: 0	 Total accuracy: 0.016 (Min: 2.982)
+	Masking type: 01101000	 Winning count: 0	 Total accuracy: 0.024 (Min: 2.982)
+	Masking type: 01100100	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.982)
+	Masking type: 01100010	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.982)
+	Masking type: 01100001	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.982)
+	Masking type: 01011000	 Winning count: 0	 Total accuracy: 0.010 (Min: 2.982)
+	Masking type: 01010100	 Winning count: 0	 Total accuracy: 0.017 (Min: 2.982)
+	Masking type: 01010010	 Winning count: 0	 Total accuracy: 0.008 (Min: 2.982)
+	Masking type: 01010001	 Winning count: 0	 Total accuracy: 0.013 (Min: 2.982)
+	Masking type: 01001100	 Winning count: 0	 Total accuracy: 0.042 (Min: 2.982)
+	Masking type: 01001010	 Winning count: 0	 Total accuracy: 0.019 (Min: 2.982)
+	Masking type: 01001001	 Winning count: 0	 Total accuracy: 0.019 (Min: 2.982)
+	Masking type: 01000110	 Winning count: 0	 Total accuracy: 0.081 (Min: 2.982)
+	Masking type: 01000101	 Winning count: 0	 Total accuracy: 0.054 (Min: 2.982)
+	Masking type: 01000011	 Winning count: 0	 Total accuracy: 0.070 (Min: 2.982)
+	Masking type: 00111000	 Winning count: 0	 Total accuracy: 0.298 (Min: 2.982)
+	Masking type: 00110100	 Winning count: 0	 Total accuracy: 0.069 (Min: 2.982)
+	Masking type: 00110010	 Winning count: 0	 Total accuracy: 0.036 (Min: 2.982)
+	Masking type: 00110001	 Winning count: 0	 Total accuracy: 0.024 (Min: 2.982)
+	Masking type: 00101100	 Winning count: 0	 Total accuracy: 0.000 (Min: 2.982)
+	Masking type: 00101010	 Winning count: 0	 Total accuracy: 0.025 (Min: 2.982)
+	Masking type: 00101001	 Winning count: 0	 Total accuracy: 0.003 (Min: 2.982)
+	Masking type: 00100110	 Winning count: 0	 Total accuracy: 0.012 (Min: 2.982)
+	Masking type: 00100101	 Winning count: 0	 Total accuracy: 0.024 (Min: 2.982)
+	Masking type: 00100011	 Winning count: 0	 Total accuracy: 0.006 (Min: 2.982)
+	Masking type: 00011100	 Winning count: 0	 Total accuracy: 1.741 (Min: 2.982)
+	Masking type: 00011010	 Winning count: 0	 Total accuracy: 0.871 (Min: 2.982)
+	Masking type: 00011001	 Winning count: 0	 Total accuracy: 0.607 (Min: 2.982)
+	Masking type: 00010110	 Winning count: 0	 Total accuracy: 0.259 (Min: 2.982)
+	Masking type: 00010101	 Winning count: 0	 Total accuracy: 0.173 (Min: 2.982)
+	Masking type: 00010011	 Winning count: 0	 Total accuracy: 0.082 (Min: 2.982)
+	Masking type: 00001110	 Winning count: 0	 Total accuracy: 4.086 (Min: 2.982)
+	Masking type: 00001101	 Winning count: 0	 Total accuracy: 3.473 (Min: 2.982)
+	Masking type: 00001011	 Winning count: 1	 Total accuracy: 2.707 (Min: 2.982)
+	Masking type: 00000111	 Winning count: 29	 Total accuracy: 6.584 (Min: 2.982)
+
+
+CORRECTRANGE parameter analysis for energy class 3
+Swing parameters: quant_mode - mask_type - mask 
+Total cases: 525
+	Masking type: True	 Winning count: 46	 Total accuracy: 0.000 (Min: 61.761)
+	Masking type: False	 Winning count: 127	 Total accuracy: 2.358 (Min: 61.761)
+
+
+QUANT_MODE parameter analysis for energy class 4
+Swing parameters: mask_type - mask - correctRange 
+Total cases: 350
+	Masking type: SYMMETRIC	 Winning count: 36	 Total accuracy: 0.000 (Min: 37.535)
+	Masking type: ASYMMETRIC_UNSIGNED	 Winning count: 45	 Total accuracy: 2.664 (Min: 37.535)
+	Masking type: ASYMMETRIC_SIGNED	 Winning count: 45	 Total accuracy: 2.664 (Min: 37.535)
+
+
+MASK_TYPE parameter analysis for energy class 4
+Swing parameters: quant_mode - mask - correctRange 
+Total cases: 210
+	Masking type: SIMPLE_MASK	 Winning count: 0	 Total accuracy: 0.071 (Min: 20.929)
+	Masking type: ROUND_DOWN	 Winning count: 0	 Total accuracy: 0.071 (Min: 20.929)
+	Masking type: ROUND_UP	 Winning count: 14	 Total accuracy: 0.000 (Min: 20.929)
+	Masking type: MOD_ROUND_UP	 Winning count: 74	 Total accuracy: 7.375 (Min: 20.929)
+	Masking type: MINIMUM_DISTANCE	 Winning count: 19	 Total accuracy: 5.769 (Min: 20.929)
+
+
+MASK parameter analysis for energy class 4
+Swing parameters: quant_mode - mask_type - correctRange 
+Total cases: 30
+	Masking type: 01111000	 Winning count: 0	 Total accuracy: 0.017 (Min: 2.980)
+	Masking type: 01110100	 Winning count: 0	 Total accuracy: 0.023 (Min: 2.980)
+	Masking type: 01110010	 Winning count: 0	 Total accuracy: 0.005 (Min: 2.980)
+	Masking type: 01110001	 Winning count: 0	 Total accuracy: 0.029 (Min: 2.980)
+	Masking type: 01101100	 Winning count: 0	 Total accuracy: 0.009 (Min: 2.980)
+	Masking type: 01101010	 Winning count: 0	 Total accuracy: 0.015 (Min: 2.980)
+	Masking type: 01101001	 Winning count: 2	 Total accuracy: 0.024 (Min: 2.980)
+	Masking type: 01100110	 Winning count: 0	 Total accuracy: 0.011 (Min: 2.980)
+	Masking type: 01100101	 Winning count: 0	 Total accuracy: 0.000 (Min: 2.980)
+	Masking type: 01100011	 Winning count: 0	 Total accuracy: 0.020 (Min: 2.980)
+	Masking type: 01011100	 Winning count: 0	 Total accuracy: 0.019 (Min: 2.980)
+	Masking type: 01011010	 Winning count: 0	 Total accuracy: 0.017 (Min: 2.980)
+	Masking type: 01011001	 Winning count: 0	 Total accuracy: 0.009 (Min: 2.980)
+	Masking type: 01010110	 Winning count: 0	 Total accuracy: 0.012 (Min: 2.980)
+	Masking type: 01010101	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.980)
+	Masking type: 01010011	 Winning count: 1	 Total accuracy: 0.012 (Min: 2.980)
+	Masking type: 01001110	 Winning count: 0	 Total accuracy: 0.075 (Min: 2.980)
+	Masking type: 01001101	 Winning count: 0	 Total accuracy: 0.054 (Min: 2.980)
+	Masking type: 01001011	 Winning count: 0	 Total accuracy: 0.021 (Min: 2.980)
+	Masking type: 01000111	 Winning count: 2	 Total accuracy: 0.159 (Min: 2.980)
+	Masking type: 00111100	 Winning count: 0	 Total accuracy: 0.326 (Min: 2.980)
+	Masking type: 00111010	 Winning count: 0	 Total accuracy: 0.344 (Min: 2.980)
+	Masking type: 00111001	 Winning count: 0	 Total accuracy: 0.352 (Min: 2.980)
+	Masking type: 00110110	 Winning count: 0	 Total accuracy: 0.188 (Min: 2.980)
+	Masking type: 00110101	 Winning count: 0	 Total accuracy: 0.107 (Min: 2.980)
+	Masking type: 00110011	 Winning count: 0	 Total accuracy: 0.050 (Min: 2.980)
+	Masking type: 00101110	 Winning count: 0	 Total accuracy: 0.020 (Min: 2.980)
+	Masking type: 00101101	 Winning count: 0	 Total accuracy: 0.019 (Min: 2.980)
+	Masking type: 00101011	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.980)
+	Masking type: 00100111	 Winning count: 1	 Total accuracy: 0.047 (Min: 2.980)
+	Masking type: 00011110	 Winning count: 0	 Total accuracy: 2.824 (Min: 2.980)
+	Masking type: 00011101	 Winning count: 0	 Total accuracy: 2.347 (Min: 2.980)
+	Masking type: 00011011	 Winning count: 0	 Total accuracy: 1.241 (Min: 2.980)
+	Masking type: 00010111	 Winning count: 0	 Total accuracy: 0.466 (Min: 2.980)
+	Masking type: 00001111	 Winning count: 14	 Total accuracy: 4.728 (Min: 2.980)
+
+
+CORRECTRANGE parameter analysis for energy class 4
+Swing parameters: quant_mode - mask_type - mask 
+Total cases: 525
+	Masking type: True	 Winning count: 40	 Total accuracy: 0.000 (Min: 57.674)
+	Masking type: False	 Winning count: 79	 Total accuracy: 2.582 (Min: 57.674)
+
+
+QUANT_MODE parameter analysis for energy class 1
+Swing parameters: mask_type - mask - correctRange 
+Total cases: 70
+	Masking type: SYMMETRIC	 Winning count: 8	 Total accuracy: 0.000 (Min: 20.056)
+	Masking type: ASYMMETRIC_UNSIGNED	 Winning count: 47	 Total accuracy: 1.550 (Min: 20.056)
+	Masking type: ASYMMETRIC_SIGNED	 Winning count: 49	 Total accuracy: 1.550 (Min: 20.056)
+
+
+MASK_TYPE parameter analysis for energy class 1
+Swing parameters: quant_mode - mask - correctRange 
+Total cases: 42
+	Masking type: SIMPLE_MASK	 Winning count: 0	 Total accuracy: 0.000 (Min: 10.406)
+	Masking type: ROUND_DOWN	 Winning count: 2	 Total accuracy: 1.889 (Min: 10.406)
+	Masking type: ROUND_UP	 Winning count: 33	 Total accuracy: 3.344 (Min: 10.406)
+	Masking type: MOD_ROUND_UP	 Winning count: 33	 Total accuracy: 3.344 (Min: 10.406)
+	Masking type: MINIMUM_DISTANCE	 Winning count: 14	 Total accuracy: 2.659 (Min: 10.406)
+
+
+MASK parameter analysis for energy class 1
+Swing parameters: quant_mode - mask_type - correctRange 
+Total cases: 30
+	Masking type: 01000000	 Winning count: 0	 Total accuracy: 0.077 (Min: 3.004)
+	Masking type: 00100000	 Winning count: 0	 Total accuracy: 0.000 (Min: 3.004)
+	Masking type: 00010000	 Winning count: 0	 Total accuracy: 0.396 (Min: 3.004)
+	Masking type: 00001000	 Winning count: 0	 Total accuracy: 4.354 (Min: 3.004)
+	Masking type: 00000100	 Winning count: 0	 Total accuracy: 9.858 (Min: 3.004)
+	Masking type: 00000010	 Winning count: 0	 Total accuracy: 13.223 (Min: 3.004)
+	Masking type: 00000001	 Winning count: 30	 Total accuracy: 14.330 (Min: 3.004)
+
+
+CORRECTRANGE parameter analysis for energy class 1
+Swing parameters: quant_mode - mask_type - mask 
+Total cases: 105
+	Masking type: True	 Winning count: 42	 Total accuracy: 0.000 (Min: 31.373)
+	Masking type: False	 Winning count: 45	 Total accuracy: 0.521 (Min: 31.373)
+
+
+QUANT_MODE parameter analysis for energy class 2
+Swing parameters: mask_type - mask - correctRange 
+Total cases: 210
+	Masking type: SYMMETRIC	 Winning count: 16	 Total accuracy: 0.000 (Min: 31.387)
+	Masking type: ASYMMETRIC_UNSIGNED	 Winning count: 96	 Total accuracy: 2.868 (Min: 31.387)
+	Masking type: ASYMMETRIC_SIGNED	 Winning count: 97	 Total accuracy: 2.868 (Min: 31.387)
+
+
+MASK_TYPE parameter analysis for energy class 2
+Swing parameters: quant_mode - mask - correctRange 
+Total cases: 126
+	Masking type: SIMPLE_MASK	 Winning count: 0	 Total accuracy: 0.000 (Min: 15.401)
+	Masking type: ROUND_DOWN	 Winning count: 9	 Total accuracy: 1.169 (Min: 15.401)
+	Masking type: ROUND_UP	 Winning count: 14	 Total accuracy: 3.857 (Min: 15.401)
+	Masking type: MOD_ROUND_UP	 Winning count: 67	 Total accuracy: 9.954 (Min: 15.401)
+	Masking type: MINIMUM_DISTANCE	 Winning count: 13	 Total accuracy: 7.910 (Min: 15.401)
+
+
+MASK parameter analysis for energy class 2
+Swing parameters: quant_mode - mask_type - correctRange 
+Total cases: 30
+	Masking type: 01100000	 Winning count: 0	 Total accuracy: 0.002 (Min: 2.998)
+	Masking type: 01010000	 Winning count: 0	 Total accuracy: 0.000 (Min: 2.998)
+	Masking type: 01001000	 Winning count: 0	 Total accuracy: 0.002 (Min: 2.998)
+	Masking type: 01000100	 Winning count: 0	 Total accuracy: 0.033 (Min: 2.998)
+	Masking type: 01000010	 Winning count: 0	 Total accuracy: 0.051 (Min: 2.998)
+	Masking type: 01000001	 Winning count: 0	 Total accuracy: 0.059 (Min: 2.998)
+	Masking type: 00110000	 Winning count: 0	 Total accuracy: 0.009 (Min: 2.998)
+	Masking type: 00101000	 Winning count: 0	 Total accuracy: 0.009 (Min: 2.998)
+	Masking type: 00100100	 Winning count: 0	 Total accuracy: 0.002 (Min: 2.998)
+	Masking type: 00100010	 Winning count: 0	 Total accuracy: 0.003 (Min: 2.998)
+	Masking type: 00100001	 Winning count: 0	 Total accuracy: 0.003 (Min: 2.998)
+	Masking type: 00011000	 Winning count: 0	 Total accuracy: 0.489 (Min: 2.998)
+	Masking type: 00010100	 Winning count: 0	 Total accuracy: 0.098 (Min: 2.998)
+	Masking type: 00010010	 Winning count: 0	 Total accuracy: 0.110 (Min: 2.998)
+	Masking type: 00010001	 Winning count: 0	 Total accuracy: 0.125 (Min: 2.998)
+	Masking type: 00001100	 Winning count: 0	 Total accuracy: 3.276 (Min: 2.998)
+	Masking type: 00001010	 Winning count: 0	 Total accuracy: 2.916 (Min: 2.998)
+	Masking type: 00001001	 Winning count: 0	 Total accuracy: 3.266 (Min: 2.998)
+	Masking type: 00000110	 Winning count: 0	 Total accuracy: 7.215 (Min: 2.998)
+	Masking type: 00000101	 Winning count: 0	 Total accuracy: 7.928 (Min: 2.998)
+	Masking type: 00000011	 Winning count: 30	 Total accuracy: 11.349 (Min: 2.998)
+
+
+CORRECTRANGE parameter analysis for energy class 2
+Swing parameters: quant_mode - mask_type - mask 
+Total cases: 315
+	Masking type: True	 Winning count: 65	 Total accuracy: 0.000 (Min: 49.511)
+	Masking type: False	 Winning count: 114	 Total accuracy: 0.875 (Min: 49.511)
+
+
+QUANT_MODE parameter analysis for energy class 3
+Swing parameters: mask_type - mask - correctRange 
+Total cases: 350
+	Masking type: SYMMETRIC	 Winning count: 30	 Total accuracy: 0.000 (Min: 40.241)
+	Masking type: ASYMMETRIC_UNSIGNED	 Winning count: 85	 Total accuracy: 2.580 (Min: 40.241)
+	Masking type: ASYMMETRIC_SIGNED	 Winning count: 82	 Total accuracy: 2.577 (Min: 40.241)
+
+
+MASK_TYPE parameter analysis for energy class 3
+Swing parameters: quant_mode - mask - correctRange 
+Total cases: 210
+	Masking type: SIMPLE_MASK	 Winning count: 0	 Total accuracy: 0.000 (Min: 21.218)
+	Masking type: ROUND_DOWN	 Winning count: 3	 Total accuracy: 0.047 (Min: 21.218)
+	Masking type: ROUND_UP	 Winning count: 22	 Total accuracy: 0.486 (Min: 21.218)
+	Masking type: MOD_ROUND_UP	 Winning count: 88	 Total accuracy: 11.185 (Min: 21.218)
+	Masking type: MINIMUM_DISTANCE	 Winning count: 20	 Total accuracy: 8.072 (Min: 21.218)
+
+
+MASK parameter analysis for energy class 3
+Swing parameters: quant_mode - mask_type - correctRange 
+Total cases: 30
+	Masking type: 01110000	 Winning count: 0	 Total accuracy: 0.016 (Min: 2.982)
+	Masking type: 01101000	 Winning count: 0	 Total accuracy: 0.024 (Min: 2.982)
+	Masking type: 01100100	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.982)
+	Masking type: 01100010	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.982)
+	Masking type: 01100001	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.982)
+	Masking type: 01011000	 Winning count: 0	 Total accuracy: 0.010 (Min: 2.982)
+	Masking type: 01010100	 Winning count: 0	 Total accuracy: 0.017 (Min: 2.982)
+	Masking type: 01010010	 Winning count: 0	 Total accuracy: 0.008 (Min: 2.982)
+	Masking type: 01010001	 Winning count: 0	 Total accuracy: 0.013 (Min: 2.982)
+	Masking type: 01001100	 Winning count: 0	 Total accuracy: 0.042 (Min: 2.982)
+	Masking type: 01001010	 Winning count: 0	 Total accuracy: 0.019 (Min: 2.982)
+	Masking type: 01001001	 Winning count: 0	 Total accuracy: 0.019 (Min: 2.982)
+	Masking type: 01000110	 Winning count: 0	 Total accuracy: 0.081 (Min: 2.982)
+	Masking type: 01000101	 Winning count: 0	 Total accuracy: 0.054 (Min: 2.982)
+	Masking type: 01000011	 Winning count: 0	 Total accuracy: 0.070 (Min: 2.982)
+	Masking type: 00111000	 Winning count: 0	 Total accuracy: 0.298 (Min: 2.982)
+	Masking type: 00110100	 Winning count: 0	 Total accuracy: 0.069 (Min: 2.982)
+	Masking type: 00110010	 Winning count: 0	 Total accuracy: 0.036 (Min: 2.982)
+	Masking type: 00110001	 Winning count: 0	 Total accuracy: 0.024 (Min: 2.982)
+	Masking type: 00101100	 Winning count: 0	 Total accuracy: 0.000 (Min: 2.982)
+	Masking type: 00101010	 Winning count: 0	 Total accuracy: 0.025 (Min: 2.982)
+	Masking type: 00101001	 Winning count: 0	 Total accuracy: 0.003 (Min: 2.982)
+	Masking type: 00100110	 Winning count: 0	 Total accuracy: 0.012 (Min: 2.982)
+	Masking type: 00100101	 Winning count: 0	 Total accuracy: 0.024 (Min: 2.982)
+	Masking type: 00100011	 Winning count: 0	 Total accuracy: 0.006 (Min: 2.982)
+	Masking type: 00011100	 Winning count: 0	 Total accuracy: 1.741 (Min: 2.982)
+	Masking type: 00011010	 Winning count: 0	 Total accuracy: 0.871 (Min: 2.982)
+	Masking type: 00011001	 Winning count: 0	 Total accuracy: 0.607 (Min: 2.982)
+	Masking type: 00010110	 Winning count: 0	 Total accuracy: 0.259 (Min: 2.982)
+	Masking type: 00010101	 Winning count: 0	 Total accuracy: 0.173 (Min: 2.982)
+	Masking type: 00010011	 Winning count: 0	 Total accuracy: 0.082 (Min: 2.982)
+	Masking type: 00001110	 Winning count: 0	 Total accuracy: 4.086 (Min: 2.982)
+	Masking type: 00001101	 Winning count: 0	 Total accuracy: 3.473 (Min: 2.982)
+	Masking type: 00001011	 Winning count: 1	 Total accuracy: 2.707 (Min: 2.982)
+	Masking type: 00000111	 Winning count: 29	 Total accuracy: 6.584 (Min: 2.982)
+
+
+CORRECTRANGE parameter analysis for energy class 3
+Swing parameters: quant_mode - mask_type - mask 
+Total cases: 525
+	Masking type: True	 Winning count: 46	 Total accuracy: 0.000 (Min: 61.761)
+	Masking type: False	 Winning count: 127	 Total accuracy: 2.358 (Min: 61.761)
+
+
+QUANT_MODE parameter analysis for energy class 4
+Swing parameters: mask_type - mask - correctRange 
+Total cases: 350
+	Masking type: SYMMETRIC	 Winning count: 36	 Total accuracy: 0.000 (Min: 37.535)
+	Masking type: ASYMMETRIC_UNSIGNED	 Winning count: 45	 Total accuracy: 2.664 (Min: 37.535)
+	Masking type: ASYMMETRIC_SIGNED	 Winning count: 45	 Total accuracy: 2.664 (Min: 37.535)
+
+
+MASK_TYPE parameter analysis for energy class 4
+Swing parameters: quant_mode - mask - correctRange 
+Total cases: 210
+	Masking type: SIMPLE_MASK	 Winning count: 0	 Total accuracy: 0.071 (Min: 20.929)
+	Masking type: ROUND_DOWN	 Winning count: 0	 Total accuracy: 0.071 (Min: 20.929)
+	Masking type: ROUND_UP	 Winning count: 14	 Total accuracy: 0.000 (Min: 20.929)
+	Masking type: MOD_ROUND_UP	 Winning count: 74	 Total accuracy: 7.375 (Min: 20.929)
+	Masking type: MINIMUM_DISTANCE	 Winning count: 19	 Total accuracy: 5.769 (Min: 20.929)
+
+
+MASK parameter analysis for energy class 4
+Swing parameters: quant_mode - mask_type - correctRange 
+Total cases: 30
+	Masking type: 01111000	 Winning count: 0	 Total accuracy: 0.017 (Min: 2.980)
+	Masking type: 01110100	 Winning count: 0	 Total accuracy: 0.023 (Min: 2.980)
+	Masking type: 01110010	 Winning count: 0	 Total accuracy: 0.005 (Min: 2.980)
+	Masking type: 01110001	 Winning count: 0	 Total accuracy: 0.029 (Min: 2.980)
+	Masking type: 01101100	 Winning count: 0	 Total accuracy: 0.009 (Min: 2.980)
+	Masking type: 01101010	 Winning count: 0	 Total accuracy: 0.015 (Min: 2.980)
+	Masking type: 01101001	 Winning count: 2	 Total accuracy: 0.024 (Min: 2.980)
+	Masking type: 01100110	 Winning count: 0	 Total accuracy: 0.011 (Min: 2.980)
+	Masking type: 01100101	 Winning count: 0	 Total accuracy: 0.000 (Min: 2.980)
+	Masking type: 01100011	 Winning count: 0	 Total accuracy: 0.020 (Min: 2.980)
+	Masking type: 01011100	 Winning count: 0	 Total accuracy: 0.019 (Min: 2.980)
+	Masking type: 01011010	 Winning count: 0	 Total accuracy: 0.017 (Min: 2.980)
+	Masking type: 01011001	 Winning count: 0	 Total accuracy: 0.009 (Min: 2.980)
+	Masking type: 01010110	 Winning count: 0	 Total accuracy: 0.012 (Min: 2.980)
+	Masking type: 01010101	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.980)
+	Masking type: 01010011	 Winning count: 1	 Total accuracy: 0.012 (Min: 2.980)
+	Masking type: 01001110	 Winning count: 0	 Total accuracy: 0.075 (Min: 2.980)
+	Masking type: 01001101	 Winning count: 0	 Total accuracy: 0.054 (Min: 2.980)
+	Masking type: 01001011	 Winning count: 0	 Total accuracy: 0.021 (Min: 2.980)
+	Masking type: 01000111	 Winning count: 2	 Total accuracy: 0.159 (Min: 2.980)
+	Masking type: 00111100	 Winning count: 0	 Total accuracy: 0.326 (Min: 2.980)
+	Masking type: 00111010	 Winning count: 0	 Total accuracy: 0.344 (Min: 2.980)
+	Masking type: 00111001	 Winning count: 0	 Total accuracy: 0.352 (Min: 2.980)
+	Masking type: 00110110	 Winning count: 0	 Total accuracy: 0.188 (Min: 2.980)
+	Masking type: 00110101	 Winning count: 0	 Total accuracy: 0.107 (Min: 2.980)
+	Masking type: 00110011	 Winning count: 0	 Total accuracy: 0.050 (Min: 2.980)
+	Masking type: 00101110	 Winning count: 0	 Total accuracy: 0.020 (Min: 2.980)
+	Masking type: 00101101	 Winning count: 0	 Total accuracy: 0.019 (Min: 2.980)
+	Masking type: 00101011	 Winning count: 0	 Total accuracy: 0.018 (Min: 2.980)
+	Masking type: 00100111	 Winning count: 1	 Total accuracy: 0.047 (Min: 2.980)
+	Masking type: 00011110	 Winning count: 0	 Total accuracy: 2.824 (Min: 2.980)
+	Masking type: 00011101	 Winning count: 0	 Total accuracy: 2.347 (Min: 2.980)
+	Masking type: 00011011	 Winning count: 0	 Total accuracy: 1.241 (Min: 2.980)
+	Masking type: 00010111	 Winning count: 0	 Total accuracy: 0.466 (Min: 2.980)
+	Masking type: 00001111	 Winning count: 14	 Total accuracy: 4.728 (Min: 2.980)
+
+
+CORRECTRANGE parameter analysis for energy class 4
+Swing parameters: quant_mode - mask_type - mask 
+Total cases: 525
+	Masking type: True	 Winning count: 40	 Total accuracy: 0.000 (Min: 57.674)
+	Masking type: False	 Winning count: 79	 Total accuracy: 2.582 (Min: 57.674)
+
+
+Energy class 1 final evaluation
+	Best mask: ASYMMETRIC_UNSIGNED ROUND_UP 00000001 False
+	Mask accuracy: 0.5978 	 Equivalent quant architecture: 0.6033
+	Better maskings on same quantization type: 0
+
+
+Energy class 2 final evaluation
+	Best mask: ASYMMETRIC_UNSIGNED MOD_ROUND_UP 00000011 True
+	Mask accuracy: 0.5945 	 Equivalent quant architecture: 0.5925
+	Better maskings on same quantization type: 4
+
+
+Energy class 3 final evaluation
+	Best mask: ASYMMETRIC_UNSIGNED MOD_ROUND_UP 00000111 True
+	Mask accuracy: 0.5748 	 Equivalent quant architecture: 0.5549
+	Better maskings on same quantization type: 8
+
+
+Energy class 4 final evaluation
+	Best mask: ASYMMETRIC_UNSIGNED MOD_ROUND_UP 00001111 False
+	Mask accuracy: 0.5186 	 Equivalent quant architecture: 0.5214
+	Better maskings on same quantization type: 2
+
+

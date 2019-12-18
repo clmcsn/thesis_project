@@ -5,6 +5,7 @@ import sys
 sys.path.append("../")
 from common.mask_util import MaskStat
 from common.hw_lib import printer_2s
+from copy import deepcopy
 
 def bit_string_inverter(string):
     new=""
@@ -15,14 +16,13 @@ def bit_string_inverter(string):
             new+="0"
     return new
 
-def str_to_bool(string):
-    if string=="True":
-        return True
-    else:
-        return False
+net="CustomLeNet"
+dataset="CIFAR10"
+info="postTrainMasking"
+report_name="../reports/data_{}{}_{}.txt".format(net,dataset,info)
+log_name="../reports/dataAnalysis_{}_{}_{}.txt".format(net,dataset,info)
+log_name_eaw="../reports/dataAnalysisEnergyAware_{}_{}_{}.txt".format(net,dataset,info)
 
-report_name="../reports/data_CustomLeNetCIFAR10_postTrainMasking.txt"
-log_name="../reports/dataAnalysis_CustomLeNetCIFAR10_postTrainMasking.txt"
 
 #getting datas
 container = []
@@ -32,10 +32,10 @@ with open(report_name,"r") as rep_pointer:
         qm = data[1].split(".")[1]
         mm = data[3].split(".")[1]
         m = data[5]
-        c = str_to_bool(data[6].split(":")[1])
+        c = data[6].split(":")[1]
         correct = int(data[8])
         accuracy = float(data[10])
-        if (correct > 1000):
+        if (m[0] != "1"):
             container += [MaskStat(  quant_mode=qm,
                                     mask_type=mm,
                                     mask=m,
@@ -43,11 +43,112 @@ with open(report_name,"r") as rep_pointer:
                                     correct_preds=correct,
                                     accuracy=accuracy,
                                     model_name="LeNet")]
-#print(len(container))
-#print("_".join((container[1].quant_mode,container[1].mask,str(container[1].correctRange))))
+#list of choices
 quant_mode_list = ["SYMMETRIC","ASYMMETRIC_UNSIGNED","ASYMMETRIC_SIGNED"]
 mask_mode_list = ["SIMPLE_MASK","ROUND_DOWN","ROUND_UP","MOD_ROUND_UP","MINIMUM_DISTANCE"]
 bits = 8
+start_string = 2**(bits-1)
+mask_list=[]
+for i in range(start_string,2**bits): #all possible mask we have (THIS MUST BE FILTERED OUT)
+    mask = printer_2s(i,bits)
+    mask = bit_string_inverter(mask)
+    ones = mask.count("1")
+    if(ones<=bits-4 and ones!=0): #filtering those for which we have results
+        mask_list += [mask]
+correctRange_list = ["True","False"]
+parameter_dictionary={  "quant_mode": quant_mode_list,
+                        "mask_type" : mask_mode_list,
+                        "mask"      : mask_list,
+                        "correctRange": correctRange_list}
+
+def printResult(rep_fname,open_mode,param_analysis,param_list,cycles,dictionary,minimum,energy_class=None):
+    if energy_class:
+        en_str="for energy class {}".format(energy_class)
+    else:
+        en_str=""
+    with open(rep_fname,open_mode) as log_pointer:
+        log_pointer.write("{} parameter analysis {}\n".format(param_analysis.upper(),en_str))
+        log_pointer.write("Swing parameters: {} \n".format(" - ".join(param_list)))
+        log_pointer.write("Total cases: {}\t Total accuracy = sum{for i in range(Total cases)}(accuracy_i) - Min".format(cycles))
+        for key in dictionary.keys():
+            log_pointer.write("\tMasking type: {}\t Winning count: {}\t Total accuracy: {:.3f} (Min: {:.3f})\n".format(key,dictionary[key][1],dictionary[key][0],minimum))
+        log_pointer.write("\n\n")
+
+
+def loop_analysis(container,paramDic,paramToAnalyze,rep_fname,energy_class=None):
+    #creating dictionary score board
+    score_board={}
+    for element in paramDic[paramToAnalyze]:
+        score_board[element]=[0,0] #it's a list first used for number of wins, second for overall accuracy
+
+    #creating list of parameters to be analyzed
+    param_list=[]
+    for key in paramDic.keys():
+        if key!=paramToAnalyze:
+            param_list+=[key]
+
+    #choosing file opening mode
+    try:
+        f = open(rep_fname)
+        openMode="a"
+    except IOError:
+        print("File {} not exist. It will be created!".format(rep_fname))
+        openMode="w"
+    finally:
+        if openMode=="a":
+            f.close()
+        else:
+            pass
+
+    cycles=0
+    for option1 in paramDic[param_list[0]]:
+        for option2 in paramDic[param_list[1]]:
+            for option3 in paramDic[param_list[2]]:
+                cycles+=1
+                best_accuracy=0.0
+                winning=[]
+                for entry in container:
+                    if ((getattr(entry,param_list[0]) == option1) and (getattr(entry,param_list[1]) == option2) and (getattr(entry,param_list[2]) == option3)):
+                        score_board[getattr(entry,paramToAnalyze)][0]+=entry.accuracy
+                        if (entry.accuracy==best_accuracy): #first we check if it's equal!
+                            winning += [getattr(entry,paramToAnalyze)]
+                        if (entry.accuracy>best_accuracy): #then if is higher and if there is the need to upload 
+                            winning=[] #reset list of winning parameters
+                            best_accuracy = entry.accuracy
+                            winning += [getattr(entry,paramToAnalyze)]
+                if winning:
+                    if best_accuracy>0.1:
+                        for e in winning:
+                            score_board[e][1]+=1
+    l=[] #support list for getting the minimum
+    for item in score_board.values():
+        l+=[item[0]]
+    minimum=min(l)
+    for key in score_board.keys():
+        score_board[key][0]-=minimum
+    printResult(rep_fname, openMode, paramToAnalyze, param_list, cycles, score_board, minimum, energy_class)
+
+def loop_analysis_energyAware(container,paramDic,paramToAnalyze,bits,energy_class,rep_fname):
+    container_e=[]
+    for entry in container:
+        ones = entry.mask.count("1")
+        if ones==energy_class:
+            container_e+=[entry]
+    mask_list=[]
+    for i in range(2**(bits-1),2**bits): #all possible mask we have (THIS MUST BE FILTERED OUT)
+        mask = printer_2s(i,bits)
+        mask = bit_string_inverter(mask)
+        ones = mask.count("1")
+        if(ones<=bits-4 and ones!=0 and ones==energy_class): #filtering those for which we have results
+            mask_list += [mask]
+    paramDic_e=deepcopy(paramDic)
+    paramDic_e["mask"]=mask_list
+    loop_analysis(container_e,paramDic_e,paramToAnalyze,rep_fname,energy_class=energy_class)
+    del paramDic_e
+    del container_e
+#print(len(container))
+#print("_".join((container[1].quant_mode,container[1].mask,str(container[1].correctRange))))
+
 ####################SETTINGS##################################
 maskWinner=1
 quantModeWinner=1
@@ -60,185 +161,17 @@ try:
 except FileNotFoundError:
     pass
 
-if maskWinner:
-    #winning masking algorithm
-    dictionary={"SIMPLE_MASK":0,"ROUND_DOWN":0,"ROUND_UP":0,"MOD_ROUND_UP":0,"MINIMUM_DISTANCE":0}
-    cycles=0
-    noneC=0
-    for qm in quant_mode_list: #for every possible quantization mode
-        signed= qm != "ASYMMETRIC_UNSIGNED"
-        if signed:
-            start_string = 2**(bits-1)
-        else:
-            start_string = 1
-        for i in range(start_string,2**bits): #all possible mask we have (THIS MUST BE FILTERED OUT)
-            mask = printer_2s(i,bits)
-            mask = bit_string_inverter(mask)
-            ones = mask.count("1")
-            if(ones<=bits-4 and ones!=0): #filtering those for which we have results
-                for j in [True,False]: #correction swing parameter
-                    cycles+=1
-                    best_accuracy=0.0
-                    winning=[]
-                    for entry in container:
-                        if ((entry.quant_mode == qm) and (entry.mask == mask) and (entry.correctRange == j)):
-                            if (entry.accuracy==best_accuracy): #first we check if it's equal!
-                                winning += [entry.mask_type]
-                            if (entry.accuracy>best_accuracy): #then if is higher and if there is the need to upload 
-                                winning=[] #reset list of winning parameters
-                                best_accuracy = entry.accuracy
-                                winning += [entry.mask_type]
-                    if winning:
-                        for e in winning:
-                            dictionary[e]+=1
-                    else:
-                        noneC+=1
-                    
-    #print results
-    with open(log_name,"w") as log_pointer:
-        log_pointer.write("Masking Type best accuracy count\n")
-        log_pointer.write("Swing parameters: Quantization Mode - Mask - Correcting Range\n")
-        log_pointer.write("Total cases:{}\t Non significant cases:{}\n".format(cycles,noneC))
-        for key in dictionary.keys():
-            log_pointer.write("\tMasking type: {}\t Winning count: {}\n".format(key,dictionary[key]))
-        log_pointer.write("\n\n")
-
-if quantModeWinner:
-    #winning quant algorithm
-    dictionary={"SYMMETRIC":0,"ASYMMETRIC_UNSIGNED":0,"ASYMMETRIC_SIGNED":0}
-    cycles=0
-    noneC=0
-    for mm in mask_mode_list:
-        start_string = 2**(bits-1) ##I SELECT ONLY THOSE RUN FOR THE WIN
-        for i in range(start_string,2**bits): #all possible mask we have
-            mask = printer_2s(i,bits)
-            mask = bit_string_inverter(mask)
-            ones = mask.count("1")
-            if(ones<=bits-4 and ones!=0): #filtering those for which we have results
-                for j in [True,False]:
-                    cycles+=1
-                    best_accuracy=0.0
-                    winning=[]
-                    for entry in container:
-                        if ((entry.mask_type == mm) and (entry.mask == mask) and (entry.correctRange == j)):
-                            if (entry.accuracy==best_accuracy): #first we check if it's equal!
-                                winning += [entry.quant_mode]
-                            if (entry.accuracy>best_accuracy):
-                                winning = []
-                                best_accuracy = entry.accuracy
-                                winning += [entry.quant_mode]
-                    if winning:
-                        for e in winning:
-                            dictionary[e]+=1
-                    else:
-                        #print("_".join((mm,mask,str(j))))
-                        noneC+=1
-    #print results
-    with open(log_name,"a") as log_pointer:
-        log_pointer.write("Quantization Type best accuracy count\n")
-        log_pointer.write("Swing parameters: Masking Mode - Mask - Correcting Range\n")
-        log_pointer.write("Total cases:{}\t Non significant cases:{}\n".format(cycles,noneC))
-        for key in dictionary.keys():
-            log_pointer.write("\Quantization type: {}\t Winning count: {}\n".format(key,dictionary[key]))
-        log_pointer.write("\n\n")
-
-if bestCorrection:
-    #winning correction or not correction
-    dictionary={"Correct":0,"NotCorrect":0}
-    cycles=0
-    noneC=0
-    for qm in quant_mode_list:
-        signed= qm != "ASYMMETRIC_UNSIGNED"
-        if signed:
-            start_string = 2**(bits-1)
-        else:
-            start_string = 1
-        for mm in mask_mode_list:
-            for i in range(start_string,2**bits): #all possible mask we have
-                mask = printer_2s(i,bits)
-                mask = bit_string_inverter(mask)
-                ones = mask.count("1")
-                if(ones<=bits-4 and ones!=0): #filtering those for which we have results
-                    best_accuracy=0.0
-                    winning=[]
-                    for entry in container:
-                        if ((entry.quant_mode == qm) and (entry.mask_type == mm) and (entry.mask == mask)):
-                            if (entry.accuracy==best_accuracy):
-                                winning+=[entry.correctRange]
-                            if (entry.accuracy>best_accuracy):
-                                winning=[]
-                                best_accuracy = entry.accuracy
-                                winning += [entry.correctRange]
-                    if winning:
-                        for e in winning:
-                            if e:
-                                dictionary["Correct"]+=1
-                            else:
-                                dictionary["NotCorrect"]+=1
-                    else:
-                        #print("_".join((qm,mm,mask)))
-                        noneC+=1
-                    cycles+=1
-    #print results
-    with open(log_name,"a") as log_pointer:
-        log_pointer.write("Correction policy best accuracy count\n")
-        log_pointer.write("Swing parameters: Quantization Mode - Masking Mode - Mask\n")
-        log_pointer.write("Total cases:{}\t Non significant cases:{}\n".format(cycles,noneC))
-        for key in dictionary.keys():
-            log_pointer.write("\tCorrect: {}\t Winning count: {}\n".format(key,dictionary[key]))
-        log_pointer.write("\n\n")
-
-if bestMask:
-    for energy_class in range(1,bits-3):
-        #creting the dictionary
-        dictionary={}
-        start_string = 2**(bits-1) #msb masking always get lower accuracy, useless to include them
-        #creating dictionary structure
-        for i in range(start_string,2**bits): #all possible mask we have
-            mask = printer_2s(i,bits)
-            mask = bit_string_inverter(mask)
-            ones = mask.count("1")
-            if ones==energy_class:
-                dictionary[mask]=0
-        #init loop
-        cycles=0
-        noneC=0
-        for qm in quant_mode_list:
-            signed= qm != "ASYMMETRIC_UNSIGNED"
-            for mm in mask_mode_list:
-                for j in (True,False):
-                    best_accuracy=0.0
-                    winning=[]
-                    for entry in container:
-                        if ((entry.quant_mode == qm) and (entry.mask_type == mm) and (entry.correctRange == j)):
-                            if not (entry.mask[0]=="1"): #msb masking always get lower accuracy, useless to include them
-                                ones = entry.mask.count("1")
-                                if ones==energy_class:
-                                    if (entry.accuracy==best_accuracy):
-                                        winning+=[entry.mask]
-                                    if (entry.accuracy>best_accuracy):
-                                        winning=[]
-                                        best_accuracy = entry.accuracy
-                                        winning += [entry.mask]
-                    if winning:
-                        for e in winning:
-                            dictionary[e]+=1
-                    else:
-                        #print("_".join((mm,mask,str(j))))
-                        noneC+=1
-                    cycles+=1
-        #print results
-        with open(log_name,"a") as log_pointer:
-            log_pointer.write("Mask for energy class {} best accuracy count\n".format(energy_class))
-            log_pointer.write("Swing parameters: Quantization Mode - Masking Mode - Range correct\n")
-            log_pointer.write("Total cases:{}\t Non significant cases:{}\n".format(cycles,noneC))
-            for key in dictionary.keys():
-                log_pointer.write("\tCorrect: {}\t Winning count: {}\n".format(key,dictionary[key]))
-            log_pointer.write("\n\n")
-
-def val(a):
-    return a
-
+#loop_analysis_energyAware(container, parameter_dictionary, "quant_mode", bits, 2, log_name)
+#exit()
+loop_analysis(container, parameter_dictionary, "quant_mode", log_name)
+loop_analysis(container, parameter_dictionary, "mask_type", log_name)
+loop_analysis(container, parameter_dictionary, "mask", log_name)
+loop_analysis(container, parameter_dictionary, "correctRange", log_name)
+for energy_class in range(1,bits-3):
+    loop_analysis_energyAware(container, parameter_dictionary, "quant_mode", bits, energy_class, log_name_eaw)
+    loop_analysis_energyAware(container, parameter_dictionary, "mask_type", bits, energy_class, log_name_eaw)
+    loop_analysis_energyAware(container, parameter_dictionary, "mask", bits, energy_class, log_name_eaw)
+    loop_analysis_energyAware(container, parameter_dictionary, "correctRange", bits, energy_class, log_name_eaw)
 
 #best accuracy for energy class
 quantDic={}
@@ -253,24 +186,24 @@ with open(quant_rep_file,"r") as quant_pointer:
             quantDic[qm]={}
         quantDic[qm][eb]=ac
 
-if quantVsMask:
-    for energy_class in range(1,bits-3):
-        best_accuracy=0
-        best_accuracy_data=None
-        mask_win=0
-        for entry in container:
-            ones=entry.mask.count("1")
-            if ((ones==energy_class) and (not (entry.mask[0]=="1"))):
-                if entry.accuracy > best_accuracy:
-                    best_accuracy=entry.accuracy
-                    best_accuracy_data = entry
-                if entry.accuracy > quantDic[entry.quant_mode][energy_class]:
-                    mask_win+=1
-        #print results
-        with open(log_name,"a") as log_pointer:
-            log_pointer.write("Energy class {} final evaluation\n".format(energy_class))
-            log_pointer.write("\tBest mask: {} {} {} {}\n".format(best_accuracy_data.quant_mode,best_accuracy_data.mask_type,best_accuracy_data.mask,best_accuracy_data.correctRange))
-            log_pointer.write("\tMask accuracy: {} \t Equivalent quant architecture: {}\n".format(best_accuracy_data.accuracy,quantDic[entry.quant_mode][energy_class]))
-            log_pointer.write("\tBetter maskings on same quantization type: {}\n".format(mask_win))
-            log_pointer.write("\n\n")
+
+for energy_class in range(1,bits-3):
+    best_accuracy=0
+    best_accuracy_data=None
+    mask_win=0
+    for entry in container:
+        ones=entry.mask.count("1")
+        if ((ones==energy_class) and (not (entry.mask[0]=="1"))):
+            if entry.accuracy > best_accuracy:
+                best_accuracy=entry.accuracy
+                best_accuracy_data = entry
+            if entry.accuracy > quantDic[entry.quant_mode][energy_class]:
+                mask_win+=1
+    #print results
+    with open(log_name_eaw,"a") as log_pointer:
+        log_pointer.write("Energy class {} final evaluation\n".format(energy_class))
+        log_pointer.write("\tBest mask: {} {} {} {}\n".format(best_accuracy_data.quant_mode,best_accuracy_data.mask_type,best_accuracy_data.mask,best_accuracy_data.correctRange))
+        log_pointer.write("\tMask accuracy: {} \t Equivalent quant architecture: {}\n".format(best_accuracy_data.accuracy,quantDic[entry.quant_mode][energy_class]))
+        log_pointer.write("\tBetter maskings on same quantization type: {}\n".format(mask_win))
+        log_pointer.write("\n\n")
 
