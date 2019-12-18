@@ -30,6 +30,8 @@ model="resnet32"
 dataset="CIFAR10"
 network = models.resnet_cifar.resnet32_cifar()
 network.to(device)
+if device == 'cuda':
+    network = torch.nn.DataParallel(network)
 
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
@@ -51,7 +53,8 @@ train_set = torchvision.datasets.CIFAR10(
 train_data_loader = torch.utils.data.DataLoader(
     train_set
     ,shuffle=True
-    ,batch_size = batch_size)
+    ,batch_size = batch_size
+    ,num_workers=2)
 
 test_set = torchvision.datasets.CIFAR10(                                                            
     root="../../data/CIFAR10"
@@ -61,12 +64,14 @@ test_set = torchvision.datasets.CIFAR10(
 test_data_loader = torch.utils.data.DataLoader(
     test_set
     ,shuffle=False
-    ,batch_size = batch_size)
+    ,batch_size = batch_size
+    ,num_workers=2)
 
 #setting optimizer
-optimizer = optim.Adam(network.parameters(), lr=0.0001, weight_decay=0.0005)
+#optimizer = optim.Adam(network.parameters(), lr=0.0001, weight_decay=0.0005)
 criterion = nn.CrossEntropyLoss()
-
+optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
+scheduler = optim.lr_scheduler.StepLR(optimizer, 120, gamma=0.1, last_epoch=-1)
 firstTime=True
 #training
 for epoch in range(epochs_num):
@@ -99,6 +104,7 @@ for epoch in range(epochs_num):
             test_loss += F.nll_loss(preds, labels, reduction='sum').item()  # sum up batch loss
             correct += preds.argmax(dim=1).eq(labels).sum().item()
     
+    scheduler.step()
     test_loss /= len(test_data_loader.dataset)
     
     if firstTime:
