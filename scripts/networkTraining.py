@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 #########SETTINGS#########
-epochs_num = 120
-batch_size = 50
-device="cuda"
+epochs_num = 150
+batch_size = 100
 
 import sys
 sys.path.append("../")
@@ -26,16 +25,29 @@ import torch.optim as optim #needed for optimizing the cost function
 import torchvision
 import torchvision.transforms as transforms
 
-model="resnet"
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model="resnet32"
 dataset="CIFAR10"
 network = models.resnet_cifar.resnet32_cifar()
 network.to(device)
-#train the network
+
+transform_train = transforms.Compose([
+    transforms.RandomCrop(32, padding=4),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
+
+transform_test = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
+
 train_set = torchvision.datasets.CIFAR10(
     root="../../data/CIFAR10"
     ,train=True
     ,download=True
-    ,transform=transforms.Compose([transforms.ToTensor()]))
+    ,transform=transform_train)
 train_data_loader = torch.utils.data.DataLoader(
     train_set
     ,shuffle=True
@@ -45,14 +57,14 @@ test_set = torchvision.datasets.CIFAR10(
     root="../../data/CIFAR10"
     ,train=False
     ,download=True
-    ,transform=transforms.Compose([transforms.ToTensor()]))
+    ,transform=transform_test)
 test_data_loader = torch.utils.data.DataLoader(
     test_set
     ,shuffle=False
     ,batch_size = batch_size)
 
 #setting optimizer
-optimizer = optim.Adam(network.parameters(), lr=0.0005)
+optimizer = optim.Adam(network.parameters(), lr=0.0001, weight_decay=0.0005)
 criterion = nn.CrossEntropyLoss()
 
 firstTime=True
@@ -88,9 +100,11 @@ for epoch in range(epochs_num):
             correct += preds.argmax(dim=1).eq(labels).sum().item()
     
     test_loss /= len(test_data_loader.dataset)
+    
     if firstTime:
         prev_tloss = test_loss
         best_acc = 100. * correct / len(test_data_loader.dataset)
+        firstTime = False
 
     print('\nTest set: Epoch: {} Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(epoch,
             test_loss, correct, len(test_data_loader.dataset),
@@ -105,8 +119,8 @@ for epoch in range(epochs_num):
     if (epoch!=0):
         os.remove("../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch))
     
-    if test_loss<prev_tloss:
-        prev_loss = test_loss
+    if test_loss < prev_tloss:
+        prev_tloss = test_loss
         best_acc = 100. * correct / len(test_data_loader.dataset)
         torch.save({
             'epoch': epoch,
@@ -115,4 +129,4 @@ for epoch in range(epochs_num):
             'loss': test_loss,
             }, "../models/checkpoints/{}_{}_bestLoss.tar".format(model,dataset))
 
-    print("Best acc:{}".format(best_acc))
+    print("Best acc:{}\n".format(best_acc))
