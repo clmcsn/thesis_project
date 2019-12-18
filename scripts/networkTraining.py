@@ -89,7 +89,8 @@ for epoch in range(epochs_num):
     
     test_loss /= len(test_data_loader.dataset)
     if firstTime:
-        prev_tloss=test_loss
+        prev_tloss = test_loss
+        best_acc = 100. * correct / len(test_data_loader.dataset)
 
     print('\nTest set: Epoch: {} Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(epoch,
             test_loss, correct, len(test_data_loader.dataset),
@@ -105,9 +106,13 @@ for epoch in range(epochs_num):
         os.remove("../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch))
     
     if test_loss<prev_tloss:
+        prev_loss = test_loss
+        best_acc = 100. * correct / len(test_data_loader.dataset)
         torch.save({
             'epoch': epoch,
             'model_state_dict': network.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': test_loss,
             }, "../models/checkpoints/{}_{}_bestLoss.tar".format(model,dataset))
+
+    print("Best Loss:",test_loss)
