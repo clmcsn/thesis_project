@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #########SETTINGS#########
-epochs_num = 150
+epochs_num = 300
 batch_size = 100
 
 import sys
@@ -70,7 +70,7 @@ test_data_loader = torch.utils.data.DataLoader(
 #setting optimizer
 #optimizer = optim.Adam(network.parameters(), lr=0.0001, weight_decay=0.0005)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
+optimizer = optim.SGD(network.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
 scheduler = optim.lr_scheduler.StepLR(optimizer, 120, gamma=0.1, last_epoch=-1)
 firstTime=True
 #training
