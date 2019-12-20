@@ -48,9 +48,10 @@ def make_path(quant_mode,mask_mode,mask,correctRange):
     return "/".join([qm,mm,mask,str(correctRange)])
 
 network = models.resnet_cifar.resnet32_cifar()
-network = network.to(device)
-checkpoint = torch.load('../models/checkpoints/resnet32_CIFAR10_bestLoss.tar', map_location=device)
+network = network.to(device) 
+checkpoint = torch.load('../models/checkpoints/resnet32_CIFAR10_bestAccuracy.tar', map_location=device)
 network.load_state_dict(checkpoint['model_state_dict'])
+
 
 train_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
     root='../../data/CIFAR10'
@@ -69,7 +70,7 @@ quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED
 mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 dummy_input = (torch.zeros([1,3,32,32]))
 
-with open("../reports/analysis_ResNet32_CIFAR10_postTrainMasking.txt","w") as log_pointer:
+with open("../reports/data_ResNet32_CIFAR10_postTrainMasking.txt","w") as log_pointer:
     for quant_mode in quant_mode_list:
         signed= quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED
         if signed:

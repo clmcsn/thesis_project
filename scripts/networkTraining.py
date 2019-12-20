@@ -30,8 +30,6 @@ model="resnet32"
 dataset="CIFAR10"
 network = models.resnet_cifar.resnet32_cifar()
 network.to(device)
-if device == 'cuda':
-    network = torch.nn.DataParallel(network)
 
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
@@ -108,7 +106,7 @@ for epoch in range(epochs_num):
     test_loss /= len(test_data_loader.dataset)
     
     if firstTime:
-        prev_tloss = test_loss
+        prev_tcorr = correct
         best_acc = 100. * correct / len(test_data_loader.dataset)
         firstTime = False
 
@@ -125,14 +123,14 @@ for epoch in range(epochs_num):
     if (epoch!=0):
         os.remove("../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch))
     
-    if test_loss < prev_tloss:
-        prev_tloss = test_loss
+    if correct > prev_tcorr:
+        prev_tcorr = correct
         best_acc = 100. * correct / len(test_data_loader.dataset)
         torch.save({
             'epoch': epoch,
             'model_state_dict': network.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': test_loss,
-            }, "../models/checkpoints/{}_{}_bestLoss.tar".format(model,dataset))
+            }, "../models/checkpoints/{}_{}_bestAccuracy.tar".format(model,dataset))
 
     print("Best acc:{}\n".format(best_acc))
