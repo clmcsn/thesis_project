@@ -1,6 +1,6 @@
 conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -42,7 +42,7 @@ relu:
   overrides: null
 layer1.0.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -84,7 +84,7 @@ layer1.0.relu1:
   overrides: null
 layer1.0.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -140,7 +140,7 @@ layer1.0.residual_eltwiseadd:
   overrides: null
 layer1.1.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -182,7 +182,7 @@ layer1.1.relu1:
   overrides: null
 layer1.1.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -238,7 +238,7 @@ layer1.1.residual_eltwiseadd:
   overrides: null
 layer1.2.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -280,7 +280,7 @@ layer1.2.relu1:
   overrides: null
 layer1.2.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -336,7 +336,7 @@ layer1.2.residual_eltwiseadd:
   overrides: null
 layer1.3.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -378,7 +378,7 @@ layer1.3.relu1:
   overrides: null
 layer1.3.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -434,7 +434,7 @@ layer1.3.residual_eltwiseadd:
   overrides: null
 layer1.4.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -476,7 +476,7 @@ layer1.4.relu1:
   overrides: null
 layer1.4.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -532,7 +532,7 @@ layer1.4.residual_eltwiseadd:
   overrides: null
 layer2.0.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -574,7 +574,7 @@ layer2.0.relu1:
   overrides: null
 layer2.0.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -616,7 +616,7 @@ layer2.0.relu2:
   overrides: null
 layer2.0.downsample.0:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -658,7 +658,7 @@ layer2.0.residual_eltwiseadd:
   overrides: null
 layer2.1.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -700,7 +700,7 @@ layer2.1.relu1:
   overrides: null
 layer2.1.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -756,7 +756,7 @@ layer2.1.residual_eltwiseadd:
   overrides: null
 layer2.2.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -798,7 +798,7 @@ layer2.2.relu1:
   overrides: null
 layer2.2.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -854,7 +854,7 @@ layer2.2.residual_eltwiseadd:
   overrides: null
 layer2.3.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -896,7 +896,7 @@ layer2.3.relu1:
   overrides: null
 layer2.3.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -952,7 +952,7 @@ layer2.3.residual_eltwiseadd:
   overrides: null
 layer2.4.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -994,7 +994,7 @@ layer2.4.relu1:
   overrides: null
 layer2.4.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1050,7 +1050,7 @@ layer2.4.residual_eltwiseadd:
   overrides: null
 layer3.0.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1092,7 +1092,7 @@ layer3.0.relu1:
   overrides: null
 layer3.0.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1134,7 +1134,7 @@ layer3.0.relu2:
   overrides: null
 layer3.0.downsample.0:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1176,7 +1176,7 @@ layer3.0.residual_eltwiseadd:
   overrides: null
 layer3.1.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1218,7 +1218,7 @@ layer3.1.relu1:
   overrides: null
 layer3.1.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1274,7 +1274,7 @@ layer3.1.residual_eltwiseadd:
   overrides: null
 layer3.2.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1316,7 +1316,7 @@ layer3.2.relu1:
   overrides: null
 layer3.2.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1372,7 +1372,7 @@ layer3.2.residual_eltwiseadd:
   overrides: null
 layer3.3.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1414,7 +1414,7 @@ layer3.3.relu1:
   overrides: null
 layer3.3.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1470,7 +1470,7 @@ layer3.3.residual_eltwiseadd:
   overrides: null
 layer3.4.conv1:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1512,7 +1512,7 @@ layer3.4.relu1:
   overrides: null
 layer3.4.conv2:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE
@@ -1582,7 +1582,7 @@ avgpool:
   overrides: null
 fc:
   bits_activations: 8
-  bits_weights: 8
+  bits_weights: 7
   bits_bias: 32
   mode: ASYMMETRIC_SIGNED
   clip_acts: NONE

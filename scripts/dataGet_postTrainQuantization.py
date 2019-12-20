@@ -15,6 +15,8 @@ import torchvision.transforms as transforms
 import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 import distiller.utils
+import distiller.models.cifar10 as models
+
 
 import models.cifar10.LeNet as LeNet
 from common.nnTools import get_all_preds
@@ -25,9 +27,9 @@ bits=8
 acc_bits=32
 rep_string="QuantMode: {}\tQuantBits: {}\t Correct: {}\t Accuracy: {}\n"
 
-network = LeNet.LeNet()
+network = models.resnet_cifar.resnet32_cifar()
 network = network.to(device)
-checkpoint = torch.load('../models/checkpoints/LeNet_CIFAR10_epoch100.tar', map_location=device)
+checkpoint = torch.load('../models/checkpoints/resnet32_CIFAR10_bestAccuracy.tar', map_location=device)
 network.load_state_dict(checkpoint['model_state_dict'])
 
 train_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
@@ -47,7 +49,7 @@ dummy_input = (torch.zeros([1,3,32,32]))
 
 quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
 
-with open("../reports/analysisCustomLeNet_postTrainQuantizing.txt","w") as log_pointer:
+with open("../reports/data_resnet32_CIFAR10_postTrainQuantizing.txt","w") as log_pointer:
     for quant_mode in quant_mode_list:
         for qw_bits in range(4,bits):
             quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=bits, bits_parameters=qw_bits, bits_accum=acc_bits,

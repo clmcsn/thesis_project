@@ -16,13 +16,14 @@ def bit_string_inverter(string):
             new+="0"
     return new
 
-net="CustomLeNet"
+net="ResNet32"
 dataset="CIFAR10"
 info="postTrainMasking"
-report_name="../reports/data_{}{}_{}.txt".format(net,dataset,info)
+report_name="../reports/data_{}_{}_{}.txt".format(net,dataset,info)
 log_name="../reports/dataAnalysis_{}_{}_{}.txt".format(net,dataset,info)
 log_name_eaw="../reports/dataAnalysisEnergyAware_{}_{}_{}.txt".format(net,dataset,info)
-
+info="postTrainQuantizing"
+quant_rep_file="../reports/data_{}_{}_{}.txt".format(net,dataset,info)
 
 #getting datas
 container = []
@@ -69,7 +70,7 @@ def printResult(rep_fname,open_mode,param_analysis,param_list,cycles,dictionary,
     with open(rep_fname,open_mode) as log_pointer:
         log_pointer.write("{} parameter analysis {}\n".format(param_analysis.upper(),en_str))
         log_pointer.write("Swing parameters: {} \n".format(" - ".join(param_list)))
-        log_pointer.write("Total cases: {}\t Total accuracy = sum{for i in range(Total cases)}(accuracy_i) - Min".format(cycles))
+        log_pointer.write("Total cases: {}\t Total accuracy = sum[for i in range(Total cases)](accuracy_i) - Min\n".format(cycles))
         for key in dictionary.keys():
             log_pointer.write("\tMasking type: {}\t Winning count: {}\t Total accuracy: {:.3f} (Min: {:.3f})\n".format(key,dictionary[key][1],dictionary[key][0],minimum))
         log_pointer.write("\n\n")
@@ -175,7 +176,6 @@ for energy_class in range(1,bits-3):
 
 #best accuracy for energy class
 quantDic={}
-quant_rep_file="../reports/data_CustomLeNet_postTrainQuantization.txt"
 with open(quant_rep_file,"r") as quant_pointer:
     for line in quant_pointer:
         data=line.split()

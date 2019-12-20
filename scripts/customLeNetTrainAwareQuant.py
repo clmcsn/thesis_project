@@ -3,12 +3,12 @@
 #tensorboard recap is not avelaible
 
 #########SETTINGS#########
-epochs_num = 120
+epochs_num = 350
 batch_size = 50
 #preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
 preTrainedModelPath=None
 preTrainedQuantModelPath="../models/checkpoints/QuantLeNet_CIFAR10_epoch100a.tar"
-device="cpu"
+device="cuda"
 
 import sys
 sys.path.append("../")
@@ -25,20 +25,21 @@ import torch.optim as optim #needed for optimizing the cost function
 import torchvision
 import torchvision.transforms as transforms
 import distiller
+import distiller.models.cifar10 as models
 
 from common.mask_util import MaskType
 
 #fetching train_set
-train_set = torchvision.datasets.FashionMNIST( #
-    root='../../data/FashionMNIST'
+train_set = torchvision.datasets.CIFAR10( #
+    root='../../data/CIFAR10'
     ,train=True  
     ,download=True              
     ,transform=transforms.Compose([transforms.ToTensor()])
 )
 
 #fetching test_set
-test_set = torchvision.datasets.FashionMNIST( #we are fetching our datasets
-    root='../../data/FashionMNIST'
+test_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
+    root='../../data/CIFAR10'
     ,train=False
     ,download=True
     ,transform=transforms.Compose([transforms.ToTensor()])
@@ -55,7 +56,7 @@ train_data_loader= torch.utils.data.DataLoader(
     ,shuffle=True
     ,batch_size=batch_size)
 
-if preTrainedModelPath:
+"""if preTrainedModelPath:
     if os.path.isfile(preTrainedModelPath):
         with torch.no_grad():
             #loading network
@@ -73,13 +74,15 @@ if preTrainedModelPath:
             test_accuracy=correct_test_predictions/len(test_set)
             #TODO implement a better report
             print(train_accuracy,test_accuracy)
-            del preTrainedNetwork
+            del preTrainedNetwork"""
 
 toTrain=True
 start_epoch=0
-network=LeNet.LeNet()
+model="resnet32"
+dataset="CIFAR10"
+network=models.resnet_cifar.resnet32_cifar()
 network.to(device)
-optimizer = optim.Adam(network.parameters(), lr=0.001)
+optimizer = optim.SGD(network.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
 quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,optimizer=optimizer
                                                                         ,bits_activations=8
@@ -87,8 +90,8 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,bits_bias=8
                                                                         ,overrides=None
                                                                         ,mode=distiller.quantization.LinearQuantMode.SYMMETRIC
-                                                                        ,mask=MaskType.MINIMUM_DISTANCE
-                                                                        ,maskList=[2] 
+                                                                        ,mask=MaskType.MOD_ROUND_UP
+                                                                        ,maskList=[2,1] 
                                                                         ,correctRange=True
                                                                         ,ema_decay=0.999
                                                                         ,per_channel_wts=False
@@ -96,20 +99,22 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,num_bits_inputs=None
 )
 
+scheduler = optim.lr_scheduler.StepLR(quant_net.optimizer, 120, gamma=0.1, last_epoch=-1)
+
 #setting up the distiller 
-dummy_input = (torch.zeros([1,1,28,28]))
+dummy_input = (torch.zeros([1,1,32,32]))
 quant_net.prepare_model(dummy_input)
 quant_net.quantize_params()
 quant_net.model.to(device)
 
-if os.path.isfile(preTrainedQuantModelPath):
+"""if os.path.isfile(preTrainedQuantModelPath):
     print("Checkpoint found!")
     checkpoint = torch.load(preTrainedQuantModelPath)
     quant_net.model.load_state_dict(checkpoint['model_state_dict'])
     start_epoch=checkpoint['epoch']+1
     if start_epoch==epochs_num:
         print("Model fully trained!")
-        toTrain=False
+        toTrain=False"""
 
 if toTrain:
     if start_epoch!=0:
@@ -119,10 +124,10 @@ if toTrain:
     scheduler = optim.lr_scheduler.StepLR(
         quant_net.optimizer
         ,step_size=30
-        ,gamma=0.5)"""
+        ,gamma=0.5)
 
     if start_epoch!=0: #if checkpoint load scheduler state
-        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])"""
 
 
     #setting criterion
@@ -161,7 +166,7 @@ if toTrain:
                 correct += preds.argmax(dim=1).eq(labels).sum().item()
         
         test_loss /= len(test_data_loader.dataset)
-
+        scheduler.step()
         print('\nTest set: Epoch: {} Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(epoch,
             test_loss, correct, len(test_data_loader.dataset),
             100. * correct / len(test_data_loader.dataset)))
@@ -179,21 +184,22 @@ if toTrain:
                 'model_state_dict': quant_net.model.state_dict(),
                 'optimizer_state_dict': quant_net.optimizer.state_dict(),
                # 'scheduler_state_dict': scheduler.state_dict(),
-                }, "../models/checkpoints/QuantLeNet_FashionMNIST_epoch{}.tar".format(epoch+1))
+                }, "../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch+1))
         if (epoch!=0):
-            os.remove("../models/checkpoints/QuantLeNet_FashionMNIST_epoch{}.tar".format(epoch))
-#test
+            os.remove("../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch))
+        
+        if firstTime:
+            prev_tcorr = correct
+            best_acc = 100. * correct / len(test_data_loader.dataset)
+            firstTime = False
 
-#forward pass
-quant_net.model.eval()
-with torch.no_grad():
-	train_preds = get_all_preds(quant_net.model, train_data_loader, device=device)
-	correct_train_predictions=train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets).to(device)).sum().item()
-	train_accuracy=correct_train_predictions/len(train_set)
-
-	test_preds = get_all_preds(quant_net.model, test_data_loader, device=device)
-	correct_test_predictions=test_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets).to(device)).sum().item()
-	test_accuracy=correct_test_predictions/len(test_set)
-print(len(train_preds))
-print(len(train_set.targets))
-print(train_accuracy,test_accuracy)
+        if correct > prev_tcorr:
+            prev_tcorr = correct
+            best_acc = 100. * correct / len(test_data_loader.dataset)
+            torch.save({
+                'epoch': epoch,
+                'model_state_dict': network.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'loss': test_loss,
+                }, "../models/checkpoints/{}_{}_bestAccuracy.tar".format(model,dataset))
+        print("Best acc:{}\n".format(best_acc))
