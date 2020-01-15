@@ -8,7 +8,7 @@ batch_size = 50
 #preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
 preTrainedModelPath=None
 preTrainedQuantModelPath="../models/checkpoints/QuantLeNet_CIFAR10_epoch100a.tar"
-device="cuda"
+device="cpu"
 
 import sys
 sys.path.append("../")
@@ -102,7 +102,7 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
 scheduler = optim.lr_scheduler.StepLR(quant_net.optimizer, 120, gamma=0.1, last_epoch=-1)
 
 #setting up the distiller 
-dummy_input = (torch.zeros([1,1,32,32]))
+dummy_input = (torch.zeros([1,3,32,32]))
 quant_net.prepare_model(dummy_input)
 quant_net.quantize_params()
 quant_net.model.to(device)
