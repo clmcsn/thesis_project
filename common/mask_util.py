@@ -19,7 +19,8 @@ class MaskInfo():
     
         self.quant_mode = quant_mode
         self.mask_type = mask_type
-        self.mask = mask
+        #for analysis purposis mask can be a string, for simulation it MUST be the list of masked bit!
+        self.mask = mask 
         self.correctRange = correctRange
 
 class MaskStat(MaskInfo):
@@ -39,32 +40,32 @@ class MaskTable(MaskInfo):
     def __init__(self, quant_mode, mask_type, 
                         mask, correctRange, 
                         model):
-        super(MaskStat, self).__init__( quant_mode,
+        super(MaskTable, self).__init__( quant_mode,
                                         mask_type,
                                         mask,
                                         correctRange)
         self.model_class = model.__class__.__name__
         self.Table = {}
-        create_table(model)
+        self.create_table(model)
         if mask:
-            set_default_mask(mask)
+            self.set_default_mask(mask)
 
-    def create_table(model):
+    def create_table(self,model):
         layers_name_list = get_layersName_list(model)
         for layer_name in layers_name_list:
             self.Table[layer_name] = []
 
-    def set_default_mask(mask):
-        for layer_name in layers_name_list:
+    def set_default_mask(self,mask):
+        for layer_name in self.Table.keys():
             self.Table[layer_name] = mask
 
     #mask must be the list
-    def set_mask(layer_name,mask):
+    def set_mask(self,layer_name,mask):
         if not layer_name in Table:
             raise ValueError(layer_name+'not found in'+self.model_class)
         self.Table[layer_name] = mask
 
-    def set_mask_type(mask_type):
+    def set_mask_type(self,mask_type):
         if not isinstance(mask_type, MaskType):
             raise ValueError('Specify a correct mask type')
         self.mask_type = mask_type
@@ -72,7 +73,7 @@ class MaskTable(MaskInfo):
     def get_layersName():
         return list(Table.keys())
 
-    def clean_table():
+    def clean_table(self):
         for layer in self.Table:
             self.Table[layer]=[]
 
