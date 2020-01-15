@@ -5,18 +5,14 @@
 #########SETTINGS#########
 epochs_num = 350
 batch_size = 50
-#preTrainedModelPath="../models/checkpoints/LeNet_CIFAR10_epoch200.tar"
-preTrainedModelPath=None
-preTrainedQuantModelPath="../models/checkpoints/QuantLeNet_CIFAR10_epoch100a.tar"
-device="cuda"
+device="cpu"
 
 import sys
 sys.path.append("../")
-sys.path.append("../../distiller_modified")
+sys.path.append("../../distiller")
 import os
 
 from common.nnTools import get_all_preds,train,test
-import models.mnist.LeNet as LeNet
 
 import torch
 import torch.nn as nn
@@ -27,7 +23,7 @@ import torchvision.transforms as transforms
 import distiller
 import distiller.models.cifar10 as models
 
-from common.mask_util import MaskType
+from common.mask_util import MaskTable,MaskType
 
 #fetching train_set
 train_set = torchvision.datasets.CIFAR10( #
@@ -56,25 +52,6 @@ train_data_loader= torch.utils.data.DataLoader(
     ,shuffle=True
     ,batch_size=batch_size)
 
-"""if preTrainedModelPath:
-    if os.path.isfile(preTrainedModelPath):
-        with torch.no_grad():
-            #loading network
-            preTrainedNetwork = LeNet.LeNet()
-            checkpoint = torch.load(preTrainedModelPath)
-            preTrainedNetwork.load_state_dict(checkpoint['model_state_dict'])
-
-            #forward pass
-            train_preds = get_all_preds(preTrainedNetwork, train_data_loader)
-            correct_train_predictions=train_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
-            train_accuracy=correct_train_predictions/len(train_set)
-
-            test_preds = get_all_preds(preTrainedNetwork, test_data_loader)
-            correct_test_predictions=test_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
-            test_accuracy=correct_test_predictions/len(test_set)
-            #TODO implement a better report
-            print(train_accuracy,test_accuracy)
-            del preTrainedNetwork"""
 
 toTrain=True
 start_epoch=0
@@ -83,6 +60,7 @@ dataset="CIFAR10"
 network=models.resnet_cifar.resnet32_cifar()
 network.to(device)
 optimizer = optim.SGD(network.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
+mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.MOD_ROUND_UP, [2,1], True, network)
 quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,optimizer=optimizer
                                                                         ,bits_activations=8
@@ -90,9 +68,7 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,bits_bias=8
                                                                         ,overrides=None
                                                                         ,mode=distiller.quantization.LinearQuantMode.SYMMETRIC
-                                                                        ,mask=MaskType.MOD_ROUND_UP
-                                                                        ,maskList=[2,1] 
-                                                                        ,correctRange=True
+                                                                        ,mask_table=mask_table
                                                                         ,ema_decay=0.999
                                                                         ,per_channel_wts=False
                                                                         ,quantize_inputs=True
@@ -102,19 +78,11 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
 scheduler = optim.lr_scheduler.StepLR(quant_net.optimizer, 120, gamma=0.1, last_epoch=-1)
 
 #setting up the distiller 
-dummy_input = (torch.zeros([1,1,32,32]))
+dummy_input = (torch.zeros([1,3,32,32]))
 quant_net.prepare_model(dummy_input)
 quant_net.quantize_params()
 quant_net.model.to(device)
 
-"""if os.path.isfile(preTrainedQuantModelPath):
-    print("Checkpoint found!")
-    checkpoint = torch.load(preTrainedQuantModelPath)
-    quant_net.model.load_state_dict(checkpoint['model_state_dict'])
-    start_epoch=checkpoint['epoch']+1
-    if start_epoch==epochs_num:
-        print("Model fully trained!")
-        toTrain=False"""
 
 if toTrain:
     if start_epoch!=0:
