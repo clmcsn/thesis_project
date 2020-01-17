@@ -38,7 +38,7 @@ acc_bits = 32
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\t RangeCorrection:{}\t Correct: {}\t Accuracy: {}\n"
 
 network_name = "resnet32"
-checkpoint_path = "../models/checkpoints/ref_models/"
+checkpoint_path = "../models/checkpoints/"
 checkpoint_name = "{}_CIFAR10_bestAccuracy.tar".format(network_name)
 
 network = models.resnet_cifar.resnet32_cifar()
@@ -60,6 +60,15 @@ data_loader= torch.utils.data.DataLoader(
     ,batch_size=batch_size)
 
 test_preds = get_all_preds(network, data_loader,device=device)
+print(test_preds)
+ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.MOD_ROUND_UP, [1], False, network)
+quant_net = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
+                                                            mode=quant_mode,
+                                                            mask_table= mask_table, 
+                                                            scale_approx_mult_bits=bits)
+quant_net.prepare_model(dummy_input)
+quant_net.model.eval()
+test_preds = get_all_preds(quant_net.model, data_loader,device=device)
 preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
-
-print(preds_correct)
+print(test_preds)
