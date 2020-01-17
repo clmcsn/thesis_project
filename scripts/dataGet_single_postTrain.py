@@ -29,7 +29,7 @@ from common.mask_util import MaskType, stringMask_to_list, _make_mask
 from common.hw_lib import printer_2s
 
 device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
-
+device = "cpu"
 batch_size = 50
 bits = 8 #data bits
 aw_bits = 8
