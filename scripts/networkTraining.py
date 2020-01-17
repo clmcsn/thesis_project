@@ -25,7 +25,7 @@ import torch.optim as optim #needed for optimizing the cost function
 import torchvision
 import torchvision.transforms as transforms
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 model="resnet32"
 dataset="CIFAR10"
 network = models.resnet_cifar.resnet32_cifar()

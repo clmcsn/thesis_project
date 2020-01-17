@@ -3,10 +3,10 @@
 #tensorboard recap is not avelaible
 
 #########SETTINGS#########
-epochs_num = 350
+epochs_num = 300
 batch_size = 50
 
-device="cpu"
+device="cuda:1"
 
 import sys
 sys.path.append("../")
@@ -56,12 +56,13 @@ train_data_loader= torch.utils.data.DataLoader(
 
 toTrain=True
 start_epoch=0
-model="resnet32"
+model="vgg11"
 dataset="CIFAR10"
-network=models.resnet_cifar.resnet32_cifar()
+network=models.vgg_cifar.vgg11_cifar()
 network.to(device)
 optimizer = optim.SGD(network.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
-mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.MOD_ROUND_UP, [2,1], True, network)
+#optimizer = optim.Adam(network.parameters())
+mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.ROUND_UP, [2,1], False, network)
 quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,optimizer=optimizer
                                                                         ,bits_activations=8
@@ -69,14 +70,14 @@ quant_net=distiller.quantization.QuantAwareTrainRangeLinearQuantizer(network
                                                                         ,bits_bias=8
                                                                         ,overrides=None
                                                                         ,mode=distiller.quantization.LinearQuantMode.SYMMETRIC
-                                                                        ,mask_table=mask_table
+                                                                        #,mask_table=mask_table
                                                                         ,ema_decay=0.999
                                                                         ,per_channel_wts=False
                                                                         ,quantize_inputs=True
                                                                         ,num_bits_inputs=None
 )
 
-scheduler = optim.lr_scheduler.StepLR(quant_net.optimizer, 120, gamma=0.1, last_epoch=-1)
+scheduler = optim.lr_scheduler.StepLR(quant_net.optimizer, 100, gamma=0.1, last_epoch=-1)
 
 #setting up the distiller 
 dummy_input = (torch.zeros([1,3,32,32]))
@@ -86,22 +87,9 @@ quant_net.model.to(device)
 
 
 if toTrain:
-    if start_epoch!=0:
-        quant_net.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-
-    """#setting optimizer scheduler
-    scheduler = optim.lr_scheduler.StepLR(
-        quant_net.optimizer
-        ,step_size=30
-        ,gamma=0.5)
-
-    if start_epoch!=0: #if checkpoint load scheduler state
-        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])"""
-
-
     #setting criterion
     criterion = nn.CrossEntropyLoss()
-
+    firstTime=True
     #training loop
     for epoch in range(start_epoch,epochs_num):
         quant_net.model.train()
@@ -153,9 +141,9 @@ if toTrain:
                 'model_state_dict': quant_net.model.state_dict(),
                 'optimizer_state_dict': quant_net.optimizer.state_dict(),
                # 'scheduler_state_dict': scheduler.state_dict(),
-                }, "../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch+1))
+                }, "../models/checkpoints/mask{}_{}_epoch{}.tar".format(model,dataset,epoch+1))
         if (epoch!=0):
-            os.remove("../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch))
+            os.remove("../models/checkpoints/mask{}_{}_epoch{}.tar".format(model,dataset,epoch))
         
         if firstTime:
             prev_tcorr = correct
@@ -170,5 +158,5 @@ if toTrain:
                 'model_state_dict': network.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'loss': test_loss,
-                }, "../models/checkpoints/{}_{}_bestAccuracy.tar".format(model,dataset))
+                }, "../models/checkpoints/mask{}_{}_bestAccuracy.tar".format(model,dataset))
         print("Best acc:{}\n".format(best_acc))
