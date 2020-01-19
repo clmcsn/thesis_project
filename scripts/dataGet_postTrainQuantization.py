@@ -27,9 +27,13 @@ bits=8
 acc_bits=32
 rep_string="QuantMode: {}\tQuantBits: {}\t Correct: {}\t Accuracy: {}\n"
 
+network_name = "resnet32"
+checkpoint_path = "../models/checkpoints/"
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
+
 network = models.resnet_cifar.resnet32_cifar()
 network = network.to("cpu")
-checkpoint = torch.load('../models/checkpoints/resnet32_CIFAR10_bestAccuracy_9358.pt', map_location=device)
+checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu")
 network.load_state_dict(checkpoint['model_state_dict'])
 
 transform_test = transforms.Compose([
@@ -45,13 +49,15 @@ train_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
 
 data_loader= torch.utils.data.DataLoader(
     train_set
+    ,shuffle=False
     ,batch_size=batch_size)
 
-dummy_input = (torch.zeros([1,3,32,32]))
+test_preds = get_all_preds(network, data_loader,device=device)
+ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 
+dummy_input = (torch.zeros([1,3,32,32]))
 quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
-ref_preds = get_all_preds(network,data_loader)
-ref_correct = ref_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+
 with open("../reports/data_resnet32_CIFAR10_postTrainQuantizing.txt","w") as log_pointer:
     log_pointer.write("Reference accuracy = {}\n".format(ref_correct))
     for quant_mode in quant_mode_list:

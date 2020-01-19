@@ -23,7 +23,7 @@ from common.mask_util import MaskType, stringMask_to_list, _make_mask
 from common.hw_lib import printer_2s
 
 
-device='cpu'
+device='cuda:1'
 batch_size=50
 bits=8 #data bits
 aw_bits=8
@@ -47,30 +47,38 @@ def make_path(quant_mode,mask_mode,mask,correctRange):
     mm=mm.split(".")[1]
     return "/".join([qm,mm,mask,str(correctRange)])
 
+network_name = "resnet32"
+checkpoint_path = "../models/checkpoints/"
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
+
 network = models.resnet_cifar.resnet32_cifar()
-network = network.to(device) 
-checkpoint = torch.load('../models/checkpoints/resnet32_CIFAR10_bestAccuracy.tar', map_location=device)
+network = network.to("cpu")
+network = network.eval() 
+checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu")
 network.load_state_dict(checkpoint['model_state_dict'])
 
+transform_test = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
 
 train_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
     root='../../data/CIFAR10'
     ,train=False  #where data will be located
     ,download=True              #download if is not present offline(run only the first time)
-    ,transform=transforms.Compose([ #transformation of data to tensor
-        transforms.ToTensor()
-    ])
+    ,transform=transform_test
 )
 
 data_loader= torch.utils.data.DataLoader(
     train_set
+    ,shuffle=False
     ,batch_size=batch_size)
 
-quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
+quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
 mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 dummy_input = (torch.zeros([1,3,32,32]))
 
-with open("../reports/data_ResNet32_CIFAR10_postTrainMasking.txt","w") as log_pointer:
+with open("../reports/data_{}_CIFAR10_postTrainMasking.txt".format(network_name),"w") as log_pointer:
     for quant_mode in quant_mode_list:
         signed= quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED
         if signed:
