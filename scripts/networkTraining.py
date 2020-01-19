@@ -26,9 +26,9 @@ import torchvision
 import torchvision.transforms as transforms
 
 device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
-model="resnet32"
+model="vgg11"
 dataset="CIFAR10"
-network = models.resnet_cifar.resnet32_cifar()
+network = models.vgg_cifar.vgg11_cifar()
 network.to(device)
 
 transform_train = transforms.Compose([
@@ -69,8 +69,8 @@ test_data_loader = torch.utils.data.DataLoader(
 #optimizer = optim.Adam(network.parameters(), lr=0.0001, weight_decay=0.0005)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(network.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
-scheduler = optim.lr_scheduler.StepLR(optimizer, 120, gamma=0.1, last_epoch=-1)
-firstTime=True
+scheduler = optim.lr_scheduler.StepLR(optimizer, 100, gamma=0.1, last_epoch=-1)
+prev_tcorr = 0
 #training
 for epoch in range(epochs_num):
     network.train()
@@ -104,11 +104,6 @@ for epoch in range(epochs_num):
     
     scheduler.step()
     test_loss /= len(test_data_loader.dataset)
-    
-    if firstTime:
-        prev_tcorr = correct
-        best_acc = 100. * correct / len(test_data_loader.dataset)
-        firstTime = False
 
     print('\nTest set: Epoch: {} Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(epoch,
             test_loss, correct, len(test_data_loader.dataset),
@@ -119,9 +114,9 @@ for epoch in range(epochs_num):
             'model_state_dict': network.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': test_loss,
-            }, "../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch+1))
+            }, "../models/checkpoints/{}_{}_epoch{}.pt".format(model,dataset,epoch+1))
     if (epoch!=0):
-        os.remove("../models/checkpoints/{}_{}_epoch{}.tar".format(model,dataset,epoch))
+        os.remove("../models/checkpoints/{}_{}_epoch{}.pt".format(model,dataset,epoch))
     
     if correct > prev_tcorr:
         prev_tcorr = correct
@@ -131,6 +126,6 @@ for epoch in range(epochs_num):
             'model_state_dict': network.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': test_loss,
-            }, "../models/checkpoints/{}_{}_bestAccuracy.tar".format(model,dataset))
+            }, "../models/checkpoints/{}_{}_bestAccuracy_{}.pt".format(model,dataset,correct))
 
     print("Best acc:{}\n".format(best_acc))
