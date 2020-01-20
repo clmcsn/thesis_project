@@ -8,7 +8,7 @@ sys.path.append("../")
 tomask = True
 
 if tomask:
-    path = "../../distiller_mod_v2"
+    path = "../../distiller_mod_v3"
 else:
     path = "../../distiller"
 
@@ -37,11 +37,12 @@ acc_bits = 32
 
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\t RangeCorrection:{}\t Correct: {}\t Accuracy: {}\n"
 
-network_name = "vgg11"
+network_name = "resnet32"
 checkpoint_path = "../models/checkpoints/"
-checkpoint_name = "{}_CIFAR10_bestAccuracy_9148.pt".format(network_name)
+#checkpoint_name = "{}_CIFAR10_bestAccuracy_9148.pt".format(network_name)
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
 
-network = models.vgg_cifar.vgg11_cifar()
+network = models.resnet_cifar.resnet32_cifar()
 network = network.to(device)
 network = network.eval() 
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
@@ -68,7 +69,7 @@ data_loader= torch.utils.data.DataLoader(
 test_preds = get_all_preds(network, data_loader,device=device)
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print(ref_correct)
-mask_config_file="../models/mask_config/{}_end.mc".format()
+mask_config_file="../models/mask_config/{}_end.mc".format(network_name)
 guided_MaskTable_creator(network, mask_config_file,std_mask="00000001")
 mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.ROUND_UP, [], False, network, mask_file=mask_config_file)
 quant_net = PostTrainLinearQuantizer(   network, bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,

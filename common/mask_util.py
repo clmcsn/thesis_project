@@ -97,7 +97,7 @@ INPUT
     gui=True:   indicates if entry of table will be provided by hand or all will be assigned the default"""
 
 def guided_MaskTable_creator(network,file_path,std_mask="00000000",gui=True):
-    file_string="{}: {}"
+    file_string="{}: {}\n"
     layers = get_layersName_list(network)
     print("Available layers:")
     for l in layers:
@@ -134,7 +134,7 @@ def maskFile_to_dict(file_path):
     with open(file_path,"r") as in_pointer:
         for line in in_pointer:
             words=line.split()
-            dic[words[0:len(words-1)]]=stringMask_to_list(words[1])
+            dic[words[0][0:len(words[0])-1]]=stringMask_to_list(words[1])
     return dic
 
 
