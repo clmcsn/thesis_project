@@ -52,7 +52,7 @@ data_loader= torch.utils.data.DataLoader(
     ,shuffle=False
     ,batch_size=batch_size)
 
-test_preds = get_all_preds(network, data_loader,device=device)
+test_preds = get_all_preds(network, data_loader)
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 
 dummy_input = (torch.zeros([1,3,32,32]))

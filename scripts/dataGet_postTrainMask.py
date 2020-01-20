@@ -4,7 +4,7 @@ import os
 import pathlib
 import sys
 sys.path.append("../")
-sys.path.append("../../distiller_modified")
+sys.path.append("../../distiller_mod_v2")
 
 from copy import deepcopy
 
@@ -19,7 +19,7 @@ import distiller.models.cifar10 as models
 
 import models.cifar10.LeNet as LeNet
 from common.nnTools import get_all_preds, get_layersName_list, make_weightDistr_comparHistgram
-from common.mask_util import MaskType, stringMask_to_list, _make_mask
+from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable
 from common.hw_lib import printer_2s
 
 
@@ -47,11 +47,11 @@ def make_path(quant_mode,mask_mode,mask,correctRange):
     mm=mm.split(".")[1]
     return "/".join([qm,mm,mask,str(correctRange)])
 
-network_name = "resnet32"
+network_name = "vgg11"
 checkpoint_path = "../models/checkpoints/"
-checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9148.pt".format(network_name)
 
-network = models.resnet_cifar.resnet32_cifar()
+network = models.vgg_cifar.vgg11_cifar()
 network = network.to("cpu")
 network = network.eval() 
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu")
@@ -78,7 +78,11 @@ quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
 mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 dummy_input = (torch.zeros([1,3,32,32]))
 
+test_preds = get_all_preds(network, data_loader)
+ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+
 with open("../reports/data_{}_CIFAR10_postTrainMasking.txt".format(network_name),"w") as log_pointer:
+    log_pointer.write("Reference accuracy = {}\n".format(ref_correct))
     for quant_mode in quant_mode_list:
         signed= quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED
         if signed:
@@ -89,7 +93,8 @@ with open("../reports/data_{}_CIFAR10_postTrainMasking.txt".format(network_name)
         #                                                    mode=quant_mode,scale_approx_mult_bits=bits)
         #quantizer_ref.prepare_model(dummy_input)
         for mask_mode in mask_mode_list:
-            for i in range(start_string,2**bits): #all possible mask
+            for i in range(start_string
+2**bits): #all possible mask
                 mask = printer_2s(i,bits)
                 mask = bit_string_inverter(mask)
                 ones = mask.count("1")
@@ -97,9 +102,11 @@ with open("../reports/data_{}_CIFAR10_postTrainMasking.txt".format(network_name)
                     #instance the quantized
                     for j in range(2):
                         correct=bool(j)
+                        mask_table=MaskTable(quant_mode, mask_mode, stringMask_to_list(mask), correct, network)
                         quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
-                                                            mode=quant_mode,mask=mask_mode, maskList=stringMask_to_list(mask),
-                                                            correctRange=correct, scale_approx_mult_bits=bits)
+                                                            mode=quant_mode, mask_table=mask_table,
+                                                            scale_approx_mult_bits=bits)
+                        quantizer.model.to(device)
                         quantizer.prepare_model(dummy_input)
                         quantizer.model.eval()
 
@@ -112,8 +119,10 @@ with open("../reports/data_{}_CIFAR10_postTrainMasking.txt".format(network_name)
                                                             save=True,
                                                             path="../reports/weightDistribution_customLeNet_analysis1/"+path)"""
                         test_preds = get_all_preds(quantizer.model, data_loader,device=device)
-                        preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+                        preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets).to(device)).sum().item()
                         accuracy =  preds_correct/len(train_set)
                         log_pointer.write(rep_string.format(quant_mode,mask_mode,mask,correct,preds_correct,accuracy))
+                        print(rep_string.format(quant_mode,mask_mode,mask,correct,preds_correct,accuracy))
                         del quantizer
+                        del mask_table
         #del quantizer_ref            
