@@ -39,7 +39,7 @@ class MaskStat(MaskInfo):
 class MaskTable(MaskInfo):
     def __init__(self, quant_mode, mask_type, 
                         mask, correctRange, 
-                        model):
+                        model, mask_file=None):
         super(MaskTable, self).__init__( quant_mode,
                                         mask_type,
                                         mask,
@@ -49,11 +49,19 @@ class MaskTable(MaskInfo):
         self.create_table(model)
         if mask:
             self.set_default_mask(mask)
+        if mask_file:
+            self.fill_table(mask_file)
 
     def create_table(self,model):
         layers_name_list = get_layersName_list(model)
         for layer_name in layers_name_list:
             self.Table[layer_name] = []
+
+    def fill_table(self,file_path):
+        #temp_dic is just a way to control that all the keys are congruent
+        temp_dic = maskFile_to_dict(file_path)
+        for key in self.Table.keys():
+            self.Table[key]=temp_dic[key]
 
     def set_default_mask(self,mask):
         for layer_name in self.Table.keys():
@@ -76,6 +84,58 @@ class MaskTable(MaskInfo):
     def clean_table(self):
         for layer in self.Table:
             self.Table[layer]=[]
+
+"""guided_MaskTable_creator(network,std_mask,file_path,gui=True)
+
+DESCRIPTION
+    Provides a guided terminal per-layer masking file creation of the network given as input
+INPUT
+    Needs as inputs:
+    network:    network which we would like to create the mask
+    std_mask:   if we would like to give a std_mask pressing just 's' in the procedure. Giving a default even all zeros is strongly recommended
+    file_path:  indicates where output file must be saved
+    gui=True:   indicates if entry of table will be provided by hand or all will be assigned the default"""
+
+def guided_MaskTable_creator(network,file_path,std_mask="00000000",gui=True):
+    file_string="{}: {}"
+    layers = get_layersName_list(network)
+    print("Available layers:")
+    for l in layers:
+        print(l)
+    with open(file_path,"w") as out_pointer:
+        if gui==False:
+            for lay in layers:
+                out_pointer.write(file_string.format(lay,std_mask))
+        else:
+            for lay in layers:
+                mask = input("Please insert a mask for layer {}: (s for standard)\n".format(lay))
+                if mask=="s" or mask=="S":
+                    out_pointer.write(file_string.format(lay,std_mask))
+                else:
+                    if len(mask)!=len(std_mask):
+                        print("Mask must be of {} bits. If not what expected provide a different standard mask".format(len(std_mask)))
+                        exit()
+                    else:
+                        out_pointer.write(file_string.format(lay,mask))
+
+
+"""maskFile_to_dict(file_path
+
+DESCRIPTION
+    From file with the list of mask for each layer, this function provides a dictionary extracted from it
+INPUT
+    Needs as inputs:
+    file_path:  file where to extract network description
+OUTPUT
+    dic:        dictionary with informations"""
+
+def maskFile_to_dict(file_path):
+    dic={}
+    with open(file_path,"r") as in_pointer:
+        for line in in_pointer:
+            words=line.split()
+            dic[words[0:len(words-1)]]=stringMask_to_list(words[1])
+    return dic
 
 
 """stringMask_to_list(stringMask)

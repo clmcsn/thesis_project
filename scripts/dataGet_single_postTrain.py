@@ -25,7 +25,7 @@ import distiller.utils
 import distiller.models.cifar10 as models
 
 from common.nnTools import get_all_preds, get_layersName_list, make_weightDistr_comparHistgram
-from common.mask_util import MaskTable, MaskType, stringMask_to_list, _make_mask
+from common.mask_util import MaskTable, MaskType, stringMask_to_list, _make_mask, guided_MaskTable_creator
 from common.hw_lib import printer_2s
 
 #device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
@@ -37,11 +37,11 @@ acc_bits = 32
 
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\t RangeCorrection:{}\t Correct: {}\t Accuracy: {}\n"
 
-network_name = "resnet32"
+network_name = "vgg11"
 checkpoint_path = "../models/checkpoints/"
-checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9148.pt".format(network_name)
 
-network = models.resnet_cifar.resnet32_cifar()
+network = models.vgg_cifar.vgg11_cifar()
 network = network.to(device)
 network = network.eval() 
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
@@ -64,10 +64,13 @@ data_loader= torch.utils.data.DataLoader(
     ,shuffle=False
     ,batch_size=batch_size)
 
+
 test_preds = get_all_preds(network, data_loader,device=device)
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print(ref_correct)
-mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.ROUND_UP, [1], False, network)
+mask_config_file="../models/mask_config/{}_end.mc".format()
+guided_MaskTable_creator(network, mask_config_file,std_mask="00000001")
+mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.ROUND_UP, [], False, network, mask_file=mask_config_file)
 quant_net = PostTrainLinearQuantizer(   network, bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                                             mode=LinearQuantMode.ASYMMETRIC_UNSIGNED,
                                                             mask_table= mask_table, 
