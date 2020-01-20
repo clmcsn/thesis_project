@@ -5,6 +5,9 @@ import torch
 
 from common.nnTools import get_layersName_list
 
+import os
+import shutil
+
 class MaskType(Enum):
      SIMPLE_MASK = 1
      ROUND_DOWN = 2
@@ -118,6 +121,19 @@ def guided_MaskTable_creator(network,file_path,std_mask="00000000",gui=True):
                     else:
                         out_pointer.write(file_string.format(lay,mask))
 
+
+def set_specific_layers(layers,file_path,new_mask="00000000"):
+    file_string="{}: {}\n"
+    with open(file_path,"r") as in_pointer, open("temp","w") as out_pointer:
+        for line in in_pointer:
+            words = line.split()
+            layer_name = words[0][0:len(words[0])-1]
+            mask = words[1]
+            if layer_name in layers:
+                mask = new_mask
+            out_pointer.write(file_string.format(layer_name,mask))
+    os.remove(file_path)
+    shutil.move("temp",file_path)
 
 """maskFile_to_dict(file_path
 

@@ -1,4 +1,4 @@
-conv1: 00000000
+conv1: 00000001
 layer1.0.conv1: 00000001
 layer1.0.conv2: 00000001
 layer1.1.conv1: 00000001

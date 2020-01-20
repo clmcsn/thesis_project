@@ -19,7 +19,7 @@ import distiller.models.cifar10 as models
 
 import models.cifar10.LeNet as LeNet
 from common.nnTools import get_all_preds, get_layersName_list, make_weightDistr_comparHistgram
-from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable
+from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable, guided_MaskTable_creator , set_specific_layers
 from common.hw_lib import printer_2s
 
 
@@ -50,6 +50,8 @@ def make_path(quant_mode,mask_mode,mask,correctRange):
 network_name = "vgg11"
 checkpoint_path = "../models/checkpoints/"
 checkpoint_name = "{}_CIFAR10_bestAccuracy_9148.pt".format(network_name)
+mask_perLayer_config_file = "../models/mask_config/{}_end.mc".format(network_name)
+dont_touch=[classifier]
 
 network = models.vgg_cifar.vgg11_cifar()
 network = network.to("cpu")
@@ -93,8 +95,7 @@ with open("../reports/data_{}_CIFAR10_postTrainMasking.txt".format(network_name)
         #                                                    mode=quant_mode,scale_approx_mult_bits=bits)
         #quantizer_ref.prepare_model(dummy_input)
         for mask_mode in mask_mode_list:
-            for i in range(start_string
-2**bits): #all possible mask
+            for i in range(start_string,2**bits): #all possible mask
                 mask = printer_2s(i,bits)
                 mask = bit_string_inverter(mask)
                 ones = mask.count("1")
@@ -102,7 +103,9 @@ with open("../reports/data_{}_CIFAR10_postTrainMasking.txt".format(network_name)
                     #instance the quantized
                     for j in range(2):
                         correct=bool(j)
-                        mask_table=MaskTable(quant_mode, mask_mode, stringMask_to_list(mask), correct, network)
+                        guided_MaskTable_creator(network,mask_perLayer_config_file, stringMask_to_list(mask), gui=False)
+                        set_specific_layers(dont_touch,mask_perLayer_config_file)
+                        mask_table=MaskTable(quant_mode, mask_mode, stringMask_to_list(mask), correct, network,)
                         quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                                             mode=quant_mode, mask_table=mask_table,
                                                             scale_approx_mult_bits=bits)
