@@ -159,3 +159,12 @@ def make_weightDistr_skewfitHistogram(layer, name='layer', save=False, path=None
         plt.savefig(path+"/"+name+".svg")
     else:
         plt.show()
+
+class dumping_layer(nn.Module):
+
+    def __init__(self,name):
+        self.name = name
+    
+    def forward(self,x):
+        with open("out_activation_dump_{}.dump".format(self.name),"w") as out_p:
+            out_p.write(x)

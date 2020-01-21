@@ -10,7 +10,7 @@ import os
 
 
 from common.nnTools import get_all_preds
-import models.mnist.LeNet as LeNet
+import models.cifar10.vgg_cifar as vgg
 
 #import distiller for models
 import sys
@@ -28,7 +28,7 @@ import torchvision.transforms as transforms
 device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 model="vgg11"
 dataset="CIFAR10"
-network = models.vgg_cifar.vgg11_cifar()
+network = vgg.vgg11_cifar()
 network.to(device)
 
 transform_train = transforms.Compose([
