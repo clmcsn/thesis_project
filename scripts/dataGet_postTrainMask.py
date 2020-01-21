@@ -4,7 +4,7 @@ import os
 import pathlib
 import sys
 sys.path.append("../")
-sys.path.append("../../distiller_mod_v2")
+sys.path.append("../../distiller_mod_v3")
 
 from copy import deepcopy
 
@@ -50,8 +50,10 @@ def make_path(quant_mode,mask_mode,mask,correctRange):
 network_name = "vgg11"
 checkpoint_path = "../models/checkpoints/"
 checkpoint_name = "{}_CIFAR10_bestAccuracy_9148.pt".format(network_name)
+#checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
 mask_perLayer_config_file = "../models/mask_config/{}_end.mc".format(network_name)
-dont_touch=[classifier]
+#dont_touch=["fc","conv1"]
+dont_touch=["features0","classifier"]
 
 network = models.vgg_cifar.vgg11_cifar()
 network = network.to("cpu")
@@ -83,7 +85,7 @@ dummy_input = (torch.zeros([1,3,32,32]))
 test_preds = get_all_preds(network, data_loader)
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 
-with open("../reports/data_{}_CIFAR10_postTrainMasking.txt".format(network_name),"w") as log_pointer:
+with open("../reports/data_{}_CIFAR10_postTrainMasking_firstLastLayerUnmasked.txt".format(network_name),"w") as log_pointer:
     log_pointer.write("Reference accuracy = {}\n".format(ref_correct))
     for quant_mode in quant_mode_list:
         signed= quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED

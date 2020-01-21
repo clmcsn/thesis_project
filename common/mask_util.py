@@ -102,14 +102,14 @@ INPUT
 def guided_MaskTable_creator(network,file_path,std_mask="00000000",gui=True):
     file_string="{}: {}\n"
     layers = get_layersName_list(network)
-    print("Available layers:")
-    for l in layers:
-        print(l)
     with open(file_path,"w") as out_pointer:
         if gui==False:
             for lay in layers:
                 out_pointer.write(file_string.format(lay,std_mask))
         else:
+            print("Available layers:")
+            for l in layers:
+                print(l)
             for lay in layers:
                 mask = input("Please insert a mask for layer {}: (s for standard)\n".format(lay))
                 if mask=="s" or mask=="S":
