@@ -28,7 +28,7 @@ import torchvision.transforms as transforms
 device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 model="vgg11"
 dataset="CIFAR10"
-network = vgg.vgg11_cifar()
+network = vgg.vgg11_bn_cifar()
 network.to(device)
 
 transform_train = transforms.Compose([

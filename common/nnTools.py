@@ -163,8 +163,10 @@ def make_weightDistr_skewfitHistogram(layer, name='layer', save=False, path=None
 class dumping_layer(nn.Module):
 
     def __init__(self,name):
+        super(dumping_layer, self).__init__()
         self.name = name
     
     def forward(self,x):
-        with open("out_activation_dump_{}.dump".format(self.name),"w") as out_p:
-            out_p.write(x)
+        with open("./out_activation_dump_{}.dump".format(self.name),"w") as out_p:
+            out_p.write(str(x.data))
+        return x
