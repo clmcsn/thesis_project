@@ -167,6 +167,5 @@ class dumping_layer(nn.Module):
         self.name = name
     
     def forward(self,x):
-        with open("./out_activation_dump_{}.dump".format(self.name),"w") as out_p:
-            out_p.write(str(x.data))
+        torch.save(x,"{}.dump".format(self.name))
         return x

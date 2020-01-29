@@ -64,7 +64,7 @@ class VGGCifar(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
 
-def make_layers(cfg, batch_norm=False):
+def make_layers(cfg, batch_norm=False, name="layer"):
     layers = []
     in_channels = 3
     i=0
@@ -73,7 +73,7 @@ def make_layers(cfg, batch_norm=False):
             layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
         else:
             conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
-            dump = dumping_layer("layer{}".format(i))
+            dump = dumping_layer(name+"_{}".format(i))
             if batch_norm:
                 layers += [conv2d, dump,  nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
             else:
@@ -97,9 +97,9 @@ def vgg11_cifar(**kwargs):
     return model
 
 
-def vgg11_bn_cifar(**kwargs):
+def vgg11_bn_cifar(name, **kwargs):
     """VGG 11-layer model (configuration "A") with batch normalization"""
-    model = VGGCifar(make_layers(cfg['A'], batch_norm=True), **kwargs)
+    model = VGGCifar(make_layers(cfg['A'], batch_norm=True, name=name), **kwargs)
     return model
 
 

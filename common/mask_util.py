@@ -189,27 +189,23 @@ def _make_mask(bit_to_mask):
     mask=~mask
     return mask
 
-"""_elm_mask_round_down(element, bit_to_mask)
- DESCRIPTION
-    Masks "element" according to "bit_to_mask" following the round down algorithm.
-    Operations are done in place. 
- INPUT
-    Needs as inputs:
-        element:     torch.tensor conteining single dimension single element 
-        bit to mask: list of positions of bit that have to be masked. MSB first.
- OUTPUT
-    No outputs, operation done in place in element input parameter"""
-
-"""_elm_mask_round_up(element, bit_to_mask)
- DESCRIPTION
-    Masks "element" according to "bit_to_mask" following the round up algorithm.
-    Operations are done in place. 
- INPUT
-    Needs as inputs:
-        element:     torch.tensor conteining single dimension single element 
-        bit to mask: list of positions of bit that have to be masked. MSB first.
- OUTPUT
-    No outputs, operation done in place in element input parameter"""
+def evaluate_mask(n_bit,signed=True,mask_type=MaskType.SIMPLE_MASK,mask=[]):
+    
+    #generate limits
+    if signed:
+        start_point = -2**(n_bit-1)
+        end_point = 2**(n_bit-1)
+    else:
+        start_point = 0
+        end_point = 2**(n_bit)    
+    #generate tensor
+    t = torch.ones(2**n_bit)
+    for i in range(start_point,end_point):
+        t[i].mul_(i)
+    
+    tm = mask_param(t,mask,mask_type,n_bit,signed)
+    d= torch.dist(t,tm,2)
+    return d
 
 def _get_bool_tensor(quant_param, bit):
     fakeList = [bit]
