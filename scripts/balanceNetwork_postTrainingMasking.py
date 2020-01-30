@@ -93,7 +93,7 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
                 getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).base_b_q = (layer.bias/sf)-getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).b_zero_point
             except FileNotFoundError: #case for output probabilities
                 for j in range(10): #numbers_of_class=10
-                    d = torch.sum(pred_ref[:,j]-pred_child1[:,j])
+                    d = torch.sum(pred_ref[:,j]-pred_child1[:,j])/pred_ref.size(0)
                     layer.bias[j] = layer.bias[j] + d
                 getattr(quantized_child1.model,layer_coord[0]).base_b_q = (layer.bias/sf)-getattr(quantized_child1.model,layer_coord[0]).b_zero_point
             #getting again activation from layer
@@ -155,7 +155,7 @@ quantized_child2.model.eval()
 balanceNetwork(ref_quantized.model,
                 quantized_child1.model,
                 test_set,
-                batch_size=50,
+                batch_size=250,
                 device=device)
 
 batch_size=50
@@ -165,9 +165,9 @@ test_set
 ,shuffle=False
 ,batch_size=batch_size)
 
-ref_preds = get_all_preds(ref_quantized.model, data_loader,device=device)
+"""ref_preds = get_all_preds(ref_quantized.model, data_loader,device=device)
 ref_correct = ref_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
-print("Ref accuracy :{}".format(ref_correct))
+print("Ref accuracy :{}".format(ref_correct))"""
 
 bad_preds = get_all_preds(quantized_child2.model, data_loader,device=device)
 bad_correct = bad_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
