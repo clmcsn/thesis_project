@@ -43,7 +43,7 @@ checkpoint_path = "../models/checkpoints/"
 checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
 #checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
 
-network = vgg.vgg11_bn_cifar()
+network = vgg.vgg11_bn_cifar("./data/ref_model")
 network = network.to(device)
 network = network.eval() 
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
@@ -66,7 +66,7 @@ data_loader= torch.utils.data.DataLoader(
     ,shuffle=False
     ,batch_size=batch_size)
 
-mask_config_file="../models/mask_config/{}_end.mc".format(network_name)
+mask_config_file="../models/mask_config/{}.mc".format(network_name)
 guided_MaskTable_creator(network, mask_config_file,std_mask="00000010")
 mask_table=MaskTable(distiller.quantization.LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [], True, network, mask_file=mask_config_file)
 test_preds = get_all_preds(network, data_loader,device=device)
