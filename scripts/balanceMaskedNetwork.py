@@ -15,14 +15,11 @@ import torchvision.transforms as transforms
 import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 import distiller.utils
-from distiller.quantization.q_utils import linear_dequantize, linear_quantize_clamp
 
 import models.cifar10.vgg_cifar as vgg
 from common.nnTools import get_all_preds, get_layersName_list, make_weightDistr_comparHistgram
 from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable, guided_MaskTable_creator , set_specific_layers
 from common.hw_lib import printer_2s
-
-from copy import deepcopy
 
 import shutil
 
@@ -87,9 +84,6 @@ ref_network = vgg.vgg11_bn_cifar("./data/ref_model")
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
 ref_network.load_state_dict(checkpoint['model_state_dict'])
 
-
-#print(getattr(ref_network.features,"0").bias.data)
-
 #apply quantization
 ref_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [] , False, ref_network)
 ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
@@ -119,8 +113,8 @@ activation_child2 = "./data/child2_act/child_model2_{}.dump"
 
 pred_ref = ref_quantized.model(image)
 save_dump("./data","ref_model","./data/ref_act")
-pred_child1 = quantized_child1.model(image)
 os.remove("./data/scale_factor.dump")
+pred_child1 = quantized_child1.model(image)
 save_dump("./data","ref_model","./data/child1_act",new_name="child_model1")
 pred_child2 = quantized_child2.model(image)
 save_dump("./data","ref_model","./data/child2_act",new_name="child_model2")
