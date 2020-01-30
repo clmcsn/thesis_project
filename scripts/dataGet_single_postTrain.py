@@ -22,7 +22,8 @@ import torchvision.transforms as transforms
 import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 import distiller.utils
-import distiller.models.cifar10 as models
+#import distiller.models.cifar10 as models
+import models.cifar10.vgg_cifar as vgg
 
 from common.nnTools import get_all_preds, get_layersName_list, make_weightDistr_comparHistgram
 from common.mask_util import MaskTable, MaskType, stringMask_to_list, _make_mask, guided_MaskTable_creator
@@ -37,12 +38,12 @@ acc_bits = 32
 
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\t RangeCorrection:{}\t Correct: {}\t Accuracy: {}\n"
 
-network_name = "resnet32"
+network_name = "vgg11"
 checkpoint_path = "../models/checkpoints/"
-#checkpoint_name = "{}_CIFAR10_bestAccuracy_9148.pt".format(network_name)
-checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
+#checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
 
-network = models.resnet_cifar.resnet32_cifar()
+network = vgg.vgg11_bn_cifar()
 network = network.to(device)
 network = network.eval() 
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
@@ -67,7 +68,7 @@ data_loader= torch.utils.data.DataLoader(
 
 mask_config_file="../models/mask_config/{}_end.mc".format(network_name)
 guided_MaskTable_creator(network, mask_config_file,std_mask="00000010")
-mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.ROUND_UP, [], False, network, mask_file=mask_config_file)
+mask_table=MaskTable(distiller.quantization.LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [], True, network, mask_file=mask_config_file)
 test_preds = get_all_preds(network, data_loader,device=device)
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print(ref_correct)
