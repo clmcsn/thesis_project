@@ -65,13 +65,12 @@ data_loader= torch.utils.data.DataLoader(
     ,shuffle=False
     ,batch_size=batch_size)
 
-
-test_preds = get_all_preds(network, data_loader,device=device)
-ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
-print(ref_correct)
 mask_config_file="../models/mask_config/{}_end.mc".format(network_name)
 guided_MaskTable_creator(network, mask_config_file,std_mask="00000010")
 mask_table=MaskTable(distiller.quantization.LinearQuantMode.SYMMETRIC, MaskType.ROUND_UP, [], False, network, mask_file=mask_config_file)
+test_preds = get_all_preds(network, data_loader,device=device)
+ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+print(ref_correct)
 quant_net = PostTrainLinearQuantizer(   network, bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                                             mode=LinearQuantMode.ASYMMETRIC_UNSIGNED,
                                                             mask_table= mask_table, 
