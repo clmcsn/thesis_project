@@ -328,18 +328,18 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
             if toMask:
                 upper=False
                 downer=False
-                fake=deepcopy(el)
+                fake=int(el)
                 while (upper==False):
                     fake+=1
                     if (fake & ~_make_mask(bit_to_mask)==0):
-                        upper=deepcopy(fake)
-                fake=deepcopy(el)
+                        upper=fake
+                fake=int(el)
                 while (downer==False):
                     fake-=1
                     if (fake & ~_make_mask(bit_to_mask)==0):
-                        downer=deepcopy(fake)
-                du=deepcopy(upper-el)
-                dd=deepcopy(el-downer)
+                        downer=fake
+                du=upper-el
+                dd=el-downer
                 if (du > dd):
                     el+=downer-el
                 elif (dd > du):
