@@ -4,6 +4,7 @@ from enum import Enum
 import torch
 
 from common.nnTools import get_layersName_list
+from copy import deepcopy
 
 import os
 import shutil
@@ -321,34 +322,35 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
         quant_param = _sat_to_max(quant_param,max_int)
     if mask_type==MaskType.MD:
         shape=quant_param.size()
-        quant_param = quant_param.flatten()
+        quant_param = quant_param.flatten().to(torch.int)
         for el in quant_param:
-            toMask = el & _make_mask(bit_to_mask)
+            toMask = el & ~_make_mask(bit_to_mask)
             if toMask:
                 upper=False
                 downer=False
-                fake=el
+                fake=deepcopy(el)
                 while (upper==False):
                     fake+=1
-                    if (fake & _make_mask(bit_to_mask)):
-                        upper=fake
+                    if (fake & ~_make_mask(bit_to_mask)==0):
+                        upper=deepcopy(fake)
+                fake=deepcopy(el)
                 while (downer==False):
                     fake-=1
-                    if (fake & _make_mask(bit_to_mask)):
-                        downer=fake
-                du=upper-el
-                dd=el-downer
-                if du > dd:
-                    el=downer
-                elif dd > dd:
-                    el=upper
+                    if (fake & ~_make_mask(bit_to_mask)==0):
+                        downer=deepcopy(fake)
+                du=deepcopy(upper-el)
+                dd=deepcopy(el-downer)
+                if (du > dd):
+                    el+=downer-el
+                elif (dd > du):
+                    el+=upper-el
                 else:
                     if(rand.randint(0,99)%2):
-                        el=downer
+                        el+=downer-el
                     else:
-                        el=upper
-                if (upper > 2**(dynamic-int(signed))-1 & complete_mask):
-                    el=downer
+                        el+=upper-el
+                if (upper > (2**(dynamic-int(signed))-1 & _make_mask(bit_to_mask))):
+                    el+=downer-el
         quant_param = quant_param.view(shape)
     quant_param = quant_param.to(ty)
     return quant_param
