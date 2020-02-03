@@ -87,13 +87,13 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
                 for j in range(ref.size(1)): #for every element of the bias=num_output_channels
                     r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
                     c = child[:,j,:,:]
-                    d = torch.sum(r-c)/ref.size(0) #perform the distance
+                    d = torch.sum(r-c)#/ref.size(0) #perform the distance
                     layer.bias[j] = layer.bias[j] + d
                 #upload distiller backup
                 getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).base_b_q = (layer.bias/sf)-getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).b_zero_point
             except FileNotFoundError: #case for output probabilities
                 for j in range(10): #numbers_of_class=10
-                    d = torch.sum(pred_ref[:,j]-pred_child1[:,j])/pred_ref.size(0)
+                    d = torch.sum(pred_ref[:,j]-pred_child1[:,j])#/pred_ref.size(0)
                     layer.bias[j] = layer.bias[j] + d
                 getattr(quantized_child1.model,layer_coord[0]).base_b_q = (layer.bias/sf)-getattr(quantized_child1.model,layer_coord[0]).b_zero_point
             #getting again activation from layer
@@ -138,7 +138,7 @@ ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activation
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD, [2] , False, ref_network)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD, [3,2,1,0] , True, ref_network)
 #loading child model
 quantized_child1 = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
@@ -151,7 +151,7 @@ quantized_child2 = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activat
 quantized_child2.prepare_model(dummy_input)
 quantized_child2.model.eval()
 
- #balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
+#balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
 balanceNetwork(ref_quantized.model,
                 quantized_child1.model,
                 test_set,
