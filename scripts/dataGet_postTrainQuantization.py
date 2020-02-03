@@ -18,7 +18,7 @@ import distiller.utils
 import distiller.models.cifar10 as models
 
 
-import models.cifar10.LeNet as LeNet
+import models.cifar10.vgg_cifar as vgg 
 from common.nnTools import get_all_preds
 
 device='cuda:1'
@@ -27,9 +27,9 @@ bits=8
 acc_bits=32
 rep_string="QuantMode: {}\tQuantBits: {}\t Correct: {}\t Accuracy: {}\n"
 
-network = models.vgg_cifar.vgg11_cifar()
+network = vgg.vgg11_bn_cifar("./data/dummydump")
 network = network.to("cpu")
-checkpoint = torch.load('../models/checkpoints/vgg11_CIFAR10_bestAccuracy_91421.tar', map_location=device)
+checkpoint = torch.load('../models/checkpoints/vgg11_CIFAR10_bestAccuracy_9240.pt', map_location=device)
 network.load_state_dict(checkpoint['model_state_dict'])
 
 train_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
@@ -50,7 +50,7 @@ dummy_input = (torch.zeros([1,3,32,32]))
 quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
 ref_preds = get_all_preds(network,data_loader)
 ref_correct = ref_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
-with open("../reports/data_vgg11_CIFAR10_postTrainQuantizing.txt","w") as log_pointer:
+with open("../reports/data_vgg11bn_CIFAR10_postTrainQuantizing.txt","w") as log_pointer:
     log_pointer.write("Reference accuracy = {}\n".format(ref_correct))
     for quant_mode in quant_mode_list:
         for qw_bits in range(4,bits+1):

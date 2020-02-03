@@ -4,11 +4,10 @@ from enum import Enum
 import torch
 
 from common.nnTools import get_layersName_list
-from copy import deepcopy
 
 import os
 import shutil
-import random
+import random as rand
 
 class MaskType(Enum):
      SIMPLE_MASK = 1
