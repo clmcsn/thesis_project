@@ -70,7 +70,7 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     pred_child1 = quantized_child1.model(image)
     save_dump("./data","ref_model","./data/child1_act",new_name="child_model1")
     pred_child2 = quantized_child2.model(image)
-
+    exit()
     #correcting loop
     i=0 #need for knowing which layer we are in
     for layer_name, layer in child_model.named_modules():

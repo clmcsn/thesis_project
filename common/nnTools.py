@@ -12,6 +12,12 @@ from scipy.stats import skewnorm
 #classes = classes that will be x and y axes
 #
 
+def getSparsity(tensor):
+    shape=tensor.size()
+    tensor = tensor.flatten()
+    sparsity = float((tensor==0).sum())/int(tensor.size(0))
+    return sparsity
+
 def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
