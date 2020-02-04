@@ -22,14 +22,15 @@ import models.cifar10.vgg_cifar as vgg
 from common.nnTools import get_all_preds
 
 device='cuda:1'
-batch_size=50
+batch_size=100
 bits=8
 acc_bits=32
 rep_string="QuantMode: {}\tQuantBits: {}\t Correct: {}\t Accuracy: {}\n"
 
-network = vgg.vgg11_bn_cifar("./data/dummydump")
-network = network.to("cpu")
-checkpoint = torch.load('../models/checkpoints/vgg11_CIFAR10_bestAccuracy_9240.pt', map_location=device)
+network = vgg.vgg11_bn_cifar("./data/ref_model")
+network = network.to(device)
+network = network.eval() 
+checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
 network.load_state_dict(checkpoint['model_state_dict'])
 
 transform_test = transforms.Compose([
@@ -50,10 +51,12 @@ data_loader= torch.utils.data.DataLoader(
     ,batch_size=batch_size)
 
 dummy_input = (torch.zeros([1,3,32,32]))
+exit()
+test_preds = get_all_preds(network, data_loader,device=device)
+ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
+print(ref_correct)
 
 quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED,LinearQuantMode.ASYMMETRIC_SIGNED]
-ref_preds = get_all_preds(network,data_loader)
-ref_correct = ref_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 with open("../reports/data_vgg11bn_CIFAR10_postTrainQuantizing.txt","w") as log_pointer:
     log_pointer.write("Reference accuracy = {}\n".format(ref_correct))
     for quant_mode in quant_mode_list:
