@@ -32,17 +32,21 @@ network = network.to("cpu")
 checkpoint = torch.load('../models/checkpoints/vgg11_CIFAR10_bestAccuracy_9240.pt', map_location=device)
 network.load_state_dict(checkpoint['model_state_dict'])
 
+transform_test = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
+
 train_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
     root='../../data/CIFAR10'
     ,train=False  #where data will be located
     ,download=True              #download if is not present offline(run only the first time)
-    ,transform=transforms.Compose([ #transformation of data to tensor
-        transforms.ToTensor()
-    ])
+    ,transform=transform_test
 )
 
 data_loader= torch.utils.data.DataLoader(
     train_set
+    ,shuffle=False
     ,batch_size=batch_size)
 
 dummy_input = (torch.zeros([1,3,32,32]))

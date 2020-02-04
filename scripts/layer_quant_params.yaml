@@ -3,9 +3,9 @@ features.0:
   bits_weights: 8
   bits_bias: 32
   mode: &id001
-    activations: ASYMMETRIC_UNSIGNED
-    weights: ASYMMETRIC_UNSIGNED
-  clip_acts: NONE
+    activations: ASYMMETRIC_SIGNED
+    weights: ASYMMETRIC_SIGNED
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -19,7 +19,7 @@ features.1:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -33,7 +33,7 @@ features.2:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -47,7 +47,7 @@ features.3:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -61,7 +61,7 @@ features.4:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -75,7 +75,7 @@ features.5:
   bits_weights: 8
   bits_bias: 32
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -89,7 +89,7 @@ features.6:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -103,7 +103,7 @@ features.7:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -117,7 +117,7 @@ features.8:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -131,7 +131,7 @@ features.9:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -145,7 +145,7 @@ features.10:
   bits_weights: 8
   bits_bias: 32
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -159,7 +159,7 @@ features.11:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -173,7 +173,7 @@ features.12:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -187,7 +187,7 @@ features.13:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -201,7 +201,7 @@ features.14:
   bits_weights: 8
   bits_bias: 32
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -215,7 +215,7 @@ features.15:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -229,7 +229,7 @@ features.16:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -243,7 +243,7 @@ features.17:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -257,7 +257,7 @@ features.18:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -271,7 +271,7 @@ features.19:
   bits_weights: 8
   bits_bias: 32
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -285,7 +285,7 @@ features.20:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -299,7 +299,7 @@ features.21:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -313,7 +313,7 @@ features.22:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -327,7 +327,7 @@ features.23:
   bits_weights: 8
   bits_bias: 32
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -341,7 +341,7 @@ features.24:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -355,7 +355,7 @@ features.25:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -369,7 +369,7 @@ features.26:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -383,7 +383,7 @@ features.27:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -397,7 +397,7 @@ features.28:
   bits_weights: 8
   bits_bias: 32
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -411,7 +411,7 @@ features.29:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -425,7 +425,7 @@ features.30:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -439,7 +439,7 @@ features.31:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -453,7 +453,7 @@ features.32:
   bits_weights: 8
   bits_bias: 32
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -467,7 +467,7 @@ features.33:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -481,7 +481,7 @@ features.34:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -495,7 +495,7 @@ features.35:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -509,7 +509,7 @@ features.36:
   bits_weights: null
   bits_bias: null
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
@@ -523,7 +523,7 @@ classifier:
   bits_weights: 8
   bits_bias: 32
   mode: *id001
-  clip_acts: NONE
+  clip_acts: AVG
   clip_n_stds: null
   clip_half_range: false
   per_channel_wts: false
