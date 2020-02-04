@@ -27,10 +27,13 @@ bits=8
 acc_bits=32
 rep_string="QuantMode: {}\tQuantBits: {}\t Correct: {}\t Accuracy: {}\n"
 
+network_name = "vgg11"
+checkpoint_path = "../models/checkpoints/"
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
 network = vgg.vgg11_bn_cifar("./data/ref_model")
-network = network.to(device)
+network = network.to("cpu")
 network = network.eval() 
-checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
+checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu")
 network.load_state_dict(checkpoint['model_state_dict'])
 
 transform_test = transforms.Compose([
@@ -51,8 +54,7 @@ data_loader= torch.utils.data.DataLoader(
     ,batch_size=batch_size)
 
 dummy_input = (torch.zeros([1,3,32,32]))
-exit()
-test_preds = get_all_preds(network, data_loader,device=device)
+test_preds = get_all_preds(network, data_loader,device="cpu")
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print(ref_correct)
 
