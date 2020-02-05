@@ -39,7 +39,7 @@ def save_dump(in_path,dump_name,out_path,new_name=None):
         dirlist=os.listdir(out_path)
         for el in dirlist:
             if dump_name in el:
-                cont = el.split(".")[0] #funziona se non ci sono altri punti
+                cont = el.split(".")[0] #funziona se non ci sono altri punti oltre a quelli della estensione!!!
                 num = cont[len(cont)-1]
                 os.rename(out_path+"/"+el,out_path+"/"+new_name+"_{}".format(num)+".dump")
 

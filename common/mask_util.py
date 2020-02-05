@@ -89,6 +89,86 @@ class MaskTable(MaskInfo):
         for layer in self.Table:
             self.Table[layer]=[]
 
+"""Need to be used with the distiller_mod_v4 that dumps the scaling factor!"""
+
+def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
+    def save_dump(in_path,dump_name,out_path,new_name=None):
+        dirlist=os.listdir(in_path)
+        to_move=[]
+        for el in dirlist:
+            if dump_name in el:
+                to_move+=[el]
+        try:
+            os.mkdir(out_path)
+        except FileExistsError:
+            pass
+        for el in to_move:
+            shutil.move(os.path.join(in_path,el),os.path.join(out_path,el))
+        if new_name:
+            dirlist=os.listdir(out_path)
+            for el in dirlist:
+                if dump_name in el:
+                    cont = el.split(".")[0] #funziona se non ci sono altri punti oltre a quelli della estensione!!!
+                    num = cont[len(cont)-1]
+                    os.rename(out_path+"/"+el,out_path+"/"+new_name+"_{}".format(num)+".dump")
+
+    def remove_dump(path,dump_name):
+        dirlist=os.listdir(path)
+        for el in dirlist:
+            if dump_name in el:
+                os.remove(path+"/"+dump_name)
+    
+    sf_dump_file = "./data/scale_factor.dump"
+    activation_ref   = "./data/ref_act/ref_model_{}.dump"
+    activation_child1 = "./data/child1_act/child_model1_{}.dump"
+    
+    #fetching correction batch
+    data_loader= torch.utils.data.DataLoader(
+    test_set
+    ,shuffle=False
+    ,batch_size=batch_size)
+
+    batch = next(iter(data_loader))
+    image, label = batch
+
+    #obtaining activations from models
+    pred_ref = ref_quantized.model(image)
+    save_dump("./data","ref_model","./data/ref_act")
+    os.remove(sf_dump_file) #need to remove the file dump of scaling factors so there would be just one
+    pred_child1 = quantized_child1.model(image)
+    save_dump("./data","ref_model","./data/child1_act",new_name="child_model1")
+    pred_child2 = quantized_child2.model(image)
+    #correcting loop
+    i=0 #need for knowing which layer we are in
+    for layer_name, layer in child_model.named_modules():
+        if isinstance(layer, (nn.Conv2d, nn.Conv3d, nn.Linear)):
+            layer_coord = layer_name.split(".")
+            #retriving scale factor
+            with open(sf_dump_file,"r") as in_pointer:
+                for k in range(i+1): #need to fetch how many scale factors as layer we are in
+                    sf = float(in_pointer.readline())
+            try:
+                #fetching activations
+                ref = torch.load(activation_ref.format(i), map_location=device) 
+                child = torch.load(activation_child1.format(i), map_location=device)
+                for j in range(ref.size(1)): #for every element of the bias=num_output_channels
+                    r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
+                    c = child[:,j,:,:]
+                    d = torch.sum(r-c)#/ref.size(0) #perform the distance
+                    layer.bias[j] = layer.bias[j] + d
+                #upload distiller backup
+                getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).base_b_q = (layer.bias/sf)-getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).b_zero_point
+            except FileNotFoundError: #case for output probabilities
+                for j in range(10): #numbers_of_class=10
+                    d = torch.sum(pred_ref[:,j]-pred_child1[:,j])#/pred_ref.size(0)
+                    layer.bias[j] = layer.bias[j] + d
+                getattr(quantized_child1.model,layer_coord[0]).base_b_q = (layer.bias/sf)-getattr(quantized_child1.model,layer_coord[0]).b_zero_point
+            #getting again activation from layer
+            os.remove("./data/scale_factor.dump") #removing the dumping factor
+            pred_child1 = child_model(image) #getting new activation values
+            save_dump("./data","ref_model","./data/child1_act",new_name="child_model1")
+            i+=1
+
 """guided_MaskTable_creator(network,std_mask,file_path,gui=True)
 
 DESCRIPTION
@@ -128,7 +208,7 @@ def set_specific_layers(layers,file_path,new_mask="00000000"):
     with open(file_path,"r") as in_pointer, open("temp","w") as out_pointer:
         for line in in_pointer:
             words = line.split()
-            layer_name = words[0][0:len(words[0])-1]
+            layer_name = words[0][0:len(words[0])-1] #needed for deleating "at the end"
             mask = words[1]
             if layer_name in layers:
                 mask = new_mask
