@@ -81,15 +81,11 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
                     sf = float(in_pointer.readline())
             try:
                 #fetching activations
-                print(activation_ref)
                 ref = torch.load(activation_ref.format(i), map_location=device) 
                 child = torch.load(activation_child1.format(i), map_location=device)
                 for j in range(ref.size(1)): #for every element of the bias=num_output_channels
                     r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
                     c = child[:,j,:,:]
-                    print(c.size())
-                    print(c)
-                    exit()
                     d = torch.sum(r-c)#/ref.size(0) #perform the distance
                     layer.bias[j] = layer.bias[j] + d
                 #upload distiller backup
@@ -141,7 +137,7 @@ ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activation
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [3,2,1,0] , True, ref_network)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD, [4] , False, ref_network)
 #loading child model
 quantized_child1 = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
@@ -158,7 +154,7 @@ quantized_child2.model.eval()
 balanceNetwork(ref_quantized.model,
                 quantized_child1.model,
                 test_set,
-                batch_size=1,
+                batch_size=225,
                 device=device)
 
 batch_size=50

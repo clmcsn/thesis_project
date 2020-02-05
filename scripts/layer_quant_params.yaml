@@ -3,8 +3,8 @@ features.0:
   bits_weights: 8
   bits_bias: 32
   mode: &id001
-    activations: ASYMMETRIC_SIGNED
-    weights: ASYMMETRIC_SIGNED
+    activations: ASYMMETRIC_UNSIGNED
+    weights: ASYMMETRIC_UNSIGNED
   clip_acts: NONE
   clip_n_stds: null
   clip_half_range: false
