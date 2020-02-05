@@ -2,7 +2,7 @@
 
 from enum import Enum
 import torch
-
+import torch.nn as nn
 from common.nnTools import get_layersName_list
 
 import os
@@ -120,7 +120,7 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     
     sf_dump_file = "./data/scale_factor.dump"
     activation_ref   = "./data/ref_act/ref_model_{}.dump"
-    activation_child1 = "./data/child1_act/child_model1_{}.dump"
+    activation_child = "./data/child_act/child_model_{}.dump"
     
     #fetching correction batch
     data_loader= torch.utils.data.DataLoader(
@@ -132,12 +132,12 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     image, label = batch
 
     #obtaining activations from models
-    pred_ref = ref_quantized.model(image)
+    pred_ref = ref_model(image)
     save_dump("./data","ref_model","./data/ref_act")
     os.remove(sf_dump_file) #need to remove the file dump of scaling factors so there would be just one
-    pred_child1 = quantized_child1.model(image)
-    save_dump("./data","ref_model","./data/child1_act",new_name="child_model1")
-    pred_child2 = quantized_child2.model(image)
+    pred_child = child_model(image)
+    save_dump("./data","ref_model","./data/child_act",new_name="child_model")
+   
     #correcting loop
     i=0 #need for knowing which layer we are in
     for layer_name, layer in child_model.named_modules():
@@ -150,23 +150,23 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
             try:
                 #fetching activations
                 ref = torch.load(activation_ref.format(i), map_location=device) 
-                child = torch.load(activation_child1.format(i), map_location=device)
+                child = torch.load(activation_child.format(i), map_location=device)
                 for j in range(ref.size(1)): #for every element of the bias=num_output_channels
                     r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
                     c = child[:,j,:,:]
                     d = torch.sum(r-c)#/ref.size(0) #perform the distance
                     layer.bias[j] = layer.bias[j] + d
                 #upload distiller backup
-                getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).base_b_q = (layer.bias/sf)-getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).b_zero_point
+                getattr(getattr(child_model,layer_coord[0]),layer_coord[1]).base_b_q = (layer.bias/sf)-getattr(getattr(child_model,layer_coord[0]),layer_coord[1]).b_zero_point
             except FileNotFoundError: #case for output probabilities
                 for j in range(10): #numbers_of_class=10
-                    d = torch.sum(pred_ref[:,j]-pred_child1[:,j])#/pred_ref.size(0)
+                    d = torch.sum(pred_ref[:,j]-pred_child[:,j])#/pred_ref.size(0)
                     layer.bias[j] = layer.bias[j] + d
-                getattr(quantized_child1.model,layer_coord[0]).base_b_q = (layer.bias/sf)-getattr(quantized_child1.model,layer_coord[0]).b_zero_point
+                getattr(child_model,layer_coord[0]).base_b_q = (layer.bias/sf)-getattr(child_model,layer_coord[0]).b_zero_point
             #getting again activation from layer
             os.remove("./data/scale_factor.dump") #removing the dumping factor
-            pred_child1 = child_model(image) #getting new activation values
-            save_dump("./data","ref_model","./data/child1_act",new_name="child_model1")
+            pred_child = child_model(image) #getting new activation values
+            save_dump("./data","ref_model","./data/child_act",new_name="child_model")
             i+=1
 
 """guided_MaskTable_creator(network,std_mask,file_path,gui=True)

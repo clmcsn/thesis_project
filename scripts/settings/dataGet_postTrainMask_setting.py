@@ -19,7 +19,7 @@ import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 
 #report strings
-rep_file = ""
+rep_file = "../reports/data_vgg11bn_CIFAR10_postTrainMask.txt"
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\n"
 acc_string = "\t{} accuracy = {}\n"
 
@@ -42,7 +42,7 @@ config_fname = "{}.mc".format(network_name)
 if (network_name == "vgg11bn"):
     import models.cifar10.vgg_cifar as vgg
     checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
-    unmasked_layers = ["features0","classifier"]
+    unmasked_layers = ["features.0","classifier"]
     network = vgg.vgg11_bn_cifar("./data/ref_model")
 elif (network_name == "resnet32"):
     import distiller.models.cifar10 as models
