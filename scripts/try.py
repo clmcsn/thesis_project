@@ -45,7 +45,7 @@ batch = next(iter(data_loader))
 image, label = batch
 
 network = vgg.vgg11_bn_cifar(dump_path)
-network_name = "vgg11"
+network_name = "vgg11bn"
 checkpoint_path = "../models/checkpoints/"
 checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu")
