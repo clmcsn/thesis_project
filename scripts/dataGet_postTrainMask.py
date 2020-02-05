@@ -74,7 +74,6 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(s.train_set.targets).to(s.device)).sum().item()
                 log_pointer.write(s.rep_string.format(quant_mode,mask_mode,mask))
                 log_pointer.write(s.acc_string.format("RangeCorrect",preds_correct))
-                print(s.rep_string.format(quant_mode,mask_mode,mask))
                 print(s.acc_string.format("RangeCorrect",preds_correct))
                 rc_correct = preds_correct #for later improvements
                 del quantizer
@@ -92,7 +91,6 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 quantizer.model.eval()
                 test_preds = get_all_preds(quantizer.model, data_loader,device=s.device)
                 preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(s.train_set.targets).to(s.device)).sum().item()
-                log_pointer.write(s.rep_string.format(quant_mode,mask_mode,mask))
                 log_pointer.write(s.acc_string.format("Unmasking layers",preds_correct))
                 print(s.rep_string.format(quant_mode,mask_mode,mask))
                 print(s.acc_string.format("Unmasking layers",preds_correct))
@@ -121,7 +119,6 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 quantizer.model.to(s.device)
                 test_preds = get_all_preds(quantizer.model, data_loader,device=s.device)
                 preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(s.train_set.targets).to(s.device)).sum().item()
-                log_pointer.write(s.rep_string.format(quant_mode,mask_mode,mask))
                 log_pointer.write(s.acc_string.format("CompensatedBias",preds_correct))
                 print(s.rep_string.format(quant_mode,mask_mode,mask))
                 print(s.acc_string.format("CompensatedBias",preds_correct))
@@ -142,7 +139,7 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                     mode=quant_mode, mask_table=mask_table,
                                                     scale_approx_mult_bits=s.bits)
-                ref_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [] , False, network)
+                ref_mask_table = MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [] , False, network)
                 ref_quantized = PostTrainLinearQuantizer( deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=ref_mask_table,
                                     scale_approx_mult_bits=s.bits)
@@ -158,7 +155,6 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 quantizer.model.to(s.device)
                 test_preds = get_all_preds(quantizer.model, data_loader,device=s.device)
                 preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(s.train_set.targets).to(s.device)).sum().item()
-                log_pointer.write(s.rep_string.format(quant_mode,mask_mode,mask))
                 log_pointer.write(s.acc_string.format(ref_str,preds_correct))
                 print(s.rep_string.format(quant_mode,mask_mode,mask))
                 print(s.acc_string.format(ref_str,preds_correct))

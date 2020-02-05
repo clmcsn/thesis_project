@@ -21,7 +21,7 @@ from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 #report strings
 rep_file = "../reports/data_vgg11bn_CIFAR10_postTrainMask.txt"
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\n"
-acc_string = "\t{} accuracy = {}\n"
+acc_string = "\t{} accuracy = \t{}\n"
 
 #algorithm to be analyzed
 quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
