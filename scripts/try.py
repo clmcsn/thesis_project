@@ -54,6 +54,8 @@ ref_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_D
 bits = 8 
 aw_bits = 8
 acc_bits = 32
+"""for name, e in network.named_modules():
+    print(name, type(e))"""
 ref_quantized = PostTrainLinearQuantizer( network, bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_SIGNED, mask_table=ref_mask_table,
                                     scale_approx_mult_bits=bits)
@@ -61,11 +63,9 @@ dummy_input = (torch.ones([1,3,32,32]))
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 """for name, e in network.named_modules():
-    print(name, e)
-exit()"""
+    print(name, type(e))"""
 pred = network(image)
 dirlist=os.listdir("./data")
-
 dirlist.sort()
 for e in dirlist:
     if "dummy" in e:
