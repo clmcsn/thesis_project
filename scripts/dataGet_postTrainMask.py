@@ -58,6 +58,7 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 log_pointer.write(s.acc_string.format("BaseLine",preds_correct))
                 print(s.rep_string.format(quant_mode,mask_mode,mask))
                 print(s.acc_string.format("BaseLine",preds_correct))
+                ref_correct = preds_correct
                 del quantizer
                 del mask_table
 
@@ -72,7 +73,6 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 quantizer.model.eval()
                 test_preds = get_all_preds(quantizer.model, data_loader,device=s.device)
                 preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(s.train_set.targets).to(s.device)).sum().item()
-                log_pointer.write(s.rep_string.format(quant_mode,mask_mode,mask))
                 log_pointer.write(s.acc_string.format("RangeCorrect",preds_correct))
                 print(s.acc_string.format("RangeCorrect",preds_correct))
                 rc_correct = preds_correct #for later improvements
@@ -134,8 +134,8 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                     correct = False
                     ref_str = "LayerUnmasked+CompensatedBias" 
                 guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, gui=False)
-                mask_table = MaskTable(quant_mode, mask_mode, [] , correct, network, mask_file=s.maskConfig_path+s.config_fname)
                 set_specific_layers(s.unmasked_layers,s.maskConfig_path+s.config_fname)
+                mask_table = MaskTable(quant_mode, mask_mode, [] , correct, network, mask_file=s.maskConfig_path+s.config_fname)
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                     mode=quant_mode, mask_table=mask_table,
                                                     scale_approx_mult_bits=s.bits)

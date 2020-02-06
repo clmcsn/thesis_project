@@ -10,11 +10,11 @@ import os
 
 
 from common.nnTools import get_all_preds
-import models.cifar10.vgg_cifar as vgg
+#import models.cifar10.vgg_cifar as vgg
 
 #import distiller for models
 import sys
-sys.path.append("../../distiller_modified")
+sys.path.append("../../distiller")
 import distiller
 import distiller.models.cifar10 as models
 
@@ -28,7 +28,7 @@ import torchvision.transforms as transforms
 device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 model="vgg11"
 dataset="CIFAR10"
-network = vgg.vgg11_bn_cifar()
+network = models.vgg_cifar.vgg11_bn_cifar()
 network.to(device)
 
 transform_train = transforms.Compose([
