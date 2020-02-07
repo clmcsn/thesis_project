@@ -3,7 +3,7 @@
 import os
 import sys
 sys.path.append("../")
-sys.path.append("../../distiller_mod_v4")
+sys.path.append("../../distiller_mod_v5")
 
 from copy import deepcopy
 
@@ -13,6 +13,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 import distiller
+import distiller.models.cifar10 as models
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 import distiller.utils
 
@@ -23,6 +24,7 @@ from common.hw_lib import printer_2s
 
 import shutil
 
+#dump_name should be something that ALL the dumping file have
 def save_dump(in_path,dump_name,out_path,new_name=None):
     dirlist=os.listdir(in_path)
     to_move=[]
@@ -39,9 +41,9 @@ def save_dump(in_path,dump_name,out_path,new_name=None):
         dirlist=os.listdir(out_path)
         for el in dirlist:
             if dump_name in el:
-                cont = el.split(".")[0] #funziona se non ci sono altri punti oltre a quelli della estensione!!!
-                num = cont[len(cont)-1]
-                os.rename(out_path+"/"+el,out_path+"/"+new_name+"_{}".format(num)+".dump")
+                cont = el[0:len(el)-5] #drops extension
+                l = cont.split("_")[1] #drops reference string
+                os.rename(out_path+"/"+el,out_path+"/"+new_name+"_{}".format(l)+".dump")
 
 def remove_dump(path,dump_name):
     dirlist=os.listdir(path)
@@ -51,8 +53,8 @@ def remove_dump(path,dump_name):
 
 def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     sf_dump_file = "./data/scale_factor.dump"
-    activation_ref   = "./data/ref_act/ref_model_{}.dump"
-    activation_child1 = "./data/child1_act/child_model1_{}.dump"
+    activation_ref   = "./data/r_act/ref_{}.dump"
+    activation_child = "./data/child_act/child_{}.dump"
     
     #fetching correction batch
     data_loader= torch.utils.data.DataLoader(
@@ -64,44 +66,47 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     image, label = batch
 
     #obtaining activations from models
-    pred_ref = ref_quantized.model(image)
-    save_dump("./data","ref_model","./data/ref_act")
-    os.remove(sf_dump_file) #need to remove the file dump of scaling factors so there would be just one
-    pred_child1 = quantized_child1.model(image)
-    save_dump("./data","ref_model","./data/child1_act",new_name="child_model1")
-    pred_child2 = quantized_child2.model(image)
+    pred_ref = ref_model(image)
+    save_dump("./data","ref","./data/r_act")
+    #need to remove the file dump of scaling factors so there would be just one
+    os.remove(sf_dump_file)
+    pred_child = child_model(image)
+    save_dump("./data","ref","./data/child_act",new_name="child")
     #correcting loop
-    i=0 #need for knowing which layer we are in
+    i=0 #needed for the scaling factor! 
     for layer_name, layer in child_model.named_modules():
         if isinstance(layer, (nn.Conv2d, nn.Conv3d, nn.Linear)):
-            print(layer_name)
-            exit()
-            layer_coord = layer_name.split(".")
+            lc = layer_name.split(".") #it will be called as the dumping file + .wrapped_module
             #retriving scale factor
             with open(sf_dump_file,"r") as in_pointer:
                 for k in range(i+1): #need to fetch how many scale factors as layer we are in
                     sf = float(in_pointer.readline())
             try:
-                #fetching activations
-                ref = torch.load(activation_ref.format(i), map_location=device) 
-                child = torch.load(activation_child1.format(i), map_location=device)
+                ref = torch.load(activation_ref.format(".".join((lc[0],lc[1]))), map_location=device) 
+                child = torch.load(activation_child.format(".".join((lc[0],lc[1]))), map_location=device)
                 for j in range(ref.size(1)): #for every element of the bias=num_output_channels
                     r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
                     c = child[:,j,:,:]
-                    d = torch.sum(r-c)#/ref.size(0) #perform the distance
+                    #average but without square ---> to try that distance
+                    d = torch.sum(r-c)/ref.size(0)/ref.size(2)/ref.size(3)*((r==0).sum()) #perform the distance
                     layer.bias[j] = layer.bias[j] + d
                 #upload distiller backup
-                getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).base_b_q = (layer.bias/sf)-getattr(getattr(quantized_child1.model,layer_coord[0]),layer_coord[1]).b_zero_point
+                getattr(getattr(child_model,lc[0]),lc[1]).base_b_q = (layer.bias/sf)-getattr(getattr(child_model,lc[0]),lc[1]).b_zero_point #this works only for vgg
             except FileNotFoundError: #case for output probabilities
+                ref = torch.load(activation_ref.format(lc[0]), map_location=device) 
+                child = torch.load(activation_child.format(lc[0]), map_location=device)
                 for j in range(10): #numbers_of_class=10
-                    d = torch.sum(pred_ref[:,j]-pred_child1[:,j])#/pred_ref.size(0)
+                    r = ref[:,j]
+                    c = child[:,j]
+                    d = torch.sum(r-c)/pred_ref.size(0)
                     layer.bias[j] = layer.bias[j] + d
-                getattr(quantized_child1.model,layer_coord[0]).base_b_q = (layer.bias/sf)-getattr(quantized_child1.model,layer_coord[0]).b_zero_point
+                getattr(child_model,lc[0]).base_b_q = (layer.bias/sf)-getattr(child_model,lc[0]).b_zero_point
             #getting again activation from layer
-            os.remove("./data/scale_factor.dump") #removing the dumping factor
-            pred_child1 = child_model(image) #getting new activation values
-            save_dump("./data","ref_model","./data/child1_act",new_name="child_model1")
+            os.remove("./data/scale_factor.dump") #removing the scaling factor that will be produced
+            pred_child = child_model(image) #getting new activation values
+            save_dump("./data","ref","./data/child_act",new_name="child")
             i+=1
+
 device = 'cpu'
 #device = 'cuda:1'
 bits = 8 
@@ -121,13 +126,13 @@ test_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
 )
 
 #setting up the model
-network_name = "vgg11bn"
+network_name = "vgg11"
 checkpoint_path = "../models/checkpoints/"
-checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9238.pt".format(network_name)
 dummy_input = (torch.ones([1,3,32,32]))
 
 #loading reference model
-ref_network = vgg.vgg11_bn_cifar("./data/ref_model")
+ref_network = models.vgg_cifar.vgg11_bn_cifar()
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
 ref_network.load_state_dict(checkpoint['model_state_dict'])
 
@@ -139,7 +144,7 @@ ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activation
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [4] , False, ref_network)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [1] , False, ref_network)
 #loading child model
 quantized_child1 = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
@@ -156,7 +161,7 @@ quantized_child2.model.eval()
 balanceNetwork(ref_quantized.model,
                 quantized_child1.model,
                 test_set,
-                batch_size=225,
+                batch_size=50,
                 device=device)
 
 batch_size=50

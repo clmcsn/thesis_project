@@ -4,16 +4,17 @@ import sys
 import os
 sys.path.append("../common")
 sys.path.append("../")
-sys.path.append("../../distiller_mod_v4")
+sys.path.append("../../distiller_mod_v5")
 import torch 
 import torchvision
 import torchvision.transforms as transforms
 
 from nnTools import getSparsity
-import models.cifar10.vgg_cifar as vgg 
+
 
 
 import distiller
+import distiller.models.cifar10 as models
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode, ClipMode
 import distiller.utils
 
@@ -44,10 +45,11 @@ data_loader= torch.utils.data.DataLoader(
 batch = next(iter(data_loader))
 image, label = batch
 
-network = vgg.vgg11_bn_cifar(dump_path)
-network_name = "vgg11bn"
+network = models.vgg_cifar.vgg11_bn_cifar()
+network_name = "vgg11"
 checkpoint_path = "../models/checkpoints/"
-checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
+#checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
+checkpoint_name = "{}_CIFAR10_bestAccuracy_9238.pt".format(network_name)
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu")
 network.load_state_dict(checkpoint['model_state_dict'])
 ref_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [] , False, network)
@@ -68,8 +70,8 @@ pred = network(image)
 dirlist=os.listdir("./data")
 dirlist.sort()
 for e in dirlist:
-    if "dummy" in e:
-        t = torch.load("./data"+"/"+e,map_location="cpu")
+    if "dump" in e:
+        t = torch.load("./data"+"/"+"ref_features.0.dump",map_location="cpu")
         print(t[:,1,:,:])
         print(getSparsity(t))
         print(t.size())
