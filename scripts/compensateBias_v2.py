@@ -55,7 +55,8 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     sf_dump_file = "./data/scale_factor.dump"
     activation_ref   = "./data/r_act/ref_{}.dump"
     activation_child = "./data/child_act/child_{}.dump"
-    
+    shutil.rmtree('./data/')
+    os.mkdir('./data')
     #fetching correction batch
     data_loader= torch.utils.data.DataLoader(
     test_set
@@ -88,7 +89,7 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
                     r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
                     c = child[:,j,:,:]
                     #average but without square ---> to try that distance
-                    d = torch.sum(r-c)/ref.size(0)/ref.size(2)/ref.size(3)*((r==0).sum()) #perform the distance
+                    d = torch.sum(r-c)/ref.size(0)/ref.size(2)/ref.size(3)#*((r==0).sum()) #perform the distance
                     layer.bias[j] = layer.bias[j] + d
                 #upload distiller backup
                 getattr(getattr(child_model,lc[0]),lc[1]).base_b_q = (layer.bias/sf)-getattr(getattr(child_model,lc[0]),lc[1]).b_zero_point #this works only for vgg
@@ -133,6 +134,7 @@ dummy_input = (torch.ones([1,3,32,32]))
 
 #loading reference model
 ref_network = models.vgg_cifar.vgg11_bn_cifar()
+ref_network = ref_network.eval()
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
 ref_network.load_state_dict(checkpoint['model_state_dict'])
 
@@ -144,7 +146,7 @@ ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activation
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [1] , False, ref_network)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD, [3,2,1,0] , True, ref_network)
 #loading child model
 quantized_child1 = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
@@ -161,7 +163,7 @@ quantized_child2.model.eval()
 balanceNetwork(ref_quantized.model,
                 quantized_child1.model,
                 test_set,
-                batch_size=50,
+                batch_size=500,
                 device=device)
 
 batch_size=50
