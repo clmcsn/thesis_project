@@ -11,7 +11,7 @@ maskConfig_path = "../models/mask_config/"
 report_path = "../reports/"
 
 #lib
-distiller_version="../../distiller_mod_v4"
+distiller_version="../../distiller_mod_v5"
 device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 
 sys.path.append(distiller_version)
@@ -25,10 +25,11 @@ acc_string = "\t{} accuracy = \t{}\n"
 
 #algorithm to be analyzed
 quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
-mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE, MaskType.MD]
+#mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE, MaskType.MD]
+mask_mode_list = [MaskType.ROUND_UP,MaskType.MOD_ROUND_UP, MaskType.MD]
 
 #report masks to be analyzed
-stop_string = 24
+stop_string = 17
 
 #target hardware
 bits=8 #data bits

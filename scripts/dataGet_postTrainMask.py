@@ -18,7 +18,7 @@ import distiller.utils
 import distiller.models.cifar10 as models
 
 from common.nnTools import get_all_preds, get_layersName_list, make_weightDistr_comparHistgram
-from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable, guided_MaskTable_creator , set_specific_layers, balanceNetwork
+from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable, guided_MaskTable_creator , set_specific_layers, balanceNetwork_v2
 from common.hw_lib import printer_2s
 
 #load network
@@ -111,10 +111,10 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 quantizer.prepare_model(s.dummy_input)
                 quantizer.model.eval()
                 ref_quantized.model.eval()
-                balanceNetwork(ref_quantized.model,
+                balanceNetwork_v2(ref_quantized.model,
                                 quantizer.model,
                                 s.train_set,
-                                batch_size=230,
+                                batch_size=500,
                                 device="cpu")
                 quantizer.model.to(s.device)
                 test_preds = get_all_preds(quantizer.model, data_loader,device=s.device)

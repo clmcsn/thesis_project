@@ -173,5 +173,5 @@ class dumping_layer(nn.Module):
         self.name = name
     
     def forward(self,x):
-        torch.save(x,"{}.dump".format(self.name))
+        #torch.save(x,"{}.dump".format(self.name))
         return x
