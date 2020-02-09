@@ -169,6 +169,89 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
             save_dump("./data","ref_model","./data/child_act",new_name="child_model")
             i+=1
 
+def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu'):
+    def save_dump(in_path,dump_name,out_path,new_name=None):
+        dirlist=os.listdir(in_path)
+        to_move=[]
+        for el in dirlist:
+            if dump_name in el:
+                to_move+=[el]
+        try:
+            os.mkdir(out_path)
+        except FileExistsError:
+            pass
+        for el in to_move:
+            shutil.move(os.path.join(in_path,el),os.path.join(out_path,el))
+        if new_name:
+            dirlist=os.listdir(out_path)
+            for el in dirlist:
+                if dump_name in el:
+                    cont = el[0:len(el)-5] #drops extension
+                    l = cont.split("_")[1] #drops reference string
+                    os.rename(out_path+"/"+el,out_path+"/"+new_name+"_{}".format(l)+".dump")
+    
+    def remove_dump(path,dump_name):
+        dirlist=os.listdir(path)
+        for el in dirlist:
+            if dump_name in el:
+                os.remove(path+"/"+dump_name)
+
+    sf_dump_file = "./data/scale_factor.dump"
+    activation_ref   = "./data/r_act/ref_{}.dump"
+    activation_child = "./data/child_act/child_{}.dump"
+    shutil.rmtree('./data/')
+    os.mkdir('./data')
+    #fetching correction batch
+    data_loader= torch.utils.data.DataLoader(
+    test_set
+    ,shuffle=False
+    ,batch_size=batch_size)
+
+    batch = next(iter(data_loader))
+    image, label = batch
+
+    #obtaining activations from models
+    pred_ref = ref_model(image)
+    save_dump("./data","ref","./data/r_act")
+    #need to remove the file dump of scaling factors so there would be just one
+    os.remove(sf_dump_file)
+    pred_child = child_model(image)
+    save_dump("./data","ref","./data/child_act",new_name="child")
+    #correcting loop
+    i=0 #needed for the scaling factor! 
+    for layer_name, layer in child_model.named_modules():
+        if isinstance(layer, (nn.Conv2d, nn.Conv3d, nn.Linear)):
+            lc = layer_name.split(".") #it will be called as the dumping file + .wrapped_module
+            #retriving scale factor
+            with open(sf_dump_file,"r") as in_pointer:
+                for k in range(i+1): #need to fetch how many scale factors as layer we are in
+                    sf = float(in_pointer.readline())
+            try:
+                ref = torch.load(activation_ref.format(".".join((lc[0],lc[1]))), map_location=device) 
+                child = torch.load(activation_child.format(".".join((lc[0],lc[1]))), map_location=device)
+                for j in range(ref.size(1)): #for every element of the bias=num_output_channels
+                    r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
+                    c = child[:,j,:,:]
+                    #average but without square ---> to try that distance
+                    d = torch.sum(r-c)/ref.size(0)/ref.size(2)/ref.size(3)#*((r==0).sum()) #perform the distance
+                    layer.bias[j] = layer.bias[j] + d
+                #upload distiller backup
+                getattr(getattr(child_model,lc[0]),lc[1]).base_b_q = (layer.bias/sf)-getattr(getattr(child_model,lc[0]),lc[1]).b_zero_point #this works only for vgg
+            except FileNotFoundError: #case for output probabilities
+                ref = torch.load(activation_ref.format(lc[0]), map_location=device) 
+                child = torch.load(activation_child.format(lc[0]), map_location=device)
+                for j in range(10): #numbers_of_class=10
+                    r = ref[:,j]
+                    c = child[:,j]
+                    d = torch.sum(r-c)/pred_ref.size(0)
+                    layer.bias[j] = layer.bias[j] + d
+                getattr(child_model,lc[0]).base_b_q = (layer.bias/sf)-getattr(child_model,lc[0]).b_zero_point
+            #getting again activation from layer
+            os.remove("./data/scale_factor.dump") #removing the scaling factor that will be produced
+            pred_child = child_model(image) #getting new activation values
+            save_dump("./data","ref","./data/child_act",new_name="child")
+            i+=1
+
 """guided_MaskTable_creator(network,std_mask,file_path,gui=True)
 
 DESCRIPTION
