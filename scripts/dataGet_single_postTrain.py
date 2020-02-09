@@ -38,7 +38,7 @@ acc_bits = 32
 
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\t RangeCorrection:{}\t Correct: {}\t Accuracy: {}\n"
 
-network_name = "vgg"
+network_name = "vgg11bn"
 checkpoint_path = "../models/checkpoints/"
 checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
 #checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
@@ -68,12 +68,12 @@ data_loader= torch.utils.data.DataLoader(
     ,batch_size=batch_size)
 
 mask_config_file="../models/mask_config/{}.mc".format(network_name)
-guided_MaskTable_creator(network, mask_config_file,std_mask="00001111")
+guided_MaskTable_creator(network, mask_config_file,std_mask="00000000")
 mask_table=MaskTable(distiller.quantization.LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [], False, network, mask_file=mask_config_file)
 test_preds = get_all_preds(network, data_loader,device=device)
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print(ref_correct)
-quant_net = PostTrainLinearQuantizer(   network, bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
+quant_net = PostTrainLinearQuantizer(   network, bits_activations=aw_bits, bits_parameters=3, bits_accum=acc_bits,
                                                             mode=LinearQuantMode.ASYMMETRIC_UNSIGNED,
                                                             mask_table= mask_table, 
                                                             scale_approx_mult_bits=bits)
