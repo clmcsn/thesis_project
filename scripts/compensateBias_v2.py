@@ -57,6 +57,8 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     activation_child = "./data/child_act/child_{}.dump"
     shutil.rmtree('./data/')
     os.mkdir('./data')
+    with open("./save_act","w") as validity_act:
+        pass
     #fetching correction batch
     data_loader= torch.utils.data.DataLoader(
     test_set
@@ -107,6 +109,7 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
             pred_child = child_model(image) #getting new activation values
             save_dump("./data","ref","./data/child_act",new_name="child")
             i+=1
+    os.remove("./save_act")
 
 device = 'cpu'
 #device = 'cuda:1'
