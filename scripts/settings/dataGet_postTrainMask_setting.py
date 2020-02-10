@@ -19,17 +19,17 @@ import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 
 #report strings
-rep_file = "../reports/data_vgg11bn_CIFAR10_postTrainMask.txt"
+rep_file = "../reports/data_vgg11bn_CIFAR10_postTrainMask_v2.txt"
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\n"
 acc_string = "\t{} accuracy = \t{}\n"
 
 #algorithm to be analyzed
 quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
 #mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE, MaskType.MD]
-mask_mode_list = [MaskType.ROUND_UP,MaskType.MOD_ROUND_UP, MaskType.MD]
+mask_mode_list = [MaskType.MOD_ROUND_UP, MaskType.MD]
 
 #report masks to be analyzed
-stop_string = 17
+stop_string = 24
 
 #target hardware
 bits=8 #data bits

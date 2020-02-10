@@ -127,7 +127,7 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 del mask_table
 
                 #applyng all the tree techniques
-                if rc_correct>ref_correct:
+                if (rc_correct>ref_correct) and (rc_correct!=1000): #we need to avoid a completelly biased result
                     correct = True
                     ref_str = "RangeCorrect+LayerUnmasked+CompensatedBias" 
                 else:
