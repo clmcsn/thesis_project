@@ -1,100 +1,4 @@
 Reference accuracy = 9240
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00000001
-	BaseLine accuracy = 	7438
-	RangeCorrect accuracy = 	6566
-	Unmasking layers accuracy = 	7577
-	CompensatedBias accuracy = 	9137
-	LayerUnmasked+CompensatedBias accuracy = 	9173
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00000010
-	BaseLine accuracy = 	1258
-	RangeCorrect accuracy = 	3262
-	Unmasking layers accuracy = 	1311
-	CompensatedBias accuracy = 	7353
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	8941
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00000011
-	BaseLine accuracy = 	1736
-	RangeCorrect accuracy = 	1001
-	Unmasking layers accuracy = 	1696
-	CompensatedBias accuracy = 	1707
-	LayerUnmasked+CompensatedBias accuracy = 	1564
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00000100
-	BaseLine accuracy = 	1438
-	RangeCorrect accuracy = 	1052
-	Unmasking layers accuracy = 	1760
-	CompensatedBias accuracy = 	4791
-	LayerUnmasked+CompensatedBias accuracy = 	2878
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00000101
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1141
-	LayerUnmasked+CompensatedBias accuracy = 	1100
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00000110
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1092
-	LayerUnmasked+CompensatedBias accuracy = 	1066
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00000111
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1132
-	LayerUnmasked+CompensatedBias accuracy = 	1070
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00001000
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1012
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1143
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1136
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00001001
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1082
-	LayerUnmasked+CompensatedBias accuracy = 	1042
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00001010
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1094
-	LayerUnmasked+CompensatedBias accuracy = 	1058
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00001011
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1001
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1158
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1070
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00001100
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1005
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1100
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1083
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00001101
-	BaseLine accuracy = 	1091
-	RangeCorrect accuracy = 	999
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1164
-	LayerUnmasked+CompensatedBias accuracy = 	1073
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00001110
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1007
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1078
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1086
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00001111
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1022
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	1087
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1089
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ROUND_UP	 Mask: 00010000
-	BaseLine accuracy = 	1000
-	RangeCorrect accuracy = 	1004
-	Unmasking layers accuracy = 	1000
-	CompensatedBias accuracy = 	865
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1036
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00000001
 	BaseLine accuracy = 	7438
 	RangeCorrect accuracy = 	6566
@@ -184,19 +88,61 @@ QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	
 	RangeCorrect accuracy = 	1000
 	Unmasking layers accuracy = 	955
 	CompensatedBias accuracy = 	5695
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	2313
+	LayerUnmasked+CompensatedBias accuracy = 	6223
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00010000
 	BaseLine accuracy = 	1000
 	RangeCorrect accuracy = 	1004
 	Unmasking layers accuracy = 	1000
 	CompensatedBias accuracy = 	865
 	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1036
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00010001
+	BaseLine accuracy = 	1000
+	RangeCorrect accuracy = 	1001
+	Unmasking layers accuracy = 	1000
+	CompensatedBias accuracy = 	878
+	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1050
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00010010
+	BaseLine accuracy = 	1000
+	RangeCorrect accuracy = 	917
+	Unmasking layers accuracy = 	1000
+	CompensatedBias accuracy = 	1062
+	LayerUnmasked+CompensatedBias accuracy = 	924
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00010011
+	BaseLine accuracy = 	1000
+	RangeCorrect accuracy = 	959
+	Unmasking layers accuracy = 	1000
+	CompensatedBias accuracy = 	972
+	LayerUnmasked+CompensatedBias accuracy = 	928
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00010100
+	BaseLine accuracy = 	1000
+	RangeCorrect accuracy = 	1006
+	Unmasking layers accuracy = 	1000
+	CompensatedBias accuracy = 	1028
+	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	1075
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00010101
+	BaseLine accuracy = 	1000
+	RangeCorrect accuracy = 	1000
+	Unmasking layers accuracy = 	1000
+	CompensatedBias accuracy = 	1014
+	LayerUnmasked+CompensatedBias accuracy = 	1011
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00010110
+	BaseLine accuracy = 	1000
+	RangeCorrect accuracy = 	1000
+	Unmasking layers accuracy = 	1000
+	CompensatedBias accuracy = 	822
+	LayerUnmasked+CompensatedBias accuracy = 	888
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MOD_ROUND_UP	 Mask: 00010111
+	BaseLine accuracy = 	1000
+	RangeCorrect accuracy = 	1000
+	Unmasking layers accuracy = 	1135
+	CompensatedBias accuracy = 	840
+	LayerUnmasked+CompensatedBias accuracy = 	892
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00000001
-	BaseLine accuracy = 	9229
-	RangeCorrect accuracy = 	9225
-	Unmasking layers accuracy = 	9214
-	CompensatedBias accuracy = 	9232
-	LayerUnmasked+CompensatedBias accuracy = 	9224
+	BaseLine accuracy = 	9222
+	RangeCorrect accuracy = 	9211
+	Unmasking layers accuracy = 	9225
+	CompensatedBias accuracy = 	9224
+	LayerUnmasked+CompensatedBias accuracy = 	9231
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00000010
 	BaseLine accuracy = 	9233
 	RangeCorrect accuracy = 	9232
@@ -204,11 +150,11 @@ QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 000
 	CompensatedBias accuracy = 	9230
 	LayerUnmasked+CompensatedBias accuracy = 	9237
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00000011
-	BaseLine accuracy = 	9223
-	RangeCorrect accuracy = 	9218
-	Unmasking layers accuracy = 	9229
-	CompensatedBias accuracy = 	9228
-	LayerUnmasked+CompensatedBias accuracy = 	9231
+	BaseLine accuracy = 	9236
+	RangeCorrect accuracy = 	9209
+	Unmasking layers accuracy = 	9227
+	CompensatedBias accuracy = 	9226
+	LayerUnmasked+CompensatedBias accuracy = 	9230
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00000100
 	BaseLine accuracy = 	9216
 	RangeCorrect accuracy = 	9222
@@ -216,11 +162,11 @@ QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 000
 	CompensatedBias accuracy = 	9214
 	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	9217
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00000101
-	BaseLine accuracy = 	9215
-	RangeCorrect accuracy = 	9201
-	Unmasking layers accuracy = 	9235
-	CompensatedBias accuracy = 	9217
-	LayerUnmasked+CompensatedBias accuracy = 	9226
+	BaseLine accuracy = 	9204
+	RangeCorrect accuracy = 	9205
+	Unmasking layers accuracy = 	9216
+	CompensatedBias accuracy = 	9222
+	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	9210
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00000110
 	BaseLine accuracy = 	8989
 	RangeCorrect accuracy = 	9173
@@ -228,62 +174,8 @@ QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 000
 	CompensatedBias accuracy = 	9179
 	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	9212
 QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00000111
-	BaseLine accuracy = 	7453
-	RangeCorrect accuracy = 	8515
-	Unmasking layers accuracy = 	7933
-	CompensatedBias accuracy = 	9145
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	9200
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00001000
-	BaseLine accuracy = 	5302
-	RangeCorrect accuracy = 	9115
-	Unmasking layers accuracy = 	5489
-	CompensatedBias accuracy = 	9199
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	9223
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00001001
-	BaseLine accuracy = 	3458
-	RangeCorrect accuracy = 	8405
-	Unmasking layers accuracy = 	3653
-	CompensatedBias accuracy = 	9173
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	9188
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00001010
-	BaseLine accuracy = 	2110
-	RangeCorrect accuracy = 	2239
-	Unmasking layers accuracy = 	2467
-	CompensatedBias accuracy = 	9121
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	9176
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00001011
-	BaseLine accuracy = 	9087
-	RangeCorrect accuracy = 	5017
-	Unmasking layers accuracy = 	9132
-	CompensatedBias accuracy = 	9098
-	LayerUnmasked+CompensatedBias accuracy = 	9195
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00001100
-	BaseLine accuracy = 	1014
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	1033
-	CompensatedBias accuracy = 	8601
-	LayerUnmasked+CompensatedBias accuracy = 	8692
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00001101
-	BaseLine accuracy = 	923
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	979
-	CompensatedBias accuracy = 	8166
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	6671
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00001110
-	BaseLine accuracy = 	858
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	954
-	CompensatedBias accuracy = 	6447
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	3921
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00001111
-	BaseLine accuracy = 	886
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	981
-	CompensatedBias accuracy = 	4342
-	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	2833
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD	 Mask: 00010000
-	BaseLine accuracy = 	2048
-	RangeCorrect accuracy = 	1000
-	Unmasking layers accuracy = 	2388
-	CompensatedBias accuracy = 	9009
-	LayerUnmasked+CompensatedBias accuracy = 	9124
+	BaseLine accuracy = 	7515
+	RangeCorrect accuracy = 	8544
+	Unmasking layers accuracy = 	7782
+	CompensatedBias accuracy = 	9167
+	RangeCorrect+LayerUnmasked+CompensatedBias accuracy = 	9198
