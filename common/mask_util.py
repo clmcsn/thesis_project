@@ -17,6 +17,7 @@ class MaskType(Enum):
      MINIMUM_DISTANCE = 5
      MINIMUM_DISTANCE_2 = 6
      MD = 7
+     MD_FAST = 8
 class MaskInfo():
     def __init__(   self, quant_mode, mask_type,
                             mask, correctRange):
@@ -201,6 +202,8 @@ def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu')
     activation_child = "./data/child_act/child_{}.dump"
     shutil.rmtree('./data/')
     os.mkdir('./data')
+    with open("./save_act","w") as validity_act: #to tell distiller_mod_v5 to save activations
+        pass
     #fetching correction batch
     data_loader= torch.utils.data.DataLoader(
     test_set
@@ -251,6 +254,7 @@ def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu')
             pred_child = child_model(image) #getting new activation values
             save_dump("./data","ref","./data/child_act",new_name="child")
             i+=1
+    os.remove("./save_act") #to tell distiller_mod_v5 to not save activations anymore
 
 """guided_MaskTable_creator(network,std_mask,file_path,gui=True)
 
@@ -437,11 +441,11 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
     if mask_type==MaskType.SIMPLE_MASK:
         mask=_make_mask(bit_to_mask)
         quant_param = quant_param & mask
-    if mask_type==MaskType.ROUND_DOWN:
+    elif mask_type==MaskType.ROUND_DOWN:
         complete_mask=_make_mask(bit_to_mask)
         for bit in bit_to_mask:
             quant_param = _mask_bit_round_down(quant_param, bit, complete_mask)
-    if mask_type==MaskType.MOD_ROUND_UP:
+    elif mask_type==MaskType.MOD_ROUND_UP:
         complete_mask=_make_mask(bit_to_mask)
         max_int = 2**(dynamic-int(signed))-1 & complete_mask
         #round up operations
@@ -452,7 +456,7 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
             quant_param = _mask_bit_round_down(quant_param, bit, complete_mask)
         #sat
         quant_param = _sat_to_max(quant_param,max_int)
-    if mask_type==MaskType.ROUND_UP:
+    elif mask_type==MaskType.ROUND_UP:
         complete_mask=_make_mask(bit_to_mask)
         max_int = 2**(dynamic-int(signed))-1 & complete_mask
         round_up_mask = bit_to_mask[::-1]
@@ -460,7 +464,7 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
         for bit in round_up_mask:
             quant_param = _mask_bit_round_up(quant_param, bit)
         quant_param = _sat_to_max(quant_param,max_int)
-    if mask_type==MaskType.MINIMUM_DISTANCE:
+    elif mask_type==MaskType.MINIMUM_DISTANCE:
         complete_mask=_make_mask(bit_to_mask)
         max_int = 2**(dynamic-int(signed))-1 & complete_mask
         #round up operations
@@ -471,8 +475,7 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
             quant_param = _mask_bit_round_down(quant_param, bit, complete_mask)
         #sat
         quant_param = _sat_to_max(quant_param,max_int)
-    quant_param = quant_param.to(ty)
-    if mask_type==MaskType.MINIMUM_DISTANCE_2: #with true round up algorithm
+    elif mask_type==MaskType.MINIMUM_DISTANCE_2: #with true round up algorithm
         complete_mask=_make_mask(bit_to_mask)
         max_int = 2**(dynamic-int(signed))-1 & complete_mask
         round_up_mask = bit_to_mask[::-1]
@@ -482,7 +485,7 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
             quant_param = _mask_bit_round_down(quant_param, bit, complete_mask, priority=True)
         #sat
         quant_param = _sat_to_max(quant_param,max_int)
-    if mask_type==MaskType.MD:
+    elif mask_type==MaskType.MD:
         shape=quant_param.size()
         quant_param = quant_param.flatten().to(torch.int)
         for el in quant_param:
@@ -514,5 +517,34 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
                 if (upper > (2**(dynamic-int(signed))-1 & _make_mask(bit_to_mask))):
                     el+=downer-el
         quant_param = quant_param.view(shape)
+    elif mask_type==MaskType.MD_FAST:
+        mask=~_make_mask(bit_to_mask)
+        #generate up_tensor
+        boolTensor=(quant_param & mask).to(torch.bool).to(torch.int)
+        up_tensor=quant_param + boolTensor
+        while (boolTensor.sum()):
+            boolTensor=(up_tensor & mask).to(torch.bool).to(torch.int)
+            up_tensor += boolTensor
+
+        #generate down_tensor
+        boolTensor=(quant_param & mask).to(torch.bool).to(torch.int)
+        down_tensor=quant_param - boolTensor
+        while (boolTensor.sum()):
+            boolTensor=(down_tensor & mask).to(torch.bool).to(torch.int)
+            down_tensor -= boolTensor
+        #exclude overflow numbers
+        max_int = 2**(dynamic-int(signed))-1
+        overflow = (up_tensor>max_int).to(torch.int)
+
+        #retriving differences
+        diff_up = up_tensor - quant_param
+        diff_down = quant_param - down_tensor
+
+        #boolean tensors for substitution
+        up = (diff_up < diff_down).to(torch.int)*(overflow ^ 1) #here we force to zero those that overflows
+        down = (diff_down < diff_up).to(torch.int) | overflow
+
+        quant_param = up*up_tensor + quant_param*(up^1)
+        quant_param = down*down_tensor + quant_param*(down^1) 
     quant_param = quant_param.to(ty)
     return quant_param
