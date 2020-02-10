@@ -147,10 +147,10 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 quantizer.prepare_model(s.dummy_input)
                 quantizer.model.eval()
                 ref_quantized.model.eval()
-                balanceNetwork(ref_quantized.model,
+                balanceNetwork_v2(ref_quantized.model,
                                 quantizer.model,
                                 s.train_set,
-                                batch_size=230,
+                                batch_size=500,
                                 device="cpu")
                 quantizer.model.to(s.device)
                 test_preds = get_all_preds(quantizer.model, data_loader,device=s.device)
