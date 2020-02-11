@@ -1,9 +1,9 @@
 features.0: 00000000
-features.5: 00001100
-features.10: 00001100
-features.14: 00001100
-features.19: 00001100
-features.23: 00001100
-features.28: 00001100
-features.32: 00001100
+features.5: 00010111
+features.10: 00010111
+features.14: 00010111
+features.19: 00010111
+features.23: 00010111
+features.28: 00010111
+features.32: 00010111
 classifier: 00000000
