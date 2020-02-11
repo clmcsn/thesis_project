@@ -8,7 +8,7 @@ sys.path.append("../")
 tomask = True
 
 if tomask:
-    path = "../../distiller_mod_v3"
+    path = "../../distiller_mod_v5"
 else:
     path = "../../distiller"
 
@@ -68,11 +68,11 @@ data_loader= torch.utils.data.DataLoader(
     ,batch_size=batch_size)
 
 mask_config_file="../models/mask_config/{}.mc".format(network_name)
-guided_MaskTable_creator(network, mask_config_file,std_mask="00000100")
+guided_MaskTable_creator(network, mask_config_file,std_mask="00000100",gui=False)
 mask_table=MaskTable(distiller.quantization.LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD_FAST, [], False, network, mask_file=mask_config_file)
-test_preds = get_all_preds(network, data_loader,device=device)
+"""test_preds = get_all_preds(network, data_loader,device=device)
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
-print(ref_correct)
+print(ref_correct)"""
 quant_net = PostTrainLinearQuantizer(   network, bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                                             mode=LinearQuantMode.ASYMMETRIC_UNSIGNED,
                                                             mask_table= mask_table, 
@@ -85,6 +85,7 @@ quant_net = PostTrainLinearQuantizer(   network, bits_activations=aw_bits, bits_
 dummy_input = (torch.zeros([1,3,32,32]))
 quant_net.prepare_model(dummy_input)
 quant_net.model.eval()
+exit()
 test_preds = get_all_preds(quant_net.model, data_loader,device=device)
 preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print(preds_correct)

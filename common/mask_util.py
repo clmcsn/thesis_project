@@ -8,7 +8,9 @@ from common.nnTools import get_layersName_list
 import os
 import shutil
 import random as rand
+from collections import namedtuple
 
+#list of all masking algorithms aveilable
 class MaskType(Enum):
      SIMPLE_MASK = 1
      ROUND_DOWN = 2
@@ -18,6 +20,11 @@ class MaskType(Enum):
      MINIMUM_DISTANCE_2 = 6
      MD = 7
      MD_FAST = 8
+
+"""basic class for containing informations"""
+#TODO far diventare MaskInfo la classe che esprime le informazioni di una singola maschera applicata a una 
+#       determintata rete o LAYER
+
 class MaskInfo():
     def __init__(   self, quant_mode, mask_type,
                             mask, correctRange):
@@ -28,19 +35,24 @@ class MaskInfo():
         self.mask = mask 
         self.correctRange = correctRange
 
+"""namedtuple for describing the exact operation that must be performed layer-wise"""
+LayerAttributes = namedtuple("LayerAttributes",['mask','correctRange'])
+
+"""support class for collecting statistics belonging to masks"""
 class MaskStat(MaskInfo):
     def __init__(self, quant_mode, mask_type,
                         mask, correctRange,
-                        correct_preds,  accuracy,
+                        correct_preds,  performance_class,
                         model_name):
         super(MaskStat, self).__init__( quant_mode,
                                         mask_type,
                                         mask,
                                         correctRange)
         self.correct_preds = correct_preds
-        self.accuracy = accuracy
+        self.performance_class = performance_class
         self.model_name = model_name
 
+"""Class used for correct handling network and masking"""
 class MaskTable(MaskInfo):
     def __init__(self, quant_mode, mask_type, 
                         mask, correctRange, 
@@ -57,10 +69,16 @@ class MaskTable(MaskInfo):
         if mask_file:
             self.fill_table(mask_file)
 
+    """create_table(self,model)
+    DESCRIPTION
+        Builts the structure of the table with the information for masking the network passed as model
+    INPUT
+        Needs as inputs:
+        model: instance of the network that wants to be handled"""
     def create_table(self,model):
         layers_name_list = get_layersName_list(model)
         for layer_name in layers_name_list:
-            self.Table[layer_name] = []
+            self.Table[layer_name] = LayerAttributes(mask=[] , correctRange=False)
 
     def fill_table(self,file_path):
         #temp_dic is just a way to control that all the keys are congruent
@@ -90,86 +108,7 @@ class MaskTable(MaskInfo):
         for layer in self.Table:
             self.Table[layer]=[]
 
-"""Need to be used with the distiller_mod_v4 that dumps the scaling factor!"""
-
-def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
-    def save_dump(in_path,dump_name,out_path,new_name=None):
-        dirlist=os.listdir(in_path)
-        to_move=[]
-        for el in dirlist:
-            if dump_name in el:
-                to_move+=[el]
-        try:
-            os.mkdir(out_path)
-        except FileExistsError:
-            pass
-        for el in to_move:
-            shutil.move(os.path.join(in_path,el),os.path.join(out_path,el))
-        if new_name:
-            dirlist=os.listdir(out_path)
-            for el in dirlist:
-                if dump_name in el:
-                    cont = el.split(".")[0] #funziona se non ci sono altri punti oltre a quelli della estensione!!!
-                    num = cont[len(cont)-1]
-                    os.rename(out_path+"/"+el,out_path+"/"+new_name+"_{}".format(num)+".dump")
-
-    def remove_dump(path,dump_name):
-        dirlist=os.listdir(path)
-        for el in dirlist:
-            if dump_name in el:
-                os.remove(path+"/"+dump_name)
-    
-    sf_dump_file = "./data/scale_factor.dump"
-    activation_ref   = "./data/ref_act/ref_model_{}.dump"
-    activation_child = "./data/child_act/child_model_{}.dump"
-    
-    #fetching correction batch
-    data_loader= torch.utils.data.DataLoader(
-    test_set
-    ,shuffle=False
-    ,batch_size=batch_size)
-
-    batch = next(iter(data_loader))
-    image, label = batch
-
-    #obtaining activations from models
-    pred_ref = ref_model(image)
-    save_dump("./data","ref_model","./data/ref_act")
-    os.remove(sf_dump_file) #need to remove the file dump of scaling factors so there would be just one
-    pred_child = child_model(image)
-    save_dump("./data","ref_model","./data/child_act",new_name="child_model")
-   
-    #correcting loop
-    i=0 #need for knowing which layer we are in
-    for layer_name, layer in child_model.named_modules():
-        if isinstance(layer, (nn.Conv2d, nn.Conv3d, nn.Linear)):
-            layer_coord = layer_name.split(".")
-            #retriving scale factor
-            with open(sf_dump_file,"r") as in_pointer:
-                for k in range(i+1): #need to fetch how many scale factors as layer we are in
-                    sf = float(in_pointer.readline())
-            try:
-                #fetching activations
-                ref = torch.load(activation_ref.format(i), map_location=device) 
-                child = torch.load(activation_child.format(i), map_location=device)
-                for j in range(ref.size(1)): #for every element of the bias=num_output_channels
-                    r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
-                    c = child[:,j,:,:]
-                    d = torch.sum(r-c)#/ref.size(0) #perform the distance
-                    layer.bias[j] = layer.bias[j] + d
-                #upload distiller backup
-                getattr(getattr(child_model,layer_coord[0]),layer_coord[1]).base_b_q = (layer.bias/sf)-getattr(getattr(child_model,layer_coord[0]),layer_coord[1]).b_zero_point
-            except FileNotFoundError: #case for output probabilities
-                for j in range(10): #numbers_of_class=10
-                    d = torch.sum(pred_ref[:,j]-pred_child[:,j])#/pred_ref.size(0)
-                    layer.bias[j] = layer.bias[j] + d
-                getattr(child_model,layer_coord[0]).base_b_q = (layer.bias/sf)-getattr(child_model,layer_coord[0]).b_zero_point
-            #getting again activation from layer
-            os.remove("./data/scale_factor.dump") #removing the dumping factor
-            pred_child = child_model(image) #getting new activation values
-            save_dump("./data","ref_model","./data/child_act",new_name="child_model")
-            i+=1
-
+#WORKS only with vgg11
 def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     def save_dump(in_path,dump_name,out_path,new_name=None):
         dirlist=os.listdir(in_path)
@@ -267,13 +206,13 @@ INPUT
     file_path:  indicates where output file must be saved
     gui=True:   indicates if entry of table will be provided by hand or all will be assigned the default"""
 
-def guided_MaskTable_creator(network,file_path,std_mask="00000000",gui=True):
-    file_string="{}: {}\n"
+def guided_MaskTable_creator(network,file_path,std_mask="00000000",correctRange=False,gui=True):
+    file_string="{}: {}\t{}\n"
     layers = get_layersName_list(network)
     with open(file_path,"w") as out_pointer:
         if gui==False:
             for lay in layers:
-                out_pointer.write(file_string.format(lay,std_mask))
+                out_pointer.write(file_string.format(lay,std_mask,int(correctRange)))
         else:
             print("Available layers:")
             for l in layers:
@@ -281,29 +220,30 @@ def guided_MaskTable_creator(network,file_path,std_mask="00000000",gui=True):
             for lay in layers:
                 mask = input("Please insert a mask for layer {}: (s for standard)\n".format(lay))
                 if mask=="s" or mask=="S":
-                    out_pointer.write(file_string.format(lay,std_mask))
+                    out_pointer.write(file_string.format(lay,std_mask,int(correctRange)))
                 else:
                     if len(mask)!=len(std_mask):
                         print("Mask must be of {} bits. If not what expected provide a different standard mask".format(len(std_mask)))
                         exit()
                     else:
-                        out_pointer.write(file_string.format(lay,mask))
+                        out_pointer.write(file_string.format(lay,mask,int(correctRange)))
 
 
 def set_specific_layers(layers,file_path,new_mask="00000000"):
-    file_string="{}: {}\n"
+    file_string="{}: {}\t{}\n"
     with open(file_path,"r") as in_pointer, open("temp","w") as out_pointer:
         for line in in_pointer:
             words = line.split()
             layer_name = words[0][0:len(words[0])-1] #needed for deleating "at the end"
             mask = words[1]
+            rangeCorrect=words[2]
             if layer_name in layers:
                 mask = new_mask
-            out_pointer.write(file_string.format(layer_name,mask))
+            out_pointer.write(file_string.format(layer_name,mask,rangeCorrect))
     os.remove(file_path)
     shutil.move("temp",file_path)
 
-"""maskFile_to_dict(file_path
+"""maskFile_to_dict(file_path)
 
 DESCRIPTION
     From file with the list of mask for each layer, this function provides a dictionary extracted from it
@@ -311,14 +251,14 @@ INPUT
     Needs as inputs:
     file_path:  file where to extract network description
 OUTPUT
-    dic:        dictionary with informations"""
+    dic:        dictionary with informations. (mask as a list)"""
 
 def maskFile_to_dict(file_path):
     dic={}
     with open(file_path,"r") as in_pointer:
         for line in in_pointer:
             words=line.split()
-            dic[words[0][0:len(words[0])-1]]=stringMask_to_list(words[1])
+            dic[words[0][0:len(words[0])-1]]=LayerAttributes(mask=stringMask_to_list(words[1]) , correctRange=bool(words[2]))
     return dic
 
 
@@ -358,7 +298,6 @@ def _make_mask(bit_to_mask):
     return mask
 
 def evaluate_mask(n_bit,signed=True,mask_type=MaskType.SIMPLE_MASK,mask=[]):
-    
     #generate limits
     if signed:
         start_point = -2**(n_bit-1)
