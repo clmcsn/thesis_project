@@ -149,7 +149,7 @@ ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activation
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD_FAST, [2] , False, ref_network)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD_FAST, [4,2,1,0] , False, ref_network)
 #loading child model
 quantized_child1 = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
@@ -176,6 +176,22 @@ test_set
 ,shuffle=False
 ,batch_size=batch_size)
 
+new_preds = get_all_preds(quantized_child1.model, data_loader,device=device)
+new_correct = new_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
+print("New accuracy 1:{}".format(new_correct))
+
+balanceNetwork(ref_quantized.model,
+                quantized_child1.model,
+                test_set,
+                batch_size=500,
+                device=device)
+batch_size=50
+#fetching batches for inference
+data_loader= torch.utils.data.DataLoader(
+test_set
+,shuffle=False
+,batch_size=batch_size)
+
 """ref_preds = get_all_preds(ref_quantized.model, data_loader,device=device)
 ref_correct = ref_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
 print("Ref accuracy :{}".format(ref_correct))"""
@@ -186,4 +202,4 @@ print("Bad accuracy :{}".format(bad_correct))
 
 new_preds = get_all_preds(quantized_child1.model, data_loader,device=device)
 new_correct = new_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
-print("New accuracy :{}".format(new_correct))
+print("New accuracy 2:{}".format(new_correct))

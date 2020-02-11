@@ -26,7 +26,7 @@ acc_string = "\t{} accuracy = \t{}\n"
 #algorithm to be analyzed
 quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
 #mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE, MaskType.MD]
-mask_mode_list = [MaskType.MOD_ROUND_UP, MaskType.MD]
+mask_mode_list = [MaskType.MD_FAST]
 
 #report masks to be analyzed
 stop_string = 24
@@ -37,8 +37,8 @@ aw_bits=8
 acc_bits=32
 
 #network
-network_name = "vgg11bn"
-report_fname = "data_{}_CIFAR10_postTrainMasking.txt".format(network_name)
+network_name = "vggbn"
+report_fname = "data_{}_CIFAR10_postTrainMasking_new.txt".format(network_name)
 config_fname = "{}.mc".format(network_name)
 if (network_name == "vgg11bn"):
     import models.cifar10.vgg_cifar as vgg
