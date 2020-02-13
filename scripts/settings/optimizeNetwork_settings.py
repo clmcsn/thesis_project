@@ -2,6 +2,7 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
+import os
 import sys
 sys.path.append("../")
 
@@ -13,6 +14,7 @@ sys.path.append(distiller_version)
 import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 
+from common.mask_util import MaskType
 
 #file names
 maskTimingCharFile="../reports/maskTimingCharact_csaMult_0nsClk.txt"
@@ -28,7 +30,7 @@ quant_mode = LinearQuantMode.ASYMMETRIC_UNSIGNED
 mask_mode = MaskType.MD_FAST
 
 #network
-network_name = "vggbn"
+network_name = "vgg11bn"
 report_fname = "data_{}_CIFAR10_postTrainMasking_new.txt".format(network_name)
 config_fname = "{}.mc".format(network_name)
 if (network_name == "vgg11bn"):
@@ -66,7 +68,7 @@ if dataset == "CIFAR10":
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ])
 
-    train_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
+    test_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
         root='../../data/CIFAR10'
         ,train=False  #where data will be located
         ,download=True              #download if is not present offline(run only the first time)

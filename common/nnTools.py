@@ -80,8 +80,6 @@ def get_layer_dict(fname):
                                             inFmap_s,kernel_s,stride)
     return dic
 
-def inference
-
 def getSparsity(tensor):
     shape=tensor.size()
     tensor = tensor.flatten()
@@ -125,5 +123,5 @@ def test(model, test_set, batch_size=50, device="cpu"):
                                                 ,shuffle=False
                                                 ,batch_size=batch_size)
     preds = get_all_preds(model, data_loader,device=device)
-    correct = preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
+    correct = preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets).to(device)).sum().item()
     return correct

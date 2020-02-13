@@ -127,7 +127,7 @@ class MaskTable(MaskInfo):
         no return"""
 def saveLayerTable(layer_table,fname):
     with open(fname,"w") as out_pointer:
-        for layer in layer_table.keys()
+        for layer in layer_table.keys():
             out_pointer.write("{}\n".format(layer))
             for mask in layer_table[layer].keys():
                 out_pointer.write("Mask:{}\tRangeCorrect:{}\tAccuracy:{}\n".format(mask,layer_table[layer][mask].rangeCorrect,layer_table[layer][mask].accuracy))

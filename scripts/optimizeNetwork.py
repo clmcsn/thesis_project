@@ -3,10 +3,14 @@
 import sys
 sys.path.append("../")
 
-from common.mask_util import get_mask_hwCharact, guided_MaskTable_creator, MaskTable, MaskLayerProperty, saveLayerTable
+from common.mask_util import get_mask_hwCharact,set_specific_layers, guided_MaskTable_creator, MaskTable, MaskLayerProperty, saveLayerTable
 from common.nnTools import get_layer_dict, test
 import settings.optimizeNetwork_settings as s
 
+import distiller
+from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
+
+from copy import deepcopy
 
 #fetching the characterization mask
 print("Fetching mask characterization from {}...\n".format(s.maskTimingCharFile))
@@ -21,7 +25,7 @@ print("Fetching network description from {}...\n".format(s.network_file_descript
 network_description = get_layer_dict(s.network_file_descriptor)
 
 #filling table as dictionary of dictionaries
-if toCharact:
+if s.toCharact:
     print("Creating layer-wise characterization table...")
     LayerTable = {}
     for layer in network_description.keys():
@@ -30,8 +34,8 @@ if toCharact:
         for mask in mask_charact_dict.keys():
             #generate test network
             guided_MaskTable_creator(s.network,s.maskConfig_path+s.config_fname, std_mask="00000000",correctRange=False, gui=False) #generate file with no masks
-            set_specific_layers([layer],s.maskConfig_path+s.config_fname) # set only the layer I want to mask
-            mask_table = MaskTable(quant_mode, mask_mode, [] , False, s.network, mask_file=s.maskConfig_path+s.config_fname)
+            set_specific_layers([layer],s.maskConfig_path+s.config_fname,mask) # set only the layer I want to mask
+            mask_table = MaskTable(s.quant_mode, s.mask_mode, [] , False, s.network, mask_file=s.maskConfig_path+s.config_fname)
             quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                         mode=s.quant_mode, mask_table=mask_table,
                                                         scale_approx_mult_bits=s.bits)
@@ -43,8 +47,8 @@ if toCharact:
             del mask_table
             #generate test network
             guided_MaskTable_creator(s.network,s.maskConfig_path+s.config_fname, std_mask="00000000",correctRange=True, gui=False) #generate file with no masks
-            set_specific_layers([layer],s.maskConfig_path+s.config_fname) # set only the layer I want to mask
-            mask_table = MaskTable(quant_mode, mask_mode, [] , True, s.network, mask_file=s.maskConfig_path+s.config_fname)
+            set_specific_layers([layer],s.maskConfig_path+s.config_fname,mask) # set only the layer I want to mask
+            mask_table = MaskTable(s.quant_mode, s.mask_mode, [] , True, s.network, mask_file=s.maskConfig_path+s.config_fname)
             quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                         mode=s.quant_mode, mask_table=mask_table,
                                                         scale_approx_mult_bits=s.bits)
@@ -67,7 +71,7 @@ if toCharact:
             for value in LayerTable[layer].values():
                 """In this part I can add the voltage underscaling part"""
                 if value.accuracy>accuracy:
-                    domintated=True
+                    dominated=True
                     break
             if not dominated:
                 LayerTable[layer][mask]=MaskLayerProperty(correct,accuracy)
