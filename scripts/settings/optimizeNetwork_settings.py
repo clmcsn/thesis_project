@@ -1,14 +1,9 @@
 import torch
 import torchvision
 import torchvision.transforms as transforms
+
 import sys
 sys.path.append("../")
-from common.mask_util import MaskType
-
-#pats
-checkpoint_path = "../models/checkpoints/"
-maskConfig_path = "../models/mask_config/"
-report_path = "../reports/"
 
 #lib
 distiller_version="../../distiller_mod_v5"
@@ -18,33 +13,40 @@ sys.path.append(distiller_version)
 import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 
-#report strings
-rep_file = "../reports/data_vgg11bn_CIFAR10_postTrainMask_v2.txt"
-rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\n"
-acc_string = "\t{} accuracy = \t{}\n"
 
-#algorithm to be analyzed
-quant_mode_list = [LinearQuantMode.ASYMMETRIC_UNSIGNED]
-#mask_mode_list = [MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE, MaskType.MD]
-mask_mode_list = [MaskType.MD_FAST]
+#file names
+maskTimingCharFile="../reports/maskTimingCharact_csaMult_0nsClk.txt"
+maskConfig_path = "../models/mask_config/"
+checkpoint_path = "../models/checkpoints/"
 
-#report masks to be analyzed
-stop_string = 24
 
-#target hardware
+#network hardware settings
 bits=8 #data bits
 aw_bits=8
 acc_bits=32
+quant_mode = LinearQuantMode.ASYMMETRIC_UNSIGNED
+mask_mode = MaskType.MD_FAST
 
 #network
-network_name = "vgg11bn"
+network_name = "vggbn"
 report_fname = "data_{}_CIFAR10_postTrainMasking_new.txt".format(network_name)
 config_fname = "{}.mc".format(network_name)
 if (network_name == "vgg11bn"):
     import models.cifar10.vgg_cifar as vgg
     checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
+    maskCharactFile = checkpoint_path + "CIFAR10_bestAccuracy_9240_maskCharact.txt"
+    if os.path.exists(maskCharactFile):
+        toCharact=False
+    else:
+        toCharact=True
     unmasked_layers = ["features.0","classifier"]
-    network = vgg.vgg11_bn_cifar("./data/ref_model")
+    network = vgg.vgg11_bn_cifar("")
+    network = network.to("cpu") #loaded to cpu because this is a reference, it won't be used for inference and loss of GPU DRAM is avoided 
+    network = network.eval() 
+    checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu") #map location for avoiding conflicts
+    network.load_state_dict(checkpoint['model_state_dict'])
+    network_file_descriptor = "../models/cifar10/net_architectures/vgg11_dl.txt"
+    ref_correct=9240
 elif (network_name == "resnet32"):
     import distiller.models.cifar10 as models
     checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)

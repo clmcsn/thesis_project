@@ -1,0 +1,52 @@
+features.0
+    inChannels: 3
+    outChannels:64
+    inFmap_s:   34
+    kernel_s:   3
+    stride:     1
+features.5
+    inChannels: 64
+    outChannels:128
+    inFmap_s:   18
+    kernel_s:   3
+    stride:     1
+features.10
+    inChannels: 128
+    outChannels:256
+    inFmap_s:   10
+    kernel_s:   3
+    stride:     1
+features.14
+    inChannels: 256
+    outChannels:256
+    inFmap_s:   10
+    kernel_s:   3
+    stride:     1
+features.19
+    inChannels: 256
+    outChannels:512
+    inFmap_s:   6
+    kernel_s:   3
+    stride:     1
+features.23
+    inChannels: 512
+    outChannels:512
+    inFmap_s:   6
+    kernel_s:   3
+    stride:     1
+features.28
+    inChannels: 512
+    outChannels:512
+    inFmap_s:   4
+    kernel_s:   3
+    stride:     1
+features.32
+    inChannels: 512
+    outChannels:512
+    inFmap_s:   4
+    kernel_s:   3
+    stride:     1
+classifier
+    inChannels: 512
+    outChannels:10
+    inFmap_s:   2
