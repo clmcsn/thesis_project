@@ -68,8 +68,10 @@ data_loader= torch.utils.data.DataLoader(
     ,batch_size=batch_size)
 
 mask_config_file="../models/mask_config/{}.mc".format(network_name)
-guided_MaskTable_creator(network, mask_config_file,std_mask="00000100",gui=False)
+guided_MaskTable_creator(network, mask_config_file,std_mask="00000100",correctRange=False , gui=False)
 mask_table=MaskTable(distiller.quantization.LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD_FAST, [], False, network, mask_file=mask_config_file)
+print(mask_table.Table["classifier"].correctRange)
+exit()
 """test_preds = get_all_preds(network, data_loader,device=device)
 ref_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(train_set.targets)).sum().item()
 print(ref_correct)"""

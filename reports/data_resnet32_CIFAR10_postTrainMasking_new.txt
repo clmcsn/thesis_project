@@ -1,5 +1,0 @@
-Reference accuracy = 9358
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.MD_FAST	 Mask: 00000001
-	BaseLine accuracy = 	9359
-	RangeCorrect accuracy = 	9357
-	Unmasking layers accuracy = 	9348

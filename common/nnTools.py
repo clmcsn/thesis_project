@@ -11,37 +11,82 @@ from scipy.stats import skewnorm
 #cm = confusion matrix
 #classes = classes that will be x and y axes
 #
+"""should be used as entry of a dictionary which key is the name of the layer"""
+class layerStat():
+    def __init__(   self,inChannels,outChannels,
+                    inFmap_s,kernel_s=None,stride=None):
+        self.inChannels = inChannels
+        self.outChannels = outChannels
+        self.inFmap_s = inFmap_s
+        self.kernel_s = kernel_s
+        self.stride = stride
+    def get_numMult(self):
+        if kernel_s:
+            n = (self.kernel_s**2)*inChannels*((inFmap_s-kernel_s)/stride + 1)*outChannels
+        else:
+            n = inChannels*outChannels*inFmap_s
+        return n 
+
+class dumping_layer(nn.Module):
+
+    def __init__(self,name):
+        super(dumping_layer, self).__init__()
+        self.name = name
+    
+    def forward(self,x):
+        #torch.save(x,"{}.dump".format(self.name))
+        return x
+
+"""get_layer_dict(fname)
+    DESCRIPTION
+        Out of a network description file provides a dictionary with layer names as key and layerStat object as entry
+        File must be of the following type:
+            "layer_name   
+                ...stats
+                ..."
+        PLEASE USE TEMPLATES FOR WRITING NEW FILES
+    INPUT
+        Needs as inputs:
+        fname: file name with complete network description
+    OUTPUT
+        dic: dictionary where key is the layer name while entry is layerStat object"""
+def get_layer_dict(fname):
+    dic={}
+    with open(fname,"r") as in_pointer:
+        first = True
+        for line in in_pointer:
+            if line[0].isspace(): #if it's a property
+                fields = line.split(":")
+                if "inChannels" in fields[0]:
+                    inChannels = int(fields[1])
+                elif "outChannels" in fields[0]:
+                    outChannels = int(fields[1])
+                elif "inFmap_s" in fields[0]:
+                    inFmap_s = int(fields[1])
+                elif "kernel_s" in fields[0]:
+                    kernel_s = int(fields[1])
+                elif "stride" in fields[0]:
+                    stride = int(fields[1])
+            else:
+                if first:
+                    first = False
+                else:
+                    dic[name] = layerStat(inChannels,outChannels,
+                                            inFmap_s,kernel_s,stride)
+                name = "".join(line.split()) #deletes all the spaces
+                kernel_s = None
+                stride = None
+        dic[name] = layerStat(inChannels,outChannels,
+                                            inFmap_s,kernel_s,stride)
+    return dic
+
+def inference
 
 def getSparsity(tensor):
     shape=tensor.size()
     tensor = tensor.flatten()
     sparsity = float((tensor==0).sum())/int(tensor.size(0))
     return sparsity
-
-def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
-
-    print(cm)
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45)
-    plt.yticks(tick_marks, classes)
-
-    fmt = '.2f' if normalize else 'd'
-    thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, format(cm[i, j], fmt), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
-
-    # plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    plt.show(block=True)
 
 
 def get_all_preds(model, loader, device="cpu"):
@@ -56,44 +101,6 @@ def get_all_preds(model, loader, device="cpu"):
             ,dim=0)
     return all_preds
 
-def train(log_interval, model, device, train_loader, optimizer, criterion, epoch):
-    model.train()
-    for batch_idx, (batch) in enumerate(train_loader):
-        data, target = batch
-        data = data.to(device)
-        target = target.to(device)
-        optimizer.zero_grad()
-        output = model(data)
-        loss = criterion(output, target)
-        correct = output.argmax(dim=1).eq(target).sum().item()
-        accuracy = correct / len(target) 
-        loss.backward()
-        optimizer.step()
-        quant_net.quantize_params()
-        if batch_idx % log_interval == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\tAccuracy: {}'.format(
-                epoch, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.item(), accuracy))
-
-def test(model, device, test_loader):
-    model.eval()
-    test_loss = 0
-    correct = 0
-    with torch.no_grad():
-        for data, target in test_loader:
-            data = data.to(device)
-            target = target.to(device)
-            output = model(data)
-            test_loss += F.nll_loss(output, target, reduction='sum').item()  # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-            correct += pred.eq(target.view_as(pred)).sum().item()
-
-    test_loss /= len(test_loader.dataset)
-
-    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        test_loss, correct, len(test_loader.dataset),
-        100. * correct / len(test_loader.dataset)))
-
 def get_layersName_list(model):
     l=[]
     for name, module in model.named_modules():
@@ -101,77 +108,22 @@ def get_layersName_list(model):
             l+=[name]
     return l
 
-"""def print_weight_dist(layer,path,name='layer1',multiple=False,conf_layer=None,num_bins=50):
-    x = torch.flatten(layer)
-    x = x.detach().numpy() 
-    fig, ax = plt.subplots()
-    n, bins, patches = ax.hist(x, num_bins)
-    if multiple:
-        y = torch.flatten(conf_layer)
-        y = y.detach().numpy()
-        n2, bins2, patches2 = ax.hist(y, num_bins)
-    ax.set_xlabel('Weight')
-    ax.set_ylabel('Occurrency')
-    ax.set_title(r'Histogram of {}: $\mu=100$, $\sigma=15$'.format(name))
-    # Tweak spacing to prevent clipping of ylabel
-    fig.tight_layout()  
-    plt.savefig(path+name+".svg")"""#deprecated
-
-def make_weightDistr_simpleHistogram(layer, name='layer', save=False, path=None):
-    x = torch.flatten(layer)
-    x = x.detach().numpy()
-    fig, ax = plt.subplots()
-    n, bins, patches = ax.hist(x, num_bins)
-    ax.set_xlabel('Weight')
-    ax.set_ylabel('Occurrency')
-    ax.set_title('Histogram of {}'.format(name))
-    fig.tight_layout()
-    if save:
-        plt.savefig(path+"/"+name+".svg")
-    else:
-        plt.show()
-
-def make_weightDistr_comparHistgram(layer, reflayer, name='layer', save=False, path=None, num_bins=100):
-    x = torch.flatten(layer)
-    x = x.detach().numpy()
-    y = torch.flatten(reflayer)
-    y = y.detach().numpy()
-    plt.hist(x, num_bins,facecolor='blue',label="unmasked")
-    plt.hist(y, num_bins,facecolor='grey',label="masked")
-    plt.legend(loc='upper right')
-    plt.xlabel('Weight')
-    plt.ylabel('Occurrencies')
-    plt.title('Histogram of {}'.format(name))
-    if save:
-        plt.savefig(path+"/"+name+".svg")
-    else:
-        plt.show()
-    plt.cla()
-    plt.clf()
-    plt.close()
-    
-
-#TODO to implement fitting curve
-def make_weightDistr_skewfitHistogram(layer, name='layer', save=False, path=None):
-    x = torch.flatten(layer)
-    x = x.detach().numpy()
-    fig, ax = plt.subplots()
-    n, bins, patches = ax.hist(x, num_bins)
-    ax.set_xlabel('Weight')
-    ax.set_ylabel('Occurrencies')
-    ax.set_title('Histogram of {}'.format(name))
-    fig.tight_layout()
-    if save:
-        plt.savefig(path+"/"+name+".svg")
-    else:
-        plt.show()
-
-class dumping_layer(nn.Module):
-
-    def __init__(self,name):
-        super(dumping_layer, self).__init__()
-        self.name = name
-    
-    def forward(self,x):
-        #torch.save(x,"{}.dump".format(self.name))
-        return x
+"""test(model, data_loader)
+    DESCRIPTION
+        Provides correct prediction out of test set (data_loader) for the provided network 
+    INPUT
+        Needs as inputs:
+        model: network to test
+        data_loader: test set
+        batch_size: how many sample must be classified at every cycle
+        device: where test should run
+    OUTPUT
+        correct: how many correct prediction where produced"""
+def test(model, test_set, batch_size=50, device="cpu"):
+    data_loader= torch.utils.data.DataLoader(
+                                                test_set
+                                                ,shuffle=False
+                                                ,batch_size=batch_size)
+    preds = get_all_preds(model, data_loader,device=device)
+    correct = preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
+    return correct

@@ -12,14 +12,8 @@ from collections import namedtuple
 
 #list of all masking algorithms aveilable
 class MaskType(Enum):
-     SIMPLE_MASK = 1
-     ROUND_DOWN = 2
-     ROUND_UP = 3
-     MOD_ROUND_UP = 4
-     MINIMUM_DISTANCE = 5
-     MINIMUM_DISTANCE_2 = 6
-     MD = 7
-     MD_FAST = 8
+    SIMPLE_MASK = 1
+    MD_FAST = 2
 
 """basic class for containing informations"""
 #TODO far diventare MaskInfo la classe che esprime le informazioni di una singola maschera applicata a una 
@@ -35,22 +29,30 @@ class MaskInfo():
         self.mask = mask 
         self.correctRange = correctRange
 
+
 """namedtuple for describing the exact operation that must be performed layer-wise"""
 LayerAttributes = namedtuple("LayerAttributes",['mask','correctRange'])
+
+"""namedtuple for describing how a mask behaves in a layer"""
+MaskLayerProperty = namedtuple("MaskLayerProperty",['correctRange','accuracy'])
 
 """support class for collecting statistics belonging to masks"""
 class MaskStat(MaskInfo):
     def __init__(self, quant_mode, mask_type,
                         mask, correctRange,
-                        correct_preds,  performance_class,
-                        model_name):
+                        correct_preds,
+                        layer,
+                        performance_class=None):
         super(MaskStat, self).__init__( quant_mode,
                                         mask_type,
                                         mask,
                                         correctRange)
         self.correct_preds = correct_preds
         self.performance_class = performance_class
-        self.model_name = model_name
+        self.layer = layer
+    
+    def set_performance_class(self, pc):
+        self.performance_class=pc 
 
 """Class used for correct handling network and masking"""
 class MaskTable(MaskInfo):
@@ -107,6 +109,94 @@ class MaskTable(MaskInfo):
     def clean_table(self):
         for layer in self.Table:
             self.Table[layer]=[]
+
+"""saveLayerTable(layer_table,fname)
+    DESCRIPTION
+        Saves 'layer_table' in 'fname'.
+        layer table must be of type: 
+        DICTIONARY, where 
+            keys are string name of layer
+            values are DICTIONARIES, where:
+                keys are string name of mask (00001000) where 1s are bit to be masked
+                values are object of type MaskLayerProperty 
+    INPUT
+        Needs as inputs:
+        layer_table: filled layer table
+        fname: file name with all characterization
+    OUTPUT
+        no return"""
+def saveLayerTable(layer_table,fname):
+    with open(fname,"w") as out_pointer:
+        for layer in layer_table.keys()
+            out_pointer.write("{}\n".format(layer))
+            for mask in layer_table[layer].keys():
+                out_pointer.write("Mask:{}\tRangeCorrect:{}\tAccuracy:{}\n".format(mask,layer_table[layer][mask].rangeCorrect,layer_table[layer][mask].accuracy))
+
+"""loadLayerTable(fname)
+    DESCRIPTION
+        returns a layer table stored in 'fname'
+    INPUT
+        Needs as inputs:
+        fname: file name with a valid layer table saved in it. Please check saveLoadTable for format
+    OUTPUT
+        returns the layer table loaded from file"""
+def loadLayerTable(fname):
+    table={}
+    with open(fname,"r") as in_pointer:
+        for line in in_pointer:
+            data = line.split()
+            if len(data)==1:
+                l=data[0]
+                table[l]={}
+            else:
+                m=data[0].split(":")[1]
+                c=data[1].split(":")[1]
+                a=data[2].split(":")[1]
+                table[l][m]=MaskLayerProperty(c,a)
+    return table
+
+"""get_mask_hwCharact(fname)
+    DESCRIPTION
+        Out of a mask characterization file provides a dictionary with mask as key and performance as entry
+        File must be of the following type:
+            "mask   performance"
+        masked bit may be indicated both with '0' or '1' but for correctly handling both these possibility
+        first line must contain reference performance!
+    INPUT
+        Needs as inputs:
+        fname: file name with all characterization
+    OUTPUT
+        dic: dictionary with all the entry
+            MASKED BIT WILL BE INDICATED WITH '1'"""
+
+def get_mask_hwCharact(fname):
+    
+    def invertString(string,toInvert):
+        newString=""
+        if toInvert:
+            for c in string:
+                if c=="1":
+                    newString+="0"
+                else:
+                    newString+="1"
+            return newString
+        else:
+            return string
+    
+    dic={}
+    with open(fname,"r") as in_pointer:
+        fst_line = in_pointer.readline()
+        info = fst_line.split()
+        if not(info[0] == len(info[0]) * info[0][0]):
+            print("First string is not reference MAC characterization!")
+            raise 
+        if info[0][0]=="1":
+            toInvert=True
+        dic[invertString(info[0],toInvert)] = float(info[1])
+        for line in in_pointer:
+            info = line.split()
+            dic[invertString(info[0],toInvert)] = float(info[1])
+    return dic
 
 #WORKS only with vgg11
 def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu'):
@@ -314,54 +404,6 @@ def evaluate_mask(n_bit,signed=True,mask_type=MaskType.SIMPLE_MASK,mask=[]):
     d= torch.dist(t,tm,2)
     return d
 
-def _get_bool_tensor(quant_param, bit):
-    fakeList = [bit]
-    mask = ~_make_mask(fakeList)
-    quasiAndTensor = quant_param & mask #quant_param.device should be equal to quasiAndTensor.device (THEY MUST BE!)
-    boolTensor = quasiAndTensor.to(torch.bool) 
-    return boolTensor
-
-def _mask_bit_round_down(quant_param, bit, complete_mask, priority=True):
-    fakeList = [bit]
-    mask = ~_make_mask(fakeList)
-    quasiAndTensor = quant_param & mask #quant_param.device should be equal to quasiAndTensor.device (THEY MUST BE!)
-    boolTensor = quasiAndTensor.to(torch.bool).to(torch.int) # creates a correspondent boolean mask
-    andTensor = quasiAndTensor ^ torch.zeros(quant_param.size(),dtype=torch.int).fill_(~0).to(quant_param.device)
-    if priority:
-        orMask = (2**bit-1) & complete_mask #orMask already take care of future masking for less significant bit
-    else:
-        orMask = (2**bit-1)
-    quasiOrTensor = torch.ones(quant_param.size(),dtype=torch.int).mul_(orMask).to(torch.int).to(quant_param.device)
-    orTensor = quasiOrTensor * boolTensor
-    quant_param = (quant_param & andTensor) | orTensor
-    return quant_param
-
-def _mask_bit_round_up(quant_param, bit, priority=True):
-    fakeList = [bit]
-    mask = ~_make_mask(fakeList)
-    sumTensor = quant_param & mask #quant_param.device should be equal to quasiAndTensor.device (THEY MUST BE!)
-    boolTensor = sumTensor.to(torch.bool).to(torch.int)
-    if (not priority) and  not (bit==0):
-        fakeList = [bit - 1] #previous one
-        mask = ~_make_mask(fakeList)
-        boolTensor2 = (quant_param & mask).to(torch.bool).to(torch.int)
-        boolTensor = boolTensor * boolTensor2
-    notBoolTensor = boolTensor ^ 1 #elementwise invert operation
-    andMask = ~(2**bit - 1)
-    partialAndTensor1 = andMask * boolTensor
-    partialAndTensor2 = -1 * notBoolTensor
-    andTensor = partialAndTensor1 + partialAndTensor2
-    quant_param = quant_param & andTensor 
-    quant_param = quant_param + sumTensor
-    return quant_param
-
-def _sat_to_max(quant_param, max_int):
-    boolTensor = torch.gt(quant_param,max_int).to(torch.int) 
-    notBoolTensor = boolTensor ^ 1
-    satTensor = max_int * boolTensor
-    quant_param = (quant_param * notBoolTensor) + satTensor
-    return quant_param
-
 def get_max_masked_val(num_bit, signed, bit_to_mask):
     mask = _make_mask(bit_to_mask)
     if signed:
@@ -380,82 +422,6 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
     if mask_type==MaskType.SIMPLE_MASK:
         mask=_make_mask(bit_to_mask)
         quant_param = quant_param & mask
-    elif mask_type==MaskType.ROUND_DOWN:
-        complete_mask=_make_mask(bit_to_mask)
-        for bit in bit_to_mask:
-            quant_param = _mask_bit_round_down(quant_param, bit, complete_mask)
-    elif mask_type==MaskType.MOD_ROUND_UP:
-        complete_mask=_make_mask(bit_to_mask)
-        max_int = 2**(dynamic-int(signed))-1 & complete_mask
-        #round up operations
-        for bit in bit_to_mask:
-            quant_param = _mask_bit_round_up(quant_param, bit)
-        #round down correction
-        for bit in bit_to_mask:
-            quant_param = _mask_bit_round_down(quant_param, bit, complete_mask)
-        #sat
-        quant_param = _sat_to_max(quant_param,max_int)
-    elif mask_type==MaskType.ROUND_UP:
-        complete_mask=_make_mask(bit_to_mask)
-        max_int = 2**(dynamic-int(signed))-1 & complete_mask
-        round_up_mask = bit_to_mask[::-1]
-        #round up operations
-        for bit in round_up_mask:
-            quant_param = _mask_bit_round_up(quant_param, bit)
-        quant_param = _sat_to_max(quant_param,max_int)
-    elif mask_type==MaskType.MINIMUM_DISTANCE:
-        complete_mask=_make_mask(bit_to_mask)
-        max_int = 2**(dynamic-int(signed))-1 & complete_mask
-        #round up operations
-        for bit in bit_to_mask:
-            quant_param = _mask_bit_round_up(quant_param, bit, priority=False)
-        #round down correction
-        for bit in bit_to_mask:
-            quant_param = _mask_bit_round_down(quant_param, bit, complete_mask)
-        #sat
-        quant_param = _sat_to_max(quant_param,max_int)
-    elif mask_type==MaskType.MINIMUM_DISTANCE_2: #with true round up algorithm
-        complete_mask=_make_mask(bit_to_mask)
-        max_int = 2**(dynamic-int(signed))-1 & complete_mask
-        round_up_mask = bit_to_mask[::-1]
-        #round up operations
-        for bit in round_up_mask:
-            quant_param = _mask_bit_round_up(quant_param, bit, priority=False)
-            quant_param = _mask_bit_round_down(quant_param, bit, complete_mask, priority=True)
-        #sat
-        quant_param = _sat_to_max(quant_param,max_int)
-    elif mask_type==MaskType.MD:
-        shape=quant_param.size()
-        quant_param = quant_param.flatten().to(torch.int)
-        for el in quant_param:
-            toMask = el & ~_make_mask(bit_to_mask)
-            if toMask:
-                upper=False
-                downer=False
-                fake=int(el)
-                while (upper==False):
-                    fake+=1
-                    if (fake & ~_make_mask(bit_to_mask)==0):
-                        upper=fake
-                fake=int(el)
-                while (downer==False):
-                    fake-=1
-                    if (fake & ~_make_mask(bit_to_mask)==0):
-                        downer=fake
-                du=upper-el
-                dd=el-downer
-                if (du > dd):
-                    el+=downer-el
-                elif (dd > du):
-                    el+=upper-el
-                else:
-                    if(rand.randint(0,99)%2):
-                        el+=downer-el
-                    else:
-                        el+=upper-el
-                if (upper > (2**(dynamic-int(signed))-1 & _make_mask(bit_to_mask))):
-                    el+=downer-el
-        quant_param = quant_param.view(shape)
     elif mask_type==MaskType.MD_FAST:
         mask=~_make_mask(bit_to_mask)
         #generate up_tensor
