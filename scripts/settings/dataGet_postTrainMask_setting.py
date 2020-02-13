@@ -37,7 +37,7 @@ aw_bits=8
 acc_bits=32
 
 #network
-network_name = "vggbn"
+network_name = "vgg11bn"
 report_fname = "data_{}_CIFAR10_postTrainMasking_new.txt".format(network_name)
 config_fname = "{}.mc".format(network_name)
 if (network_name == "vgg11bn"):

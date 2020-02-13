@@ -63,7 +63,7 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 del mask_table
 
                 #generate correct range accuracy            
-                guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, gui=False)
+                guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, True, gui=False)
                 mask_table = MaskTable(quant_mode, mask_mode, [] , True, network, mask_file=s.maskConfig_path+s.config_fname)
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                     mode=quant_mode, mask_table=mask_table,
@@ -133,7 +133,7 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 else:
                     correct = False
                     ref_str = "LayerUnmasked+CompensatedBias" 
-                guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, gui=False)
+                guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, correct, gui=False)
                 set_specific_layers(s.unmasked_layers,s.maskConfig_path+s.config_fname)
                 mask_table = MaskTable(quant_mode, mask_mode, [] , correct, network, mask_file=s.maskConfig_path+s.config_fname)
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,

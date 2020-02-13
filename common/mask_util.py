@@ -258,7 +258,7 @@ def maskFile_to_dict(file_path):
     with open(file_path,"r") as in_pointer:
         for line in in_pointer:
             words=line.split()
-            dic[words[0][0:len(words[0])-1]]=LayerAttributes(mask=stringMask_to_list(words[1]) , correctRange=bool(words[2]))
+            dic[words[0][0:len(words[0])-1]]=LayerAttributes(mask=stringMask_to_list(words[1]) , correctRange=bool(int(words[2])))
     return dic
 
 
