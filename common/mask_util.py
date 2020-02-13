@@ -8,7 +8,7 @@ from common.nnTools import get_layersName_list
 import os
 import shutil
 import random as rand
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 #list of all masking algorithms aveilable
 class MaskType(Enum):
@@ -147,7 +147,7 @@ def loadLayerTable(fname):
             data = line.split()
             if len(data)==1:
                 l=data[0]
-                table[l]={}
+                table[l]=OrderedDict()
             else:
                 m=data[0].split(":")[1]
                 c=data[1].split(":")[1]
