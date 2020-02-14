@@ -57,7 +57,7 @@ class MaskStat(MaskInfo):
 """Class used for correct handling network and masking"""
 class MaskTable(MaskInfo):
     def __init__(self, quant_mode, mask_type, model, 
-                        mask="000000000", correctRange=False, 
+                        mask=None, correctRange=None, 
                         mask_dict=None,mask_file=None):
         super(MaskTable, self).__init__( quant_mode,
                                         mask_type,

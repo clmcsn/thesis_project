@@ -21,10 +21,10 @@ class layerStat():
         self.kernel_s = kernel_s
         self.stride = stride
     def get_numMult(self):
-        if kernel_s:
-            n = (self.kernel_s**2)*inChannels*((inFmap_s-kernel_s)/stride + 1)*outChannels
+        if self.kernel_s:
+            n = (self.kernel_s**2)*self.inChannels*((self.inFmap_s-self.kernel_s)/self.stride + 1)*self.outChannels
         else:
-            n = inChannels*outChannels*inFmap_s
+            n = self.inChannels*self.outChannels*self.inFmap_s
         return n 
 
 class dumping_layer(nn.Module):
@@ -39,8 +39,9 @@ class dumping_layer(nn.Module):
 
 def get_network_mults(net_desc):
     mults=0
-    for l in net_desc:
+    for l in net_desc.values():
         mults+=l.get_numMult()
+    return mults
 
 """get_layer_dict(fname)
     DESCRIPTION
