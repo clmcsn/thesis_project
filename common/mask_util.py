@@ -56,9 +56,9 @@ class MaskStat(MaskInfo):
 
 """Class used for correct handling network and masking"""
 class MaskTable(MaskInfo):
-    def __init__(self, quant_mode, mask_type, 
-                        mask, correctRange, 
-                        model, mask_file=None):
+    def __init__(self, quant_mode, mask_type, model, 
+                        mask="000000000", correctRange=False, 
+                        mask_dict=None,mask_file=None):
         super(MaskTable, self).__init__( quant_mode,
                                         mask_type,
                                         mask,
@@ -67,9 +67,11 @@ class MaskTable(MaskInfo):
         self.Table = {}
         self.create_table(model)
         if mask:
-            self.set_default_mask(mask)
-        if mask_file:
-            self.fill_table(mask_file)
+            self.set_default_mask(mask,correctRange)
+        elif mask_dict:
+            self.fill_table(mask_dict)
+        elif mask_file:
+            self.fill_table_from_file(mask_file)
 
     """create_table(self,model)
     DESCRIPTION
@@ -82,15 +84,19 @@ class MaskTable(MaskInfo):
         for layer_name in layers_name_list:
             self.Table[layer_name] = LayerAttributes(mask=[] , correctRange=False)
 
-    def fill_table(self,file_path):
+    def fill_table_from_file(self,file_path):
         #temp_dic is just a way to control that all the keys are congruent
         temp_dic = maskFile_to_dict(file_path)
         for key in self.Table.keys():
             self.Table[key]=temp_dic[key]
 
-    def set_default_mask(self,mask):
+    def fill_table(self,mask_dict):
+        for key in self.Table.keys():
+            self.Table[key]=mask_dict[key]
+
+    def set_default_mask(self,mask,correctRange):
         for layer_name in self.Table.keys():
-            self.Table[layer_name] = mask
+            self.Table[layer_name] = LayerAttributes(mask=mask , correctRange=correctRange)
 
     #mask must be the list
     def set_mask(self,layer_name,mask):

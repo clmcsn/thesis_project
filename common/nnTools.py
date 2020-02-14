@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from scipy.stats import skewnorm
-
+from collections import OrderedDict
 #cm = confusion matrix
 #classes = classes that will be x and y axes
 #
@@ -37,6 +37,11 @@ class dumping_layer(nn.Module):
         #torch.save(x,"{}.dump".format(self.name))
         return x
 
+def get_network_mults(net_desc):
+    mults=0
+    for l in net_desc:
+        mults+=l.get_numMult()
+
 """get_layer_dict(fname)
     DESCRIPTION
         Out of a network description file provides a dictionary with layer names as key and layerStat object as entry
@@ -51,7 +56,7 @@ class dumping_layer(nn.Module):
     OUTPUT
         dic: dictionary where key is the layer name while entry is layerStat object"""
 def get_layer_dict(fname):
-    dic={}
+    dic=OrderedDict()
     with open(fname,"r") as in_pointer:
         first = True
         for line in in_pointer:
