@@ -3,7 +3,7 @@
 import sys
 sys.path.append("../")
 
-from common.mask_util import get_mask_hwCharact,set_specific_layers, guided_MaskTable_creator, MaskTable, MaskLayerProperty, saveLayerTable, LayerAttributes, stringMask_to_list
+from common.mask_util import get_mask_hwCharact,set_specific_layers, guided_MaskTable_creator, MaskTable, MaskLayerProperty, saveLayerTable, LayerAttributes, stringMask_to_list, balanceNetwork_v2
 from common.nnTools import get_layer_dict, test, get_layersName_list, get_network_mults
 import settings.optimizeNetwork_settings as s
 
@@ -41,6 +41,13 @@ for mask in mask_charact_dict.keys():
     mask_dict[i]=mask+"_1" #1 stands for correcting the range
     i+=1
 
+ref_mask_table=MaskTable(s.quant_mode, s.mask_mode, [] , False, s.network)
+ref_quantized = PostTrainLinearQuantizer( deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
+                    mode=s.quant_mode, mask_table=ref_mask_table,
+                    scale_approx_mult_bits=s.bits)
+ref_quantized.prepare_model(s.dummy_input)
+ref_quantized.model.eval()
+
 class MaskingDNN(Problem):
     def __init__(self):
         super().__init__(n_var=9, n_obj=2, n_constr=0,
@@ -66,6 +73,11 @@ class MaskingDNN(Problem):
         quantizer.model.to(s.device)
         quantizer.prepare_model(s.dummy_input)
         quantizer.model.eval()
+        balanceNetwork_v2(ref_quantized.model,
+                                quantizer.model,
+                                s.train_set,
+                                batch_size=500,
+                                device="cpu")
         f1 = test(quantizer.model,s.test_set,s.batch_size,s.device)
         del quantizer
         del maskT
