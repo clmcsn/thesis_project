@@ -18,7 +18,7 @@ from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 import distiller.utils
 
 import models.cifar10.vgg_cifar as vgg
-from common.nnTools import get_all_preds, get_layersName_list, make_weightDistr_comparHistgram
+from common.nnTools import get_all_preds, get_layersName_list
 from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable, guided_MaskTable_creator , set_specific_layers
 from common.hw_lib import printer_2s
 
@@ -51,6 +51,7 @@ def remove_dump(path,dump_name):
         if dump_name in el:
             os.remove(path+"/"+dump_name)
 
+@profile
 def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     sf_dump_file = "./data/scale_factor.dump"
     activation_ref   = "./data/r_act/ref_{}.dump"
@@ -75,6 +76,8 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
     os.remove(sf_dump_file)
     pred_child = child_model(image)
     save_dump("./data","ref","./data/child_act",new_name="child")
+    del pred_child
+    del pred_ref
     #correcting loop
     i=0 #needed for the scaling factor! 
     for layer_name, layer in child_model.named_modules():
@@ -101,7 +104,7 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
                 for j in range(10): #numbers_of_class=10
                     r = ref[:,j]
                     c = child[:,j]
-                    d = torch.sum(r-c)/pred_ref.size(0)
+                    d = torch.sum(r-c)/batch_size
                     layer.bias[j] = layer.bias[j] + d
                 getattr(child_model,lc[0]).base_b_q = (layer.bias/sf)-getattr(child_model,lc[0]).b_zero_point
             #getting again activation from layer
@@ -109,6 +112,7 @@ def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
             pred_child = child_model(image) #getting new activation values
             save_dump("./data","ref","./data/child_act",new_name="child")
             i+=1
+    del pred_child
     os.remove("./save_act")
 
 device = 'cpu'
@@ -142,14 +146,14 @@ checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location=device)
 ref_network.load_state_dict(checkpoint['model_state_dict'])
 
 #apply quantization
-ref_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [] , False, ref_network)
+ref_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD_FAST, ref_network, [], False)
 ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=ref_mask_table,
                                     scale_approx_mult_bits=bits)
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD_FAST, [4,2,1,0] , False, ref_network)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MD_FAST, ref_network, [4,2,1,0] , False)
 #loading child model
 quantized_child1 = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
@@ -163,28 +167,14 @@ quantized_child2.prepare_model(dummy_input)
 quantized_child2.model.eval()
 
 #balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
-balanceNetwork(ref_quantized.model,
-                quantized_child1.model,
-                test_set,
-                batch_size=500,
-                device=device)
 
-batch_size=50
-#fetching batches for inference
-data_loader= torch.utils.data.DataLoader(
-test_set
-,shuffle=False
-,batch_size=batch_size)
-
-new_preds = get_all_preds(quantized_child1.model, data_loader,device=device)
-new_correct = new_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
-print("New accuracy 1:{}".format(new_correct))
 
 balanceNetwork(ref_quantized.model,
-                quantized_child1.model,
-                test_set,
-                batch_size=500,
-                device=device)
+            quantized_child1.model,
+            test_set,
+            batch_size=150,
+            device=device)
+exit()
 batch_size=50
 #fetching batches for inference
 data_loader= torch.utils.data.DataLoader(
