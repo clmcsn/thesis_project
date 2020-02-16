@@ -41,12 +41,13 @@ for mask in mask_charact_dict.keys():
     mask_dict[i]=mask+"_1" #1 stands for correcting the range
     i+=1
 
-ref_mask_table=MaskTable(s.quant_mode, s.mask_mode, [] , False, s.network)
+"""ref_mask_table=MaskTable(s.quant_mode, s.mask_mode, s.network, [] , False)
 ref_quantized = PostTrainLinearQuantizer( deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                     mode=s.quant_mode, mask_table=ref_mask_table,
                     scale_approx_mult_bits=s.bits)
 ref_quantized.prepare_model(s.dummy_input)
 ref_quantized.model.eval()
+ref_quantized.model.to("cpu")"""
 
 class MaskingDNN(Problem):
     def __init__(self):
@@ -70,14 +71,15 @@ class MaskingDNN(Problem):
         quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                 mode=s.quant_mode, mask_table=maskT,
                                                 scale_approx_mult_bits=s.bits)
-        quantizer.model.to(s.device)
+        #quantizer.model.to("cpu")
         quantizer.prepare_model(s.dummy_input)
         quantizer.model.eval()
-        balanceNetwork_v2(ref_quantized.model,
+        """balanceNetwork_v2(ref_quantized.model,
                                 quantizer.model,
-                                s.train_set,
+                                s.test_set,
                                 batch_size=500,
-                                device="cpu")
+                                device="cpu")"""
+        quantizer.model.to(s.device)
         f1 = test(quantizer.model,s.test_set,s.batch_size,s.device)
         del quantizer
         del maskT

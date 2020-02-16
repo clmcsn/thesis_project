@@ -66,7 +66,7 @@ class MaskTable(MaskInfo):
         self.model_class = model.__class__.__name__
         self.Table = {}
         self.create_table(model)
-        if mask:
+        if mask==[]:
             self.set_default_mask(mask,correctRange)
         elif mask_dict:
             self.fill_table(mask_dict)
@@ -247,7 +247,7 @@ def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu')
 
     batch = next(iter(data_loader))
     image, label = batch
-
+    image.to(device)
     #obtaining activations from models
     pred_ref = ref_model(image)
     save_dump("./data","ref","./data/r_act")
@@ -290,6 +290,7 @@ def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu')
             save_dump("./data","ref","./data/child_act",new_name="child")
             i+=1
     os.remove("./save_act") #to tell distiller_mod_v5 to not save activations anymore
+    del data_loader
 
 """guided_MaskTable_creator(network,std_mask,file_path,gui=True)
 
