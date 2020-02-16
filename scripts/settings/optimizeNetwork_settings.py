@@ -26,6 +26,7 @@ checkpoint_path = "../models/checkpoints/"
 bits=8 #data bits
 aw_bits=8
 acc_bits=32
+
 quant_mode = LinearQuantMode.ASYMMETRIC_UNSIGNED
 mask_mode = MaskType.MD_FAST
 
@@ -75,3 +76,4 @@ if dataset == "CIFAR10":
         ,transform=transform_test
     )
     dummy_input = (torch.zeros([1,3,32,32]))
+    test_set_size = int(len(test_set))

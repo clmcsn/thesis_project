@@ -18,6 +18,7 @@ from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.optimize import minimize
 from pymoo.model.problem import Problem
 from pymoo.visualization.scatter import Scatter
+from pymoo.model.termination import MaximumFunctionCallTermination,MaximumGenerationTermination
 
 #fetching the characterization mask
 print("Fetching mask characterization from {}...\n".format(s.maskTimingCharFile))
@@ -80,7 +81,8 @@ class MaskingDNN(Problem):
                                 batch_size=500,
                                 device="cpu")"""
         quantizer.model.to(s.device)
-        f1 = test(quantizer.model,s.test_set,s.batch_size,s.device)
+        correct = test(quantizer.model,s.test_set,s.batch_size,s.device)
+        f1 = s.test_set_size - correct #top-1 error 
         del quantizer
         del maskT
         #F2: AVERAGE DELAY
@@ -96,11 +98,13 @@ problem = MaskingDNN()
 algorithm = NSGA2(pop_size=100)
 res = minimize(problem,
                 algorithm,
-                ('n_gen', 200),
+                ('n_gen', 3),
                 seed=1,
                 verbose=True)
 
 plot = Scatter()
+for sol in problem.pareto_front():
+    print (sol)
 plot.add(problem.pareto_front(), plot_type="line", color="black", alpha=0.7)
 plot.add(res.F, color="red")
 plot.show()
