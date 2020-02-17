@@ -19,6 +19,8 @@ from pymoo.optimize import minimize
 from pymoo.model.problem import Problem
 from pymoo.visualization.scatter import Scatter
 from pymoo.model.termination import MaximumFunctionCallTermination,MaximumGenerationTermination
+from pymoo.operators.integer_from_float_operator import IntegerFromFloatSampling
+from pymoo.operators.sampling.random_sampling import FloatRandomSampling
 
 #fetching the characterization mask
 print("Fetching mask characterization from {}...\n".format(s.maskTimingCharFile))
@@ -95,16 +97,17 @@ class MaskingDNN(Problem):
         out["F"] = anp.column_stack([f1, f2]) 
 
 problem = MaskingDNN()
-algorithm = NSGA2(pop_size=100)
+algorithm = NSGA2(pop_size=4,
+                  sampling=IntegerFromFloatSampling(clazz=FloatRandomSampling))
 res = minimize(problem,
                 algorithm,
-                ('n_gen', 3),
+                ('n_gen', 5),
                 seed=1,
-                verbose=True)
+                verbose=False,
+                save_history=True)
 
 plot = Scatter()
-for sol in problem.pareto_front():
-    print (sol)
-plot.add(problem.pareto_front(), plot_type="line", color="black", alpha=0.7)
 plot.add(res.F, color="red")
 plot.show()
+print(res.F)
+print(res.X)

@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-print(__name__)
-exit()
 import sys
 sys.path.append("../")
 
@@ -25,22 +23,29 @@ from multiprocessing import Process, Queue
 
 def getAccuracy(layerListTable,ref_model,q):
     #create Table
+    print("a")
     maskT = MaskTable(s.quant_mode,s.mask_mode,s.network,mask_dict=layerListTable)
+    print("f")
     quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                             mode=s.quant_mode, mask_table=maskT,
                                             scale_approx_mult_bits=s.bits)
+    print("b")
     #quantizer.model.to("cpu")
     quantizer.prepare_model(s.dummy_input)
     quantizer.model.eval()
-    balanceNetwork_v2(ref_quantized.model,
+    print("C")
+    balanceNetwork_v2(ref_model,
                             quantizer.model,
                             s.test_set,
                             batch_size=500,
                             device="cpu")
+    print("d")
     quantizer.model.to(s.device)
     correct = test(quantizer.model,s.test_set,s.batch_size,s.device)
     f1 = s.test_set_size - correct #top-1 error
-    q.put(f1) 
+    print("g")
+    q.put(f1)
+    exit()
 
 #fetching the characterization mask
 print("Fetching mask characterization from {}...\n".format(s.maskTimingCharFile))
@@ -92,13 +97,11 @@ class MaskingDNN(Problem):
         
         if __name__ == '__main__':
             q = Queue()
-            p = Process(target=getAccuracy, args=(layerListTable,ref_model,q))
+            p = Process(target=getAccuracy, args=(layerListTable,ref_quantized.model,q,))
             p.start()
-            f1=q.get()    
+            f1=q.get()
+            print(f1)
             p.join()
-        
-        del quantizer
-        del maskT
         #F2: AVERAGE DELAY
         delay=0
         for i, m in enumerate(x): #TODO check this get bot layer and mask correct
@@ -117,8 +120,6 @@ res = minimize(problem,
                 verbose=True)
 
 plot = Scatter()
-for sol in problem.pareto_front():
-    print (sol)
 plot.add(problem.pareto_front(), plot_type="line", color="black", alpha=0.7)
 plot.add(res.F, color="red")
 plot.show()
