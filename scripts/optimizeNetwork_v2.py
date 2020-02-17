@@ -24,31 +24,37 @@ from pymoo.operators.integer_from_float_operator import IntegerFromFloatCrossove
 from pymoo.operators.crossover.simulated_binary_crossover import SimulatedBinaryCrossover
 from pymoo.operators.mutation.polynomial_mutation import PolynomialMutation
 from pymoo.operators.integer_from_float_operator import IntegerFromFloatMutation
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, set_start_method
+set_start_method('fork')
 
 def getAccuracy(layerListTable,ref_model,q):
+    import sys
+    sys.path.append("../")
+    import settings.optimizeNetwork_settings as s
+    from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
+    from common.mask_util import get_mask_hwCharact,set_specific_layers, guided_MaskTable_creator, MaskTable, MaskLayerProperty, saveLayerTable, LayerAttributes, stringMask_to_list, balanceNetwork_v2
     #create Table
-    print("a")
+    print("starting child")
     maskT = MaskTable(s.quant_mode,s.mask_mode,s.network,mask_dict=layerListTable)
-    print("f")
-    quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
+    """quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                             mode=s.quant_mode, mask_table=maskT,
-                                            scale_approx_mult_bits=s.bits)
-    print("b")
+                                            scale_approx_mult_bits=s.bits)"""
     #quantizer.model.to("cpu")
     quantizer.prepare_model(s.dummy_input)
     quantizer.model.eval()
-    print("C")
+    print("HALOOOO")
     balanceNetwork_v2(ref_model,
                             quantizer.model,
                             s.test_set,
-                            batch_size=500,
+                            batch_size=10,
                             device="cpu")
-    print("d")
     quantizer.model.to(s.device)
-    correct = test(quantizer.model,s.test_set,s.batch_size,s.device)
+    #correct = test(quantizer.model,s.test_set,s.batch_size,s.device)
+    del quantizer
+    del maskT
+    correct=1
     f1 = s.test_set_size - correct #top-1 error
-    print("g")
+    print("sending result")
     q.put(f1)
     exit()
 
@@ -87,6 +93,7 @@ class MaskingDNN(Problem):
         super().__init__(n_var=9, n_obj=2, n_constr=1,
                             xl=0, xu=63, type_var=np.int,
                             elementwise_evaluation=True)
+        self.first=True
     
     def _evaluate(self, x, out, *args, **kwargs):
         
@@ -99,25 +106,20 @@ class MaskingDNN(Problem):
             mask = m[0]
             correct = bool(int(m[1]))
             layerListTable[layer] = LayerAttributes(stringMask_to_list(mask),correct)
-        #create Table
-        maskT = MaskTable(s.quant_mode,s.mask_mode,s.network,mask_dict=layerListTable)
-        quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
-                                                mode=s.quant_mode, mask_table=maskT,
-                                                scale_approx_mult_bits=s.bits)
-        #quantizer.model.to("cpu")
-        quantizer.prepare_model(s.dummy_input)
-        quantizer.model.eval()
-        """balanceNetwork_v2(ref_quantized.model,
-                                quantizer.model,
-                                s.test_set,
-                                batch_size=500,
-                                device="cpu")"""
-        quantizer.model.to(s.device)
-        correct = test(quantizer.model,s.test_set,s.batch_size,s.device)
+        if __name__ == '__main__':
+
+            q = Queue()
+            print("Creating child")
+            p = Process(target=getAccuracy, args=(layerListTable,ref_quantized.model,q,))
+            p.start()
+            print("wait for result")
+            f1=q.get()
+            print("wait for child terminating")
+            p.join()
+            print("joined")
+        exit()
         f1 = s.test_set_size - correct #top-1 error 
         g1 = f1 - s.max_top1 #constraints of accuracy --> top1-max_top1<=0
-        del quantizer
-        del maskT
         #F2: AVERAGE DELAY
         delay=0
         for i, m in enumerate(x): #TODO check this get bot layer and mask correct
