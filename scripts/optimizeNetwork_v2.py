@@ -28,11 +28,6 @@ from threading import Thread
 from queue import Queue
 
 def getAccuracy(layerListTable,ref_model,q):
-    import sys
-    sys.path.append("../")
-    import settings.optimizeNetwork_settings as s
-    from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
-    from common.mask_util import get_mask_hwCharact,set_specific_layers, guided_MaskTable_creator, MaskTable, MaskLayerProperty, saveLayerTable, LayerAttributes, stringMask_to_list, balanceNetwork_v2
     #create Table
     maskT = MaskTable(s.quant_mode,s.mask_mode,s.network,mask_dict=layerListTable)
     quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,

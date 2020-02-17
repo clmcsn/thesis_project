@@ -10,6 +10,8 @@ import shutil
 import random as rand
 from collections import namedtuple, OrderedDict
 
+mc_file_string="{}: {}\t{}\n" #for .mc files
+
 #list of all masking algorithms aveilable
 class MaskType(Enum):
     SIMPLE_MASK = 1
@@ -116,7 +118,7 @@ class MaskTable(MaskInfo):
         for layer in self.Table:
             self.Table[layer]=[]
 
-"""saveLayerTable(layer_table,fname)
+"""saveLayerAccuracyTable_toFile(layer_table,fname)
     DESCRIPTION
         Saves 'layer_table' in 'fname'.
         layer table must be of type: 
@@ -131,14 +133,14 @@ class MaskTable(MaskInfo):
         fname: file name with all characterization
     OUTPUT
         no return"""
-def saveLayerTable(layer_table,fname):
+def saveLayerAccuracyTable_toFile(layer_table,fname):
     with open(fname,"w") as out_pointer:
         for layer in layer_table.keys():
             out_pointer.write("{}\n".format(layer))
             for mask in layer_table[layer].keys():
                 out_pointer.write("Mask:{}\tRangeCorrect:{}\tAccuracy:{}\n".format(mask,layer_table[layer][mask].rangeCorrect,layer_table[layer][mask].accuracy))
 
-"""loadLayerTable(fname)
+"""loadLayerAccuracyTable_fromFile(fname)
     DESCRIPTION
         returns a layer table stored in 'fname'
     INPUT
@@ -146,7 +148,7 @@ def saveLayerTable(layer_table,fname):
         fname: file name with a valid layer table saved in it. Please check saveLoadTable for format
     OUTPUT
         returns the layer table loaded from file"""
-def loadLayerTable(fname):
+def loadLayerAccuracyTable_fromFile(fname):
     table={}
     with open(fname,"r") as in_pointer:
         for line in in_pointer:
@@ -304,12 +306,11 @@ INPUT
     gui=True:   indicates if entry of table will be provided by hand or all will be assigned the default"""
 
 def guided_MaskTable_creator(network,file_path,std_mask="00000000",correctRange=False,gui=True):
-    file_string="{}: {}\t{}\n"
     layers = get_layersName_list(network)
     with open(file_path,"w") as out_pointer:
         if gui==False:
             for lay in layers:
-                out_pointer.write(file_string.format(lay,std_mask,int(correctRange)))
+                out_pointer.write(mc_file_string.format(lay,std_mask,int(correctRange)))
         else:
             print("Available layers:")
             for l in layers:
@@ -317,17 +318,16 @@ def guided_MaskTable_creator(network,file_path,std_mask="00000000",correctRange=
             for lay in layers:
                 mask = input("Please insert a mask for layer {}: (s for standard)\n".format(lay))
                 if mask=="s" or mask=="S":
-                    out_pointer.write(file_string.format(lay,std_mask,int(correctRange)))
+                    out_pointer.write(mc_file_string.format(lay,std_mask,int(correctRange)))
                 else:
                     if len(mask)!=len(std_mask):
                         print("Mask must be of {} bits. If not what expected provide a different standard mask".format(len(std_mask)))
                         exit()
                     else:
-                        out_pointer.write(file_string.format(lay,mask,int(correctRange)))
+                        out_pointer.write(mc_file_string.format(lay,mask,int(correctRange)))
 
 
 def set_specific_layers(layers,file_path,new_mask="00000000"):
-    file_string="{}: {}\t{}\n"
     with open(file_path,"r") as in_pointer, open("temp","w") as out_pointer:
         for line in in_pointer:
             words = line.split()
@@ -336,7 +336,7 @@ def set_specific_layers(layers,file_path,new_mask="00000000"):
             rangeCorrect=words[2]
             if layer_name in layers:
                 mask = new_mask
-            out_pointer.write(file_string.format(layer_name,mask,rangeCorrect))
+            out_pointer.write(mc_file_string.format(layer_name,mask,rangeCorrect))
     os.remove(file_path)
     shutil.move("temp",file_path)
 
@@ -357,6 +357,21 @@ def maskFile_to_dict(file_path):
             words=line.split()
             dic[words[0][0:len(words[0])-1]]=LayerAttributes(mask=stringMask_to_list(words[1]) , correctRange=bool(int(words[2])))
     return dic
+
+"""saveLayerAttributesDictionary_toFile(file_path)
+
+DESCRIPTION
+    File name where we want to save the LayerAtributes dictionary. 
+    It's the inverse operation of 'maskFile_to_dict'
+INPUT
+    Needs as inputs:
+    file_path:  file where to save network description
+OUTPUT
+    no output"""
+def saveLayerAttributesDictionary_toFile(dic,file_path):
+    with open(file_path,"w") as out_pointer:
+        for l in dic.keys():
+            out_pointer.write(mc_file_string.format(l,dic[l].mask,int(dic[l].correctRange)))
 
 
 """stringMask_to_list(stringMask)
