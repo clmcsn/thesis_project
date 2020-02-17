@@ -21,6 +21,10 @@ from pymoo.visualization.scatter import Scatter
 from pymoo.model.termination import MaximumFunctionCallTermination,MaximumGenerationTermination
 from pymoo.operators.integer_from_float_operator import IntegerFromFloatSampling
 from pymoo.operators.sampling.random_sampling import FloatRandomSampling
+from pymoo.operators.integer_from_float_operator import IntegerFromFloatCrossover
+from pymoo.operators.crossover.simulated_binary_crossover import SimulatedBinaryCrossover
+from pymoo.operators.mutation.polynomial_mutation import PolynomialMutation
+    from pymoo.operators.integer_from_float_operator import IntegerFromFloatMutation
 
 #fetching the characterization mask
 print("Fetching mask characterization from {}...\n".format(s.maskTimingCharFile))
@@ -98,7 +102,9 @@ class MaskingDNN(Problem):
 
 problem = MaskingDNN()
 algorithm = NSGA2(pop_size=4,
-                  sampling=IntegerFromFloatSampling(clazz=FloatRandomSampling))
+                  sampling=IntegerFromFloatSampling(clazz=FloatRandomSampling),
+                  crossover=IntegerFromFloatCrossover(clazz=SimulatedBinaryCrossover,prob=0.9,eta=15),
+                  mutation=IntegerFromFloatMutation(clazz=PolynomialMutation,eta=20))
 res = minimize(problem,
                 algorithm,
                 ('n_gen', 5),
