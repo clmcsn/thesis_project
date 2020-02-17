@@ -89,6 +89,7 @@ class MaskingDNN(Problem):
         quantizer.model.to(s.device)
         correct = test(quantizer.model,s.test_set,s.batch_size,s.device)
         f1 = s.test_set_size - correct #top-1 error 
+        g1 = f1 - s.max_top1 #constraints of accuracy --> top1-max_top1<=0
         del quantizer
         del maskT
         #F2: AVERAGE DELAY
@@ -98,19 +99,18 @@ class MaskingDNN(Problem):
             layer_mult = network_description[list(network_description.keys())[i]].get_numMult()
             delay+=mask_delay*layer_mult/total_mult
         f2 = delay
-        g1 = f1 - 5000 #constraints of accuracy --> top1-5000<=0
         out["F"] = anp.column_stack([f1, f2]) 
         out["G"] = g1
 
 problem = MaskingDNN()
-algorithm = NSGA2(pop_size=4,
+algorithm = NSGA2(pop_size=s.pop_size,
                   sampling=IntegerFromFloatSampling(clazz=FloatRandomSampling),
                   crossover=IntegerFromFloatCrossover(clazz=SimulatedBinaryCrossover,prob=0.9,eta=15),
                   mutation=IntegerFromFloatMutation(clazz=PolynomialMutation,eta=20),
-                  n_offsprings=10)
+                  n_offsprings=s.n_offsprings)
 res = minimize(problem,
                 algorithm,
-                ('n_gen', 5),
+                ('n_gen', s.n_gen),
                 seed=1,
                 verbose=True,
                 save_history=True)

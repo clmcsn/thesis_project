@@ -77,3 +77,9 @@ if dataset == "CIFAR10":
     )
     dummy_input = (torch.zeros([1,3,32,32]))
     test_set_size = int(len(test_set))
+
+#genetic algorithm setting
+pop_size=4
+n_offsprings=8
+n_gen=5
+max_top1 = 5000

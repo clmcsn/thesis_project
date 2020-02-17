@@ -18,7 +18,12 @@ from pymoo.optimize import minimize
 from pymoo.model.problem import Problem
 from pymoo.visualization.scatter import Scatter
 from pymoo.model.termination import MaximumFunctionCallTermination,MaximumGenerationTermination
-
+from pymoo.operators.integer_from_float_operator import IntegerFromFloatSampling
+from pymoo.operators.sampling.random_sampling import FloatRandomSampling
+from pymoo.operators.integer_from_float_operator import IntegerFromFloatCrossover
+from pymoo.operators.crossover.simulated_binary_crossover import SimulatedBinaryCrossover
+from pymoo.operators.mutation.polynomial_mutation import PolynomialMutation
+from pymoo.operators.integer_from_float_operator import IntegerFromFloatMutation
 from multiprocessing import Process, Queue
 
 def getAccuracy(layerListTable,ref_model,q):
@@ -79,7 +84,7 @@ ref_quantized.model.to("cpu")
 
 class MaskingDNN(Problem):
     def __init__(self):
-        super().__init__(n_var=9, n_obj=2, n_constr=0,
+        super().__init__(n_var=9, n_obj=2, n_constr=1,
                             xl=0, xu=63, type_var=np.int,
                             elementwise_evaluation=True)
     
@@ -94,14 +99,25 @@ class MaskingDNN(Problem):
             mask = m[0]
             correct = bool(int(m[1]))
             layerListTable[layer] = LayerAttributes(stringMask_to_list(mask),correct)
-        
-        if __name__ == '__main__':
-            q = Queue()
-            p = Process(target=getAccuracy, args=(layerListTable,ref_quantized.model,q,))
-            p.start()
-            f1=q.get()
-            print(f1)
-            p.join()
+        #create Table
+        maskT = MaskTable(s.quant_mode,s.mask_mode,s.network,mask_dict=layerListTable)
+        quantizer = PostTrainLinearQuantizer(   deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
+                                                mode=s.quant_mode, mask_table=maskT,
+                                                scale_approx_mult_bits=s.bits)
+        #quantizer.model.to("cpu")
+        quantizer.prepare_model(s.dummy_input)
+        quantizer.model.eval()
+        """balanceNetwork_v2(ref_quantized.model,
+                                quantizer.model,
+                                s.test_set,
+                                batch_size=500,
+                                device="cpu")"""
+        quantizer.model.to(s.device)
+        correct = test(quantizer.model,s.test_set,s.batch_size,s.device)
+        f1 = s.test_set_size - correct #top-1 error 
+        g1 = f1 - s.max_top1 #constraints of accuracy --> top1-max_top1<=0
+        del quantizer
+        del maskT
         #F2: AVERAGE DELAY
         delay=0
         for i, m in enumerate(x): #TODO check this get bot layer and mask correct
@@ -110,16 +126,19 @@ class MaskingDNN(Problem):
             delay+=mask_delay*layer_mult/total_mult
         f2 = delay
         out["F"] = anp.column_stack([f1, f2]) 
+        out["G"] = g1
 
 problem = MaskingDNN()
-algorithm = NSGA2(pop_size=100)
+algorithm = NSGA2(pop_size=s.pop_size,
+                  sampling=IntegerFromFloatSampling(clazz=FloatRandomSampling),
+                  crossover=IntegerFromFloatCrossover(clazz=SimulatedBinaryCrossover,prob=0.9,eta=15),
+                  mutation=IntegerFromFloatMutation(clazz=PolynomialMutation,eta=20),
+                  n_offsprings=s.n_offsprings)
 res = minimize(problem,
                 algorithm,
-                ('n_gen', 3),
+                ('n_gen', s.n_gen),
                 seed=1,
-                verbose=True)
-
-plot = Scatter()
-plot.add(problem.pareto_front(), plot_type="line", color="black", alpha=0.7)
-plot.add(res.F, color="red")
-plot.show()
+                verbose=True,
+                save_history=True)
+print(res.F)
+print(res.X)
