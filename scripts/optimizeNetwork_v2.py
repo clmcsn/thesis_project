@@ -48,8 +48,6 @@ def getAccuracy(layerListTable,ref_model,q):
                             device="cpu")
     quantizer.model.to(s.device)
     correct = test(quantizer.model,s.test_set,s.batch_size,s.device)
-    del quantizer
-    del maskT
     f1 = s.test_set_size - correct #top-1 error
     q.put(f1)
 
@@ -107,8 +105,7 @@ class MaskingDNN(Problem):
             p = Thread(target=getAccuracy, args=(layerListTable,ref_quantized.model,q,))
             p.start()
             f1=q.get()
-            p.join()
-        f1 = s.test_set_size - correct #top-1 error 
+            p.join() 
         g1 = f1 - s.max_top1 #constraints of accuracy --> top1-max_top1<=0
         #F2: AVERAGE DELAY
         delay=0
@@ -130,7 +127,6 @@ res = minimize(problem,
                 algorithm,
                 ('n_gen', s.n_gen),
                 seed=1,
-                verbose=True,
-                save_history=True)
+                verbose=True)
 print(res.F)
 print(res.X)
