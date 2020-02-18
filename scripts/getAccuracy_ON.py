@@ -3,6 +3,7 @@
 import settings.optimizeNetwork_settings as s
 
 from common.mask_util import MaskTable, balanceNetwork_v2
+from common.nnTools import test
 from distiller.quantization import PostTrainLinearQuantizer
 
 from copy import deepcopy

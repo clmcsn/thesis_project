@@ -92,3 +92,6 @@ res = minimize(problem,
                 verbose=True)
 print(res.F)
 print(res.X)
+with open(s.res_file,"w") as out_pointer:
+    for f, x in zip(list(res.F),list(res.X)):
+        out_pointer.write("{}\t{}\n".format(f,x))

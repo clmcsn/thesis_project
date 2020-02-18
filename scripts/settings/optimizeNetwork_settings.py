@@ -6,6 +6,12 @@ import os
 import sys
 sys.path.append("../")
 
+import datetime
+
+TIME_FORMAT = '%Y_%m_%d_%H_%M_%S_%f_%z'
+def current_utctime_string(template=TIME_FORMAT):
+     return datetime.datetime.now(datetime.timezone.utc).strftime(template)
+
 #lib
 distiller_version="../../distiller_mod_v5"
 device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
@@ -21,7 +27,10 @@ maskTimingCharFile="../reports/maskTimingCharact_csaMult_0nsClk.txt"
 maskConfig_path = "../models/mask_config/"
 checkpoint_path = "../models/checkpoints/"
 exchange_fname = "./temp"
+res_file = "../reports/gen_Algorithm_Outcome_{}.txt".format(current_utctime_string())
 
+#script
+getAccuracy_script_name="./getAccuracy_ON.py"
 
 #network hardware settings
 bits=8 #data bits
@@ -43,6 +52,7 @@ if (network_name == "vgg11bn"):
         toCharact=False
     else:
         toCharact=True
+    unmasked_layers = ["features.0","classifier"]
     network = vgg.vgg11_bn_cifar("")
     network = network.to("cpu") #loaded to cpu because this is a reference, it won't be used for inference and loss of GPU DRAM is avoided 
     network = network.eval() 
@@ -80,9 +90,6 @@ if dataset == "CIFAR10":
 
 #genetic algorithm setting
 pop_size=25
-n_offsprings=100
-n_gen=40
+n_offsprings=50
+n_gen=20
 max_top1 = 2000
-
-#script
-getAccuracy_script_name="./getAccuracy_ON.py"
