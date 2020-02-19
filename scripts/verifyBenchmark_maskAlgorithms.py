@@ -7,7 +7,7 @@ import torch
 from common.hw_lib import printer_2s
 
 #########SETTINGS##########
-m_type=[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE,MaskType.MINIMUM_DISTANCE_2] #[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
+m_type=[MaskType.ARC] #[MaskType.SIMPLE_MASK,MaskType.ROUND_DOWN,MaskType.ROUND_UP,MaskType.MOD_ROUND_UP,MaskType.MINIMUM_DISTANCE]
 bits=8
 signed=True
 
@@ -22,7 +22,7 @@ else:
 
 #############WHAT TO DO#################                       
 ver=True
-rep=True
+rep=False
 conf=False
 
 def bit_string_inverter(string):
@@ -50,7 +50,7 @@ t_m = mask_param( t
 exit()
 #"""
 if ver:
-    with open("../reports/mask_algorithm_rep.txt","w") as out_rep:
+    with open("../reports/mask_algorithm_rep2.txt","w") as out_rep:
         good=True    
         for mask_t in m_type:
             error_count=0

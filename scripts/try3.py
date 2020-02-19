@@ -9,16 +9,16 @@ import random as rand
 from copy import deepcopy
 bits=8
 signed=True
-bit_to_mask=[3]
+bit_to_mask=[0]
 #create param
 quant_param=torch.ones(2**bits).to(torch.int)
 for i in range(-2**(bits-1),2**(bits-1)):
     quant_param[i+128].mul_(i)
+quant_param2=deepcopy(quant_param)
 #print(quant_param)
 #shape=quant_param.size()
 #quant_param = quant_param.flatten()
 mask=~_make_mask(bit_to_mask)
-quant_param2=deepcopy(quant_param)
 #generate up_tensor
 boolTensor=(quant_param & mask).to(torch.bool).to(torch.int)
 up_tensor=quant_param + boolTensor
@@ -32,6 +32,7 @@ down_tensor=quant_param - boolTensor
 while (boolTensor.sum()):
     boolTensor=(down_tensor & mask).to(torch.bool).to(torch.int)
     down_tensor -= boolTensor
+
 #exclude overflow numbers
 max_int = 2**(bits-int(signed))-1
 overflow = (up_tensor>max_int).to(torch.int)
@@ -44,6 +45,15 @@ diff_down = quant_param - down_tensor
 up = (diff_up < diff_down).to(torch.int)*(overflow ^ 1) #here we force to zero those that overflows
 down = (diff_down < diff_up).to(torch.int) | overflow
 
+#we need to detect those parameters that are equal and randomly assign to one or the other tensor
+random = torch.ones(quant_param.size()).random_(-10,10).to(torch.int) #-10 compreso, 10 non compreso -> in such a way is balanced!
+random = random + (random == 0).to(torch.int) #converts 0s in 1s
+equal = (diff_up == diff_down).to(torch.int) * random
+up_e = (equal > 0).to(torch.int)*(overflow ^ 1)
+down_e = (equal < 0).to(torch.int) | overflow
+
+quant_param = up_e*up_tensor + quant_param*(up_e^1)
+quant_param = down_e*down_tensor + quant_param*(down_e^1)
 quant_param = up*up_tensor + quant_param*(up^1)
 quant_param = down*down_tensor + quant_param*(down^1) 
 print(quant_param)
