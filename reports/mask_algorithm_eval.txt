@@ -1,0 +1,16 @@
+Report analysis for MaskType.ARC type.
+
+	Max error distance=			 -124.
+	Norm max error distance=	 -0.9763779527559056.
+	Expected= 127	 Had= 3	 Mask= 01111100.
+
+	Max relative error distance= -1.0.
+
+	Mean error distance=		 -9.70048828125.
+	Norm mean error distance=	 -0.07638179749015747.
+
+	Sum of error distance=		 -297999.
+	Sum of abs error distance=	 518863.
+
+	Mean relative error distance=-0.19359014229611676.
+
