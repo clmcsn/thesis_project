@@ -89,7 +89,7 @@ if dataset == "CIFAR10":
     test_set_size = int(len(test_set))
 
 #genetic algorithm setting
-pop_size=25
-n_offsprings=50
-n_gen=20
+pop_size=50
+n_offsprings=100
+n_gen=200
 max_top1 = 2000
