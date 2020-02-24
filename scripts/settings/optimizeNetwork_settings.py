@@ -38,7 +38,7 @@ aw_bits=8
 acc_bits=32
 
 quant_mode = LinearQuantMode.ASYMMETRIC_UNSIGNED
-mask_mode = MaskType.MD_FAST
+mask_mode = MaskType.ARC
 
 #network
 network_name = "vgg11bn"
