@@ -22,7 +22,7 @@ class layerStat():
         self.stride = stride
     def get_numMult(self):
         if self.kernel_s:
-            n = (self.kernel_s**2)*self.inChannels*((self.inFmap_s-self.kernel_s)/self.stride + 1)*self.outChannels
+            n = (self.kernel_s**2)*self.inChannels*(((self.inFmap_s-self.kernel_s)/self.stride + 1)**2)*self.outChannels
         else:
             n = self.inChannels*self.outChannels*self.inFmap_s
         return n 

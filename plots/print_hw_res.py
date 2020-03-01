@@ -1,4 +1,9 @@
-rep0=[1.5245093107];
+#!/usr/bin/env python3
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+rep0=[1.5245093107]
 rep1=  [1.4079493284,
         1.4490357637,
         1.4568009377,
@@ -6,7 +11,7 @@ rep1=  [1.4079493284,
         1.4111844301,
         1.4402881861,
         1.3898062706,
-        1.3984121084];
+        1.3984121084]
 rep2=   [1.2927336693,
 1.3122934103,
 1.3645346165,
@@ -90,7 +95,7 @@ rep3=[1.2618880272,
 1.1710567474,
 1.2082825899,
 1.1977980137,
-1.1799374819];
+1.1799374819]
 rep4=[1.0661059618,
 1.0113387108,
 1.0824244022,
@@ -160,7 +165,7 @@ rep4=[1.0661059618,
 1.0535202026,
 1.0283957720,
 1.0364881754,
-1.0691934824];
+1.0691934824]
 rep5=[0.4837226272,
 0.4868635237,
 0.4897815883,
@@ -216,19 +221,21 @@ rep5=[0.4837226272,
 0.3960045576,
 0.5021769404,
 0.4868635237,
-0.4800700843];
-m0=mean(rep0);
-m1=mean(rep1);
-m2=mean(rep2);
-m3=mean(rep3);
-m4=mean(rep4);
-m5=mean(rep5);
+0.4800700843]
+m0=sum(rep0)/len(rep0)
+m1=sum(rep1)/len(rep1)
+m2=sum(rep2)/len(rep2)
+m3=sum(rep3)/len(rep3)
+m4=sum(rep4)/len(rep4)
+m5=sum(rep5)/len(rep5)
 X=[0,1,2,3,4,5];
 Y=[m0,m1,m2,m3,m4,m5];
-figure
-plot(X,Y,"bo",X,Y)
-title('Timing analysis')
-xlabel('Number of fixed bits')
-ylabel('Average Arrival Time')
-grid on
-yticks([m5,m4,m3,m2,m1,m0])
+blue_dot, = plt.plot(X, Y, 'bo')
+plt.ylabel('Average Arrival Time')
+plt.xlabel('Number of fixed bits')
+plt.axis([-1, 6, 0.4, 1.55])
+plt.grid()
+x_ticks = np.arange(0, 6 , 1)
+plt.xticks(x_ticks)
+plt.yticks(Y)
+plt.show()

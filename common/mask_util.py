@@ -436,7 +436,7 @@ def get_max_masked_val(num_bit, signed, bit_to_mask):
 def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic=0 , signed=None):
     if bit_to_mask==[]:
         return quant_param
-    if (dynamic==0 or signed==None) and (mask_type==MaskType.ROUND_UP or mask_type==MaskType.MINIMUM_DISTANCE):
+    if (dynamic==0 or signed==None) and (mask_type==ARC):
         error_string="For Minimum Distance masking policy 'dynamic' and 'signed' parameters must be specified. Got: DYNAMIC= {}  SIGNED= {}".format(dynamic,signed)
         raise ValueError(error_string)
     ty=quant_param.dtype
@@ -483,5 +483,6 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
         quant_param = down_e*down_tensor + quant_param*(down_e^1)
         quant_param = up*up_tensor + quant_param*(up^1)
         quant_param = down*down_tensor + quant_param*(down^1) 
+         
     quant_param = quant_param.to(ty)
     return quant_param
