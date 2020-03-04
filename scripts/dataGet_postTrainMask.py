@@ -17,7 +17,7 @@ from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 import distiller.utils
 import distiller.models.cifar10 as models
 
-from common.nnTools import get_all_preds, get_layersName_list, make_weightDistr_comparHistgram
+from common.nnTools import get_all_preds, get_layersName_list
 from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable, guided_MaskTable_creator , set_specific_layers, balanceNetwork_v2
 from common.hw_lib import printer_2s
 
@@ -45,7 +45,7 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 
                 #generate base line accuracy
                 guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, gui=False)
-                mask_table = MaskTable(quant_mode, mask_mode, [] , False, network, mask_file=s.maskConfig_path+s.config_fname)
+                mask_table = MaskTable(quant_mode, mask_mode, network, [] , False, mask_file=s.maskConfig_path+s.config_fname)
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                     mode=quant_mode, mask_table=mask_table,
                                                     scale_approx_mult_bits=s.bits)
@@ -64,7 +64,7 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
 
                 #generate correct range accuracy            
                 guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, True, gui=False)
-                mask_table = MaskTable(quant_mode, mask_mode, [] , True, network, mask_file=s.maskConfig_path+s.config_fname)
+                mask_table = MaskTable(quant_mode, mask_mode, network, [] , True, mask_file=s.maskConfig_path+s.config_fname)
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                     mode=quant_mode, mask_table=mask_table,
                                                     scale_approx_mult_bits=s.bits)
@@ -82,7 +82,7 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                 #generate accuracy without masking first and last layer
                 guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, gui=False)
                 set_specific_layers(s.unmasked_layers,s.maskConfig_path+s.config_fname)
-                mask_table = MaskTable(quant_mode, mask_mode, [] , False, network, mask_file=s.maskConfig_path+s.config_fname)
+                mask_table = MaskTable(quant_mode, mask_mode, network, [] , False, mask_file=s.maskConfig_path+s.config_fname)
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                     mode=quant_mode, mask_table=mask_table,
                                                     scale_approx_mult_bits=s.bits)
@@ -99,11 +99,11 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
 
                 #generate bias correction accuracy accuracy
                 guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, gui=False)
-                mask_table = MaskTable(quant_mode, mask_mode, [] , False, network, mask_file=s.maskConfig_path+s.config_fname)
+                mask_table = MaskTable(quant_mode, mask_mode,network, mask_file=s.maskConfig_path+s.config_fname)
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                     mode=quant_mode, mask_table=mask_table,
                                                     scale_approx_mult_bits=s.bits)
-                ref_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [] , False, network)
+                ref_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.ARC, network, [] , False)
                 ref_quantized = PostTrainLinearQuantizer( deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=ref_mask_table,
                                     scale_approx_mult_bits=s.bits)
@@ -135,11 +135,11 @@ with open(s.report_path+s.report_fname,"w") as log_pointer:
                     ref_str = "LayerUnmasked+CompensatedBias" 
                 guided_MaskTable_creator(network,s.maskConfig_path+s.config_fname, mask, correct, gui=False)
                 set_specific_layers(s.unmasked_layers,s.maskConfig_path+s.config_fname)
-                mask_table = MaskTable(quant_mode, mask_mode, [] , correct, network, mask_file=s.maskConfig_path+s.config_fname)
+                mask_table = MaskTable(quant_mode, mask_mode, network, mask_file=s.maskConfig_path+s.config_fname)
                 quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                                     mode=quant_mode, mask_table=mask_table,
                                                     scale_approx_mult_bits=s.bits)
-                ref_mask_table = MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.MINIMUM_DISTANCE, [] , False, network)
+                ref_mask_table = MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.ARC, network, [] , False)
                 ref_quantized = PostTrainLinearQuantizer( deepcopy(network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=ref_mask_table,
                                     scale_approx_mult_bits=s.bits)

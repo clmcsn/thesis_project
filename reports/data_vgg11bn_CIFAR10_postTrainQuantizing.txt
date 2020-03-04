@@ -1,16 +1,16 @@
-Reference accuracy = 9240
-QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 4	 Correct: 8840	 Accuracy: 0.884
-QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 5	 Correct: 9127	 Accuracy: 0.9127
-QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 6	 Correct: 9212	 Accuracy: 0.9212
-QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 7	 Correct: 9230	 Accuracy: 0.923
-QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 8	 Correct: 9235	 Accuracy: 0.9235
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 4	 Correct: 8973	 Accuracy: 0.8973
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 5	 Correct: 9142	 Accuracy: 0.9142
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 6	 Correct: 9224	 Accuracy: 0.9224
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 7	 Correct: 9229	 Accuracy: 0.9229
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 8	 Correct: 9225	 Accuracy: 0.9225
-QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 4	 Correct: 8971	 Accuracy: 0.8971
-QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 5	 Correct: 9142	 Accuracy: 0.9142
-QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 6	 Correct: 9218	 Accuracy: 0.9218
-QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 7	 Correct: 9230	 Accuracy: 0.923
-QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 8	 Correct: 9225	 Accuracy: 0.9225
+Reference accuracy = 7528
+QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 4	 Correct: 5926	 Accuracy: 0.5926
+QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 5	 Correct: 7179	 Accuracy: 0.7179
+QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 6	 Correct: 7448	 Accuracy: 0.7448
+QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 7	 Correct: 7485	 Accuracy: 0.7485
+QuantMode: LinearQuantMode.SYMMETRIC	QuantBits: 8	 Correct: 7499	 Accuracy: 0.7499
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 4	 Correct: 5944	 Accuracy: 0.5944
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 5	 Correct: 7219	 Accuracy: 0.7219
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 6	 Correct: 7455	 Accuracy: 0.7455
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 7	 Correct: 7495	 Accuracy: 0.7495
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	QuantBits: 8	 Correct: 7516	 Accuracy: 0.7516
+QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 4	 Correct: 5943	 Accuracy: 0.5943
+QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 5	 Correct: 7218	 Accuracy: 0.7218
+QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 6	 Correct: 7456	 Accuracy: 0.7456
+QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 7	 Correct: 7493	 Accuracy: 0.7493
+QuantMode: LinearQuantMode.ASYMMETRIC_SIGNED	QuantBits: 8	 Correct: 7516	 Accuracy: 0.7516

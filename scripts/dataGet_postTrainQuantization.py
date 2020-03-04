@@ -5,6 +5,7 @@ import pathlib
 import sys
 sys.path.append("../")
 sys.path.append("../../distiller")
+sys.path.append("../models/cifar10")
 
 from copy import deepcopy
 
@@ -15,10 +16,10 @@ import torchvision.transforms as transforms
 import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 import distiller.utils
-import distiller.models.cifar10 as models
+#import distiller.models.cifar10 as models
+import LeNet
 
-
-import models.cifar10.vgg_cifar as vgg 
+#import models.cifar10.vgg_cifar as vgg 
 from common.nnTools import get_all_preds
 
 device='cuda:1'
@@ -27,10 +28,10 @@ bits=8
 acc_bits=32
 rep_string="QuantMode: {}\tQuantBits: {}\t Correct: {}\t Accuracy: {}\n"
 
-network_name = "vgg11"
+network_name = "lenet"
 checkpoint_path = "../models/checkpoints/"
-checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
-network = vgg.vgg11_bn_cifar("./data/ref_model")
+checkpoint_name = "{}_CIFAR10_bestAccuracy_7528.pt".format(network_name)
+network = LeNet.LeNet()
 network = network.to("cpu")
 network = network.eval() 
 checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu")

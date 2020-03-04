@@ -15,20 +15,21 @@ from common.nnTools import get_all_preds
 #import distiller for models
 import sys
 sys.path.append("../../distiller")
+sys.path.append("../models/cifar10/")
 import distiller
-import distiller.models.cifar10 as models
-
+#import distiller.models.cifar10 as models
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim #needed for optimizing the cost function
 import torchvision
 import torchvision.transforms as transforms
+import LeNet
 
 device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
-model="vgg11"
+model="lenet"
 dataset="CIFAR10"
-network = models.vgg_cifar.vgg11_bn_cifar()
+network = LeNet.LeNet()
 network.to(device)
 
 transform_train = transforms.Compose([
