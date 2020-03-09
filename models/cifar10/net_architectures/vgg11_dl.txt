@@ -49,4 +49,4 @@ features.32
 classifier
     inChannels: 512
     outChannels:10
-    inFmap_s:   2
+    inFmap_s:   1
