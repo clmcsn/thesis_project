@@ -1,4 +1,4 @@
-conv1:
+features.0:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
@@ -14,7 +14,7 @@ conv1:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-relu1:
+features.1:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
@@ -28,7 +28,7 @@ relu1:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-maxPool1:
+features.2:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
@@ -42,7 +42,35 @@ maxPool1:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-conv2:
+features.3:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.4:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.5:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
@@ -56,7 +84,7 @@ conv2:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-relu2:
+features.6:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
@@ -70,7 +98,7 @@ relu2:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-maxPool2:
+features.7:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
@@ -84,7 +112,35 @@ maxPool2:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-fc1:
+features.8:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.9:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.10:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
@@ -98,7 +154,7 @@ fc1:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-relu3:
+features.11:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
@@ -112,7 +168,35 @@ relu3:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-fc2:
+features.12:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.13:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.14:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
@@ -126,7 +210,7 @@ fc2:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-relu4:
+features.15:
   bits_activations: 8
   bits_weights: null
   bits_bias: null
@@ -140,7 +224,301 @@ relu4:
   fpq_module: null
   model_activation_stats: null
   overrides: null
-fc3:
+features.16:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.17:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.18:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.19:
+  bits_activations: 8
+  bits_weights: 8
+  bits_bias: 32
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.20:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.21:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.22:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.23:
+  bits_activations: 8
+  bits_weights: 8
+  bits_bias: 32
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.24:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.25:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.26:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.27:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.28:
+  bits_activations: 8
+  bits_weights: 8
+  bits_bias: 32
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.29:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.30:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.31:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.32:
+  bits_activations: 8
+  bits_weights: 8
+  bits_bias: 32
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.33:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.34:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.35:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+features.36:
+  bits_activations: 8
+  bits_weights: null
+  bits_bias: null
+  mode: *id001
+  clip_acts: NONE
+  clip_n_stds: null
+  clip_half_range: false
+  per_channel_wts: false
+  scale_approx_mult_bits: 8
+  inputs_quant_auto_fallback: true
+  fpq_module: null
+  model_activation_stats: null
+  overrides: null
+classifier:
   bits_activations: 8
   bits_weights: 8
   bits_bias: 32
