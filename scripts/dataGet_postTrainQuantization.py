@@ -63,7 +63,7 @@ quant_mode_list = [LinearQuantMode.SYMMETRIC,LinearQuantMode.ASYMMETRIC_UNSIGNED
 with open("../reports/data_vgg11bn_CIFAR10_postTrainQuantizing.txt","w") as log_pointer:
     log_pointer.write("Reference accuracy = {}\n".format(ref_correct))
     for quant_mode in quant_mode_list:
-        for qw_bits in range(4,bits+1):
+        for qw_bits in range(3,bits+1):
             quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=bits, bits_parameters=qw_bits, bits_accum=acc_bits,
                                                             mode=quant_mode,scale_approx_mult_bits=bits)
             quantizer.model.to(device)

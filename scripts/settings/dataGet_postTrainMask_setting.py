@@ -20,7 +20,6 @@ import distiller
 from distiller.quantization import PostTrainLinearQuantizer, LinearQuantMode
 
 #report strings
-rep_file = "../reports/data_vgg11bn_CIFAR10_postTrainMask_v2.txt"
 rep_string = "QuantMode: {}\t MaskMode: {}\t Mask: {}\n"
 acc_string = "\t{} accuracy = \t{}\n"
 
@@ -43,18 +42,16 @@ report_fname = "data_{}_CIFAR10_postTrainMasking_new.txt".format(network_name)
 config_fname = "{}.mc".format(network_name)
 if (network_name == "vgg11bn"):
     import models.cifar10.vgg_cifar as vgg
-    checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
-    unmasked_layers = ["features.0","classifier"]
     network = vgg.vgg11_bn_cifar("./data/ref_model")
+    checkpoint_name = "{}_CIFAR10_bestAccuracy_9240.pt".format(network_name)
+    
 elif (network_name == "lenet"):
     import LeNet
     checkpoint_name = "{}_CIFAR10_bestAccuracy_7528.pt".format(network_name)
-    unmasked_layers = ["conv1","fc3"]
     network = LeNet.LeNet()
 elif (network_name == "resnet32"):
     import distiller.models.cifar10 as models
     checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
-    unmasked_layers = ["conv1","fc"]
     network = models.resnet_cifar.resnet32_cifar()
 else:
     errorString = "No checkpoint for {} network. Provide training".format(network_name)

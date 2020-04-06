@@ -227,12 +227,6 @@ def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu')
                     cont = el[0:len(el)-5] #drops extension
                     l = cont.split("_")[1] #drops reference string
                     os.rename(out_path+"/"+el,out_path+"/"+new_name+"_{}".format(l)+".dump")
-    
-    def remove_dump(path,dump_name):
-        dirlist=os.listdir(path)
-        for el in dirlist:
-            if dump_name in el:
-                os.remove(path+"/"+dump_name)
 
     sf_dump_file = "./data/scale_factor.dump"
     activation_ref   = "./data/r_act/ref_{}.dump"

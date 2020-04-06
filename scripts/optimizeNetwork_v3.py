@@ -41,7 +41,7 @@ for mask in mask_charact_dict.keys():
     i+=1
     mask_dict[i]=mask+"_1" #1 stands for correcting the range
     i+=1
-
+    
 class MaskingDNN(Problem):
     def __init__(self):
         super().__init__(n_var=9, n_obj=2, n_constr=1,
