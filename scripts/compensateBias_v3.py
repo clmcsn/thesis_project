@@ -21,6 +21,7 @@ from quantization import PostTrainLinearQuantizer, LinearQuantMode
 
 import distiller
 import distiller.models.cifar10 as models
+import models.cifar10.LeNet as lenet
 import models.cifar10.vgg_cifar as vgg
 from common.nnTools import get_all_preds, get_layersName_list
 from common.mask_util import MaskType, stringMask_to_list, _make_mask, MaskTable, guided_MaskTable_creator , set_specific_layers
@@ -133,12 +134,18 @@ test_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
 )
 
 #setting up the model
-network_name = "vgg11bn"
-accuracy = "9240"
+#network_name = "resnet32"
+#network_name = "vgg11bn"
+#accuracy = "9240"
+#accuracy = "9358"
+network_name = "lenet"
+accuracy = "7528"
 dummy_input = (torch.ones([1,3,32,32]))
 
 #loading reference model to be copied
-ref_network = vgg.vgg11_bn_cifar("")
+#ref_network = vgg.vgg11_bn_cifar("")
+ref_network = lenet.LeNet()
+#ref_network = models.resnet_cifar.resnet32_cifar()
 ref_network = ref_network.eval()
 checkpoint = torch.load(path_conf["checkpoint"]+path_conf["ba_checkpoint_file"].format(model=network_name,dataset=dataset,accuracy=accuracy), map_location=device)
 ref_network.load_state_dict(checkpoint['model_state_dict'])
@@ -177,7 +184,7 @@ balanceNetwork(ref_quantized.model,
             test_set,
             batch_size=500,
             device=device)
-
+            
 new_preds = get_all_preds(quantized_child.model, data_loader,device=device)
 new_correct = new_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
 print("New accuracy :{}".format(new_correct))

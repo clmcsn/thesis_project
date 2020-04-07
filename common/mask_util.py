@@ -477,5 +477,6 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
         quant_param = up_e*up_tensor + quant_param*(up_e^1)
         quant_param = down_e*down_tensor + quant_param*(down_e^1)
         quant_param = up*up_tensor + quant_param*(up^1)
-        quant_param = down*down_tensor + quant_param*(down^1) 
+        quant_param = down*down_tensor + quant_param*(down^1)
+    quant_param = quant_param.to(ty)
     return quant_param
