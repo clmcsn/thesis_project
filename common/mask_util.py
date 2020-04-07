@@ -207,8 +207,23 @@ def get_mask_hwCharact(fname):
             dic[invertString(info[0],toInvert)] = float(info[1])
     return dic
 
-#WORKS only with vgg11
-def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu'):
+"""balanceNetwork(ref_model,child_model,test_set,path_conf_file,batch_size=50,device='cpu')
+    DESCRIPTION
+        Given a reference quantized model this function compensates the neuron biases of a masked
+        model. Activations differences are averaged for all output fmap + the batch size
+    INPUT
+        Needs as inputs:
+        ref_model:      reference quantized model as example for output feature maps
+        child_model:    the masked model that has to be compensated
+        test_set:       test set where to extract the first batch of data
+        path_conf_file: JSON file with all the configuration of relative paths
+        batch_size:     size of the single batch for performing the compensation
+        device:         device where to run the function
+    OUTPUT
+        Does not return any object. Compensation is performed in place"""
+
+def balanceNetwork(ref_model,child_model,test_set,path_conf_file,batch_size=50,device='cpu'):
+
     def save_dump(in_path,dump_name,out_path,new_name=None):
         dirlist=os.listdir(in_path)
         to_move=[]
@@ -227,67 +242,73 @@ def balanceNetwork_v2(ref_model,child_model,test_set,batch_size=50,device='cpu')
                 if dump_name in el:
                     cont = el[0:len(el)-5] #drops extension
                     l = cont.split("_")[1] #drops reference string
-                    os.rename(out_path+"/"+el,out_path+"/"+new_name+"_{}".format(l)+".dump")
-
-    sf_dump_file = "./data/scale_factor.dump"
-    activation_ref   = "./data/r_act/ref_{}.dump"
-    activation_child = "./data/child_act/child_{}.dump"
-    shutil.rmtree('./data/')
-    os.mkdir('./data')
-    with open("./save_act","w") as validity_act: #to tell distiller_mod_v5 to save activations
+                    os.rename(out_path+el,out_path+new_name+"_{}".format(l)+".dump")
+    
+    with open(path_conf_file,"r") as j_conf:
+        path_conf = json.load(j_conf)
+    
+    try:
+        os.mkdir(path_conf["dumps"])
+    except FileExistsError:
+        shutil.rmtree(path_conf["dumps"])
+        os.mkdir(path_conf["dumps"]) 
+    
+    #tell libraries to save activations 
+    with open("./save_act","w") as validity_act:
         pass
+    
     #fetching correction batch
     data_loader= torch.utils.data.DataLoader(
     test_set
     ,shuffle=False
     ,batch_size=batch_size)
-
     batch = next(iter(data_loader))
     image, label = batch
-    image.to(device)
+
     #obtaining activations from models
     pred_ref = ref_model(image)
-    save_dump("./data","ref","./data/r_act")
-    #need to remove the file dump of scaling factors so there would be just one
-    os.remove(sf_dump_file)
+    save_dump(path_conf["dumps"],path_conf["ref_dumps_file"].split("_")[0],path_conf["ref_dumps"])
     pred_child = child_model(image)
-    save_dump("./data","ref","./data/child_act",new_name="child")
-    #correcting loop
-    i=0 #needed for the scaling factor! 
-    for layer_name, layer in child_model.named_modules():
-        if isinstance(layer, (nn.Conv2d, nn.Conv3d, nn.Linear)):
-            lc = layer_name.split(".") #it will be called as the dumping file + .wrapped_module
+    save_dump(path_conf["dumps"],path_conf["ref_dumps_file"].split("_")[0],path_conf["mask_dumps"],new_name="child")
+    i=0 #needed for the scaling factor
+    for layer_name, layer in child_model.named_modules(): #for every module
+        if isinstance(layer, (nn.Conv2d, nn.Conv3d, nn.Linear)): # if it is an instance
             #retriving scale factor
-            with open(sf_dump_file,"r") as in_pointer:
+            with open(path_conf["dumps"]+path_conf["sf_dump_file"],"r") as in_pointer:
                 for k in range(i+1): #need to fetch how many scale factors as layer we are in
                     sf = float(in_pointer.readline())
-            try:
-                ref = torch.load(activation_ref.format(".".join((lc[0],lc[1]))), map_location=device) 
-                child = torch.load(activation_child.format(".".join((lc[0],lc[1]))), map_location=device)
+            lc = layer_name.split(".")
+            o_layer_name=".".join(lc[:-1])
+            ref     = torch.load(path_conf["ref_dumps"]+path_conf["ref_dumps_file"].format(o_layer_name), map_location=device) 
+            child   = torch.load(path_conf["mask_dumps"]+path_conf["mask_dumps_file"].format(o_layer_name), map_location=device)
+            if isinstance(layer,nn.Conv2d):  #case of convolutional layers 
                 for j in range(ref.size(1)): #for every element of the bias=num_output_channels
                     r = ref[:,j,:,:] #for every image of the batch, select j output fmap 
                     c = child[:,j,:,:]
                     #average but without square ---> to try that distance
                     d = torch.sum(r-c)/ref.size(0)/ref.size(2)/ref.size(3)#*((r==0).sum()) #perform the distance
                     layer.bias[j] = layer.bias[j] + d
-                #upload distiller backup
-                getattr(getattr(child_model,lc[0]),lc[1]).base_b_q = (layer.bias/sf)-getattr(getattr(child_model,lc[0]),lc[1]).b_zero_point #this works only for vgg
-            except FileNotFoundError: #case for output probabilities
-                ref = torch.load(activation_ref.format(lc[0]), map_location=device) 
-                child = torch.load(activation_child.format(lc[0]), map_location=device)
-                for j in range(10): #numbers_of_class=10
+            if isinstance(layer,nn.Linear): #case of fully connected layers
+                for j in range(ref.size(1)): #numbers_of_class=10
                     r = ref[:,j]
                     c = child[:,j]
-                    d = torch.sum(r-c)/pred_ref.size(0)
+                    d = torch.sum(r-c)/ref.size(0)
                     layer.bias[j] = layer.bias[j] + d
+            #upload distiller backup
+            if len(lc)-1==1:              #case of layer name composed by one word
                 getattr(child_model,lc[0]).base_b_q = (layer.bias/sf)-getattr(child_model,lc[0]).b_zero_point
+            if len(lc)-1==2:               #case of layer name composed by two words
+                getattr(getattr(child_model,lc[0]),lc[1]).base_b_q = (layer.bias/sf)-getattr(getattr(child_model,lc[0]),lc[1]).b_zero_point #this works only for vgg
+            if len(lc)-1==3:               #case of layer name composed by three words
+                getattr(getattr(getattr(child_model,lc[0]),lc[1]),lc[2]).base_b_q = (layer.bias/sf)-getattr(getattr(getattr(child_model,lc[0]),lc[1]),lc[2]).b_zero_point #this works only for vgg
             #getting again activation from layer
-            os.remove("./data/scale_factor.dump") #removing the scaling factor that will be produced
+            os.remove(path_conf["dumps"]+path_conf["sf_dump_file"]) #removing the scaling factor that will be produced
             pred_child = child_model(image) #getting new activation values
-            save_dump("./data","ref","./data/child_act",new_name="child")
+            save_dump(path_conf["dumps"],path_conf["ref_dumps_file"].split("_")[0],path_conf["mask_dumps"],new_name="child")
             i+=1
-    os.remove("./save_act") #to tell distiller_mod_v5 to not save activations anymore
-    del data_loader
+    #cleaning activation
+    os.remove("./save_act")
+    shutil.rmtree(path_conf["dumps"])
 
 """guided_MaskTable_creator(network,std_mask,file_path,gui=True)
 
