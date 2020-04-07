@@ -156,9 +156,25 @@ quantized_child = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activati
 quantized_child.prepare_model(dummy_input)
 quantized_child.model.eval()
 
+#fetching batches for inference
+batch_size=50
+data_loader= torch.utils.data.DataLoader(
+test_set
+,shuffle=False
+,batch_size=batch_size)
+
+#evaluating prediction before compensation
+bad_preds = get_all_preds(quantized_child.model, data_loader,device=device)
+bad_correct = bad_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
+print("Bad accuracy :{}".format(bad_correct))
+
 #compensating the model
 balanceNetwork(ref_quantized.model,
             quantized_child.model,
             test_set,
-            batch_size=10,
+            batch_size=500,
             device=device)
+
+new_preds = get_all_preds(quantized_child.model, data_loader,device=device)
+new_correct = new_preds.argmax(dim=1).eq(torch.LongTensor(test_set.targets)).sum().item()
+print("New accuracy :{}".format(new_correct))
