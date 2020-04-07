@@ -665,8 +665,6 @@ class RangeLinearQuantParamLayerWrapper(RangeLinearQuantWrapper):
                         ,mask_table.mask_type
                         ,dynamic=self.wts_quant_settings.num_bits
                         ,signed=self.wts_quant_settings.quant_mode != LinearQuantMode.ASYMMETRIC_UNSIGNED)
-        #print(wrapped_module.weight[2])
-        #exit()
         # Quantize bias
         self.has_bias = hasattr(wrapped_module, 'bias') and wrapped_module.bias is not None
         if self.has_bias and (self.fake_quant_params or not self.preset_act_stats):

@@ -68,7 +68,7 @@ class MaskTable(MaskInfo):
         self.model_class = model.__class__.__name__
         self.Table = {}
         self.create_table(model)
-        if mask==[]:
+        if mask!=[]:
             self.set_default_mask(mask,correctRange)
         elif mask_dict:
             self.fill_table(mask_dict)

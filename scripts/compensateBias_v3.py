@@ -50,8 +50,11 @@ def save_dump(in_path,dump_name,out_path,new_name=None):
                 os.rename(out_path+el,out_path+new_name+"_{}".format(l)+".dump")
 
 def balanceNetwork(ref_model,child_model,test_set,batch_size=50,device='cpu'):
-    
-    os.mkdir(path_conf["dumps"])
+    try:
+        os.mkdir(path_conf["dumps"])
+    except FileExistsError:
+        shutil.rmtree(path_conf["dumps"])
+        os.mkdir(path_conf["dumps"]) 
     
     #tell libraries to save activations 
     with open("./save_act","w") as validity_act:
@@ -148,7 +151,7 @@ ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activation
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.ARC, ref_network, [2,1,0] , False)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.ARC, ref_network, mask=[4,2,1,0] , correctRange=False)
 #loading child model
 quantized_child = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
