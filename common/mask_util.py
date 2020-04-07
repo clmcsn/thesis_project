@@ -471,47 +471,11 @@ def mask_param(quant_param, bit_to_mask, mask_type=MaskType.SIMPLE_MASK, dynamic
         random = torch.ones(quant_param.size()).random_(-100,100).to(torch.int) #-100 compreso, 100 non compreso -> in such a way is balanced!
         random = random + (random == 0).to(torch.int) #converts 0s in 1s
         equal = (diff_up == diff_down).to(torch.int) * random
-        up_e = (equal > 0).to(torch.int)
+        up_e = (equal > 0).to(torch.int)*(overflow ^ 1)
         down_e = (equal < 0).to(torch.int)
 
         quant_param = up_e*up_tensor + quant_param*(up_e^1)
         quant_param = down_e*down_tensor + quant_param*(down_e^1)
         quant_param = up*up_tensor + quant_param*(up^1)
         quant_param = down*down_tensor + quant_param*(down^1) 
-    elif mask_type==MaskType.ARC_DOWN:
-        mask=~_make_mask(bit_to_mask)
-        #generate up_tensor
-        boolTensor=(quant_param & mask).to(torch.bool).to(torch.int)
-        up_tensor=quant_param + boolTensor
-        while (boolTensor.sum()):
-            boolTensor=(up_tensor & mask).to(torch.bool).to(torch.int)
-            up_tensor += boolTensor
-
-        #generate down_tensor
-        boolTensor=(quant_param & mask).to(torch.bool).to(torch.int)
-        down_tensor=quant_param - boolTensor
-        while (boolTensor.sum()):
-            boolTensor=(down_tensor & mask).to(torch.bool).to(torch.int)
-            down_tensor -= boolTensor
-
-        #exclude overflow numbers
-        max_int = 2**(dynamic-int(signed))-1
-        overflow = (up_tensor>max_int).to(torch.int)
-
-        #retriving differences
-        diff_up = up_tensor - quant_param
-        diff_down = quant_param - down_tensor
-
-        #boolean tensors for substitution
-        up = (diff_up < diff_down).to(torch.int)*(overflow ^ 1) #here we force to zero those that overflows
-        down = (diff_down < diff_up).to(torch.int) | overflow
-
-        #we need to detect those parameters that are equal and randomly assign to one or the other tensor
-        equal = (diff_up == diff_down).to(torch.int)
-        down_e = (equal > 0).to(torch.int)
-
-        quant_param = down_e*down_tensor + quant_param*(down_e^1)
-        quant_param = up*up_tensor + quant_param*(up^1)
-        quant_param = down*down_tensor + quant_param*(down^1)
-    quant_param = quant_param.to(ty)
     return quant_param

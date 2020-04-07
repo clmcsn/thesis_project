@@ -69,7 +69,8 @@ if ver:
                     mask = ~_make_mask(stringMask_to_list(string))
                     checkTensor= tensor_all_value & mask
                     res = torch.all(torch.eq(checkTensor.to(torch.float),torch.zeros(checkTensor.size())))
-                    if not res:
+                    res2 = torch.all(torch.eq((tensor_all_value>end_point-1).to(torch.float),torch.zeros(checkTensor.size())))
+                    if (not res or not res2):
                         out_rep.write("\nDIFFERENCE FOUND:\n")
                         out_rep.write("\tMASK:\n\t\t{}\n".format(string))
                         out_rep.write("\tMASK_TYPE:\n\t\t{}\n".format(mask_t))
