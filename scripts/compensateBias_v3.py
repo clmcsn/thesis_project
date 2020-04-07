@@ -151,7 +151,7 @@ ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activation
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.ARC, ref_network, mask=[4,2,1,0] , correctRange=False)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.ARC, ref_network, mask=[2,1,0] , correctRange=False)
 #loading child model
 quantized_child = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
