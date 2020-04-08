@@ -16,7 +16,6 @@ mc_file_string="{}: {}\t{}\n" #for .mc files
 class MaskType(Enum):
     SIMPLE_MASK = 1
     ARC = 2
-    ARC_DOWN = 3
 
 """basic class for containing informations"""
 #TODO far diventare MaskInfo la classe che esprime le informazioni di una singola maschera applicata a una 

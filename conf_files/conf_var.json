@@ -1,0 +1,33 @@
+{
+    "quant_mode"    : "LinearQuantMode.ASYMMETRIC_UNSIGNED",
+    "mask_mode"     : "MaskType.ARC",
+    "quant_mode_list"    : ["LinearQuantMode.ASYMMETRIC_UNSIGNED"],
+    "mask_mode_list"     : ["MaskType.ARC"],
+
+    "highest_mask"  : "24",
+    "lowest_qbits"  : "3",
+
+    "bits"          : "8",
+    "aw_bits"       : "8",
+    "acc_bits"      : "32",
+    
+    "pop_size"      : "50",
+    "n_offsprings"  : "100",
+    "n_gen"         : "200",
+    "max_top1"      : "1500",
+    
+    "avail_modes"    : ["single","mask","quantization"],
+    "avail_models"   : ["vgg11bn","lenet","resnet32"],
+    "avail_datasets"   : ["CIFAR10"],
+
+
+    "vgg11bn_CIFAR10_acc"       : "9240",
+    "lenet_CIFAR10_acc"         : "7528",
+    "vgg11_CIFAR10_acc"         : "9238",
+    "resnet32_CIFAR10_acc"      : "9358",
+    
+    "vgg11bn_name"      : "vgg11bn",
+    "lenet_name"        : "lenet",
+    "vgg11_name"        : "vgg11",
+    "resnet32_name"     : "resnet32"
+}
