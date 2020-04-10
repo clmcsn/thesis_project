@@ -16,6 +16,9 @@
     "n_gen"         : "200",
     "max_top1"      : "1500",
     
+    "server_dev"    : "cuda:1",
+    "local_dev"     : "cpu",
+
     "avail_modes"    : ["single","mask","quantization"],
     "avail_models"   : ["vgg11bn","lenet","resnet32"],
     "avail_datasets"   : ["CIFAR10"],

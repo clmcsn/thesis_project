@@ -1,11 +1,14 @@
 conf_path = "../../conf_files/conf_path.json"
 conf_var = "../../conf_files/conf_var.json"
+conf_str = "../../conf_files/strings.json"
 
 import json
 with open(conf_path) as jp_conf:
-    path_conf = json.load(j_conf)
+    path_conf = json.load(jp_conf)
 with open(conf_var) as jv_conf:
-    var_conf = json.load(j_var)
+    var_conf = json.load(jv_var)
+with open(conf_str) as js_conf:
+    strings = json.load(js_var)
 
 import sys
 for p in path_conf["appends"]:
@@ -13,8 +16,12 @@ for p in path_conf["appends"]:
 
 import torch
 from quantization import LinearQuantMode,PostTrainLinearQuantizer
-from common.mask_util import MaskType
+from common.mask_util import MaskType, compensateNetwork
 from collections import namedtuple
+
+TIME_FORMAT = '%Y_%m_%d_%H_%M_%S_%f_%z'
+def current_utctime_string(template=TIME_FORMAT):
+     return datetime.datetime.now(datetime.timezone.utc).strftime(template)
 
 quant_mode_dic = {  "LinearQuantMode.ASYMMETRIC_UNSIGNED" : LinearQuantMode.ASYMMETRIC_UNSIGNED,
                     "LinearQuantMode.ASYMMETRIC_SIGNED" : LinearQuantMode.ASYMMETRIC_SIGNED,
@@ -97,12 +104,28 @@ def network_analyzer_check_args(args):
         if not (args.mask_conf_file):
             raise ValueError("Please specify a file for the network mask configuration")
 
-def evaluate_network(network,mask_table,dataset,data_loader,device='cpu'):
-    quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=var_conf["aw_bits"], bits_parameters=var_conf["aw_bits"], bits_accum=var_conf["acc_bits"],
-                                                    mode=var_conf["quant_mode"], mask_table=mask_table,
-                                                    scale_approx_mult_bits=var_conf["bits"])
+def evaluate_network(network,mask_table,dataset,data_loader,device='cpu',compensate=False):
+    quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=var_conf["aw_bits"], bits_parameters=mask_table.w_bits, bits_accum=var_conf["acc_bits"],
+                                            mode=mask_table.quant_mode, mask_table=mask_table,
+                                            scale_approx_mult_bits=var_conf["bits"])
     quantizer.model.to(device)
     quantizer.prepare_model(dataset.dummy_input)
     quantizer.model.eval()
+    if compensate:
+        ref_mask_table = MaskTable(mask_table.quant_mode, MaskType.SIMPLE_MASK, network, [] , False)
+        ref = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=var_conf["aw_bits"], bits_parameters=mask_table.w_bits, bits_accum=var_conf["acc_bits"],
+                                            mode=mask_table.quant_mode, mask_table=ref_mask_table,
+                                            scale_approx_mult_bits=var_conf["bits"])
+        ref.prepare_model(dataset.dummy_input)
+        quantizer.model.to("cpu")
+        ref.model.to("cpu")
+        balanceNetwork( ref.model,
+                        quantizer.model,
+                        dataset.dbase,
+                        batch_size=500,
+                        device="cpu")
+        quantizer.model.to(device)
     test_preds = get_all_preds(quantizer.model, data_loader,device=device)
     preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(dataset.dbase.targets).to(device)).sum().item()
+    del quantizer
+    return preds_correct

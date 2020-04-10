@@ -22,9 +22,10 @@ class MaskType(Enum):
 #       determintata rete o LAYER
 
 class MaskInfo():
-    def __init__(   self, quant_mode, mask_type,
+    def __init__(   self, w_bits, quant_mode, mask_type,
                             mask, correctRange):
     
+        self.w_bits = w_bits
         self.quant_mode = quant_mode
         self.mask_type = mask_type
         #for analysis purposis mask can be a string, for simulation it MUST be the list of masked bit!
@@ -40,12 +41,13 @@ MaskLayerProperty = namedtuple("MaskLayerProperty",['correctRange','accuracy'])
 
 """support class for collecting statistics belonging to masks"""
 class MaskStat(MaskInfo):
-    def __init__(self, quant_mode, mask_type,
+    def __init__(self, w_bits, quant_mode, mask_type,
                         mask, correctRange,
                         correct_preds,
                         layer,
                         performance_class=None):
-        super(MaskStat, self).__init__( quant_mode,
+        super(MaskStat, self).__init__( w_bits
+                                        quant_mode,
                                         mask_type,
                                         mask,
                                         correctRange)
@@ -58,7 +60,7 @@ class MaskStat(MaskInfo):
 
 """Class used for correct handling network and masking"""
 class MaskTable(MaskInfo):
-    def __init__(self, quant_mode, mask_type, model, 
+    def __init__(self, w_bits, quant_mode, mask_type, model, 
                         mask=None, correctRange=None, 
                         mask_dict=None,mask_file=None):
         super(MaskTable, self).__init__( quant_mode,
