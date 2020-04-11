@@ -8,9 +8,11 @@
     "dumps"         : "./data/",
     "ref_dumps"     : "./data/r_act/",
     "mask_dumps"    : "./data/mask_act/",
-    "datasets"      : "../../data/",
+    "datasets"      : "../../data/{dataset}",
+    "net_descriptors": "../models/cifar10/net_architectures/",
 
     "unif_mask_acc_file"    : "UMA_{model}_{dataset}_{version}.txt",
+    "unif_quant_acc_file"   : "UQA_{model}_{dataset}_{version}.txt",
     "ba_checkpoint_file"    : "{model}_{dataset}_bestAccuracy_{accuracy}.pt",
     "delay_charact_file"    : "MTC_{architecture}_{const}.txt",
     "pareto_front_file"     : "PFS_{algorithm}_{date}",
@@ -18,5 +20,7 @@
     "sf_dump_file"          : "scale_factor.dump",
     "ref_dumps_file"        : "ref_{}.dump",
     "mask_dumps_file"       : "child_{}.dump",
-    "validity_dump_file"    : "./save_act"
+    "validity_dump_file"    : "./save_act",
+    "mask_config_file"      : "{model}_{dataset}.mc",
+    "net_descriptor_file"   : "{model}_dl.txt"
 }

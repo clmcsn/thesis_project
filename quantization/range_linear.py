@@ -27,7 +27,7 @@ from copy import deepcopy
 import warnings
 
 import json
-with open("../common/conf_path.json") as j_conf:
+with open("../conf_files/conf_path.json") as j_conf:
     path_conf = json.load(j_conf)
 
 import sys
