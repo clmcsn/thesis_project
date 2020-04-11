@@ -1,3 +1,4 @@
 {
-    "q_rep_string" : "QuantMode: {}\tWeightBits: {}\n\t Correct: {}\n"
+    "q_rep_string" : "QuantMode: {}\tWeightBits: {}\n\t Correct: {}\n",
+    "m_rep_string" : "QuantMode: {}\tWeightBits: {}\tMaskMode: {}\tMask: {}\n\tBaseLine :\t {}\n\tBaseLine Compensated:\t {}\n\tCorrect :\t {}\n\tCorrect Compensated:\t {}"
 }

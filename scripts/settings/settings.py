@@ -1,14 +1,14 @@
-conf_path = "../../conf_files/conf_path.json"
-conf_var = "../../conf_files/conf_var.json"
-conf_str = "../../conf_files/strings.json"
+conf_path = "../conf_files/conf_path.json"
+conf_var = "../conf_files/conf_var.json"
+conf_str = "../conf_files/strings.json"
 
 import json
 with open(conf_path) as jp_conf:
     path_conf = json.load(jp_conf)
 with open(conf_var) as jv_conf:
-    var_conf = json.load(jv_var)
+    var_conf = json.load(jv_conf)
 with open(conf_str) as js_conf:
-    strings = json.load(js_var)
+    strings = json.load(js_conf)
 
 import sys
 for p in path_conf["appends"]:
@@ -47,7 +47,7 @@ def resnet32_gen(dataset):
     network = network.eval()
     checkpoint = torch.load(path_conf["checkpoint"]+path_conf["ba_checkpoint_file"].format( model=var_conf["resnet32_name"],
                                                                                             dataset=dataset,
-                                                                                            accuracy=var_conf["resnet32_acc"]))
+                                                                                            accuracy=var_conf["resnet32_CIFAR10_acc"]))
     network.load_state_dict(checkpoint['model_state_dict'])
     return network
 
@@ -94,7 +94,7 @@ from common.parser import _init_parser, _check_args
 
 def network_analyzer_init_parser(parser):
     _init_parser(parser)
-    parser.add_argument("-mcf", "--mask_conf_file", action=store, help="file name of the configuration mask file")
+    parser.add_argument("-mcf", "--mask_conf_file", action="store", help="file name of the configuration mask file")
 
 def network_analyzer_check_args(args):
     _check_args(args)
@@ -111,6 +111,7 @@ def evaluate_network(network,mask_table,dataset,data_loader,device='cpu',compens
     quantizer.model.to(device)
     quantizer.prepare_model(dataset.dummy_input)
     quantizer.model.eval()
+    exit()
     if compensate:
         ref_mask_table = MaskTable(mask_table.quant_mode, MaskType.SIMPLE_MASK, network, [] , False)
         ref = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=var_conf["aw_bits"], bits_parameters=mask_table.w_bits, bits_accum=var_conf["acc_bits"],
@@ -119,7 +120,7 @@ def evaluate_network(network,mask_table,dataset,data_loader,device='cpu',compens
         ref.prepare_model(dataset.dummy_input)
         quantizer.model.to("cpu")
         ref.model.to("cpu")
-        balanceNetwork( ref.model,
+        compensateNetwork( ref.model,
                         quantizer.model,
                         dataset.dbase,
                         batch_size=500,

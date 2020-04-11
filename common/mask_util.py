@@ -46,7 +46,7 @@ class MaskStat(MaskInfo):
                         correct_preds,
                         layer,
                         performance_class=None):
-        super(MaskStat, self).__init__( w_bits
+        super(MaskStat, self).__init__( w_bits,
                                         quant_mode,
                                         mask_type,
                                         mask,
@@ -63,7 +63,8 @@ class MaskTable(MaskInfo):
     def __init__(self, w_bits, quant_mode, mask_type, model, 
                         mask=None, correctRange=None, 
                         mask_dict=None,mask_file=None):
-        super(MaskTable, self).__init__( quant_mode,
+        super(MaskTable, self).__init__(w_bits, 
+                                        quant_mode,
                                         mask_type,
                                         mask,
                                         correctRange)
@@ -223,7 +224,7 @@ def get_mask_hwCharact(fname):
     OUTPUT
         Does not return any object. Compensation is performed in place"""
 
-def balanceNetwork(ref_model,child_model,test_set,path_conf_file,batch_size=50,device='cpu'):
+def compensateNetwork(ref_model,child_model,test_set,path_conf_file,batch_size=50,device='cpu'):
 
     def save_dump(in_path,dump_name,out_path,new_name=None):
         dirlist=os.listdir(in_path)
