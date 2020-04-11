@@ -134,18 +134,18 @@ test_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
 )
 
 #setting up the model
-#network_name = "resnet32"
+network_name = "resnet32"
 #network_name = "vgg11bn"
 #accuracy = "9240"
-#accuracy = "9358"
-network_name = "lenet"
-accuracy = "7528"
+accuracy = "9358"
+#network_name = "lenet"
+#accuracy = "7528"
 dummy_input = (torch.ones([1,3,32,32]))
 
 #loading reference model to be copied
 #ref_network = vgg.vgg11_bn_cifar("")
-ref_network = lenet.LeNet()
-#ref_network = models.resnet_cifar.resnet32_cifar()
+#ref_network = lenet.LeNet()
+ref_network = models.resnet_cifar.resnet32_cifar()
 ref_network = ref_network.eval()
 checkpoint = torch.load(path_conf["checkpoint"]+path_conf["ba_checkpoint_file"].format(model=network_name,dataset=dataset,accuracy=accuracy), map_location=device)
 ref_network.load_state_dict(checkpoint['model_state_dict'])
@@ -158,7 +158,7 @@ ref_quantized = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activation
 ref_quantized.prepare_model(dummy_input)
 ref_quantized.model.eval()
 
-child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.ARC, ref_network, mask=[2,1,0] , correctRange=False)
+child_mask_table=MaskTable(LinearQuantMode.ASYMMETRIC_UNSIGNED, MaskType.ARC, ref_network, mask=[4,2,1,0] , correctRange=False)
 #loading child model
 quantized_child = PostTrainLinearQuantizer( deepcopy(ref_network), bits_activations=aw_bits, bits_parameters=aw_bits, bits_accum=acc_bits,
                                     mode=LinearQuantMode.ASYMMETRIC_UNSIGNED, mask_table=child_mask_table,
