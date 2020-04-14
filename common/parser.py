@@ -13,6 +13,8 @@ def _init_parser(parser):
     parser.add_argument("-bs","--batch_size",action="store",type=int,help="batch size for dataset")
 
 def _check_args(args):
+    if not(args.batch_size):
+        args.batch_size = 50
     if not (args.network in var_conf["avail_models"]):
         raise ValueError("Specified 'network' is not in the available list")
     if not (args.dataset in var_conf["avail_datasets"]):

@@ -9,6 +9,8 @@ import os
 import shutil
 import random as rand
 from collections import namedtuple, OrderedDict
+import json
+
 
 mc_file_string="{}: {}\t{}\n" #for .mc files
 
@@ -71,12 +73,12 @@ class MaskTable(MaskInfo):
         self.model_class = model.__class__.__name__
         self.Table = {}
         self.create_table(model)
-        if mask!=[]:
-            self.set_default_mask(mask,correctRange)
-        elif mask_dict:
+        if mask_dict:
             self.fill_table(mask_dict)
-        elif mask_file:
-            self.fill_table_from_file(mask_file)
+        elif isinstance(mask, list):                                                                                      
+            self.set_default_mask(mask,correctRange)
+        elif mask_file:                                                                                   
+            self.fill_table_from_file(mask_file) 
 
     """create_table(self,model)
     DESCRIPTION

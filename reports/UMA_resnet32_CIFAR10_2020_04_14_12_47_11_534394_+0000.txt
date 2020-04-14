@@ -1,0 +1,115 @@
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00000001
+	BaseLine :	 9359
+	BaseLine Compensated:	 9353
+	Correct :	 9330
+	Correct Compensated:	 9358
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00000010
+	BaseLine :	 9322
+	BaseLine Compensated:	 9333
+	Correct :	 9327
+	Correct Compensated:	 9350
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00000011
+	BaseLine :	 9287
+	BaseLine Compensated:	 9307
+	Correct :	 9321
+	Correct Compensated:	 9347
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00000100
+	BaseLine :	 9255
+	BaseLine Compensated:	 9320
+	Correct :	 9324
+	Correct Compensated:	 9346
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00000101
+	BaseLine :	 9138
+	BaseLine Compensated:	 9269
+	Correct :	 9288
+	Correct Compensated:	 9345
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00000110
+	BaseLine :	 8910
+	BaseLine Compensated:	 9236
+	Correct :	 9215
+	Correct Compensated:	 9343
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00000111
+	BaseLine :	 9237
+	BaseLine Compensated:	 9278
+	Correct :	 9211
+	Correct Compensated:	 9307
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00001000
+	BaseLine :	 2430
+	BaseLine Compensated:	 9279
+	Correct :	 9083
+	Correct Compensated:	 9325
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00001001
+	BaseLine :	 9118
+	BaseLine Compensated:	 9306
+	Correct :	 8782
+	Correct Compensated:	 9303
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00001010
+	BaseLine :	 1483
+	BaseLine Compensated:	 9242
+	Correct :	 8184
+	Correct Compensated:	 9284
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00001011
+	BaseLine :	 1378
+	BaseLine Compensated:	 9218
+	Correct :	 5738
+	Correct Compensated:	 9268
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00001100
+	BaseLine :	 1529
+	BaseLine Compensated:	 9202
+	Correct :	 4939
+	Correct Compensated:	 9235
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00001101
+	BaseLine :	 1452
+	BaseLine Compensated:	 9186
+	Correct :	 3122
+	Correct Compensated:	 9204
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00001110
+	BaseLine :	 1300
+	BaseLine Compensated:	 9071
+	Correct :	 2148
+	Correct Compensated:	 9116
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00001111
+	BaseLine :	 1173
+	BaseLine Compensated:	 8853
+	Correct :	 2725
+	Correct Compensated:	 9024
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00010000
+	BaseLine :	 1157
+	BaseLine Compensated:	 8922
+	Correct :	 8728
+	Correct Compensated:	 9234
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00010001
+	BaseLine :	 1009
+	BaseLine Compensated:	 8663
+	Correct :	 8942
+	Correct Compensated:	 9144
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00010010
+	BaseLine :	 983
+	BaseLine Compensated:	 8324
+	Correct :	 3013
+	Correct Compensated:	 8846
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00010011
+	BaseLine :	 995
+	BaseLine Compensated:	 7847
+	Correct :	 8192
+	Correct Compensated:	 9224
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00010100
+	BaseLine :	 955
+	BaseLine Compensated:	 7333
+	Correct :	 6870
+	Correct Compensated:	 8821
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00010101
+	BaseLine :	 952
+	BaseLine Compensated:	 7168
+	Correct :	 6024
+	Correct Compensated:	 9184
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00010110
+	BaseLine :	 995
+	BaseLine Compensated:	 6914
+	Correct :	 4931
+	Correct Compensated:	 8450
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00010111
+	BaseLine :	 998
+	BaseLine Compensated:	 8881
+	Correct :	 2955
+	Correct Compensated:	 9015

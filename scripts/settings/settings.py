@@ -14,11 +14,15 @@ import sys
 for p in path_conf["appends"]:
     sys.path.append(p)
 
+from copy import deepcopy
+
 import torch
 from quantization import LinearQuantMode,PostTrainLinearQuantizer
-from common.mask_util import MaskType, compensateNetwork
+from common.mask_util import MaskType, compensateNetwork, MaskTable
+from common.nnTools import get_all_preds
 from collections import namedtuple
 
+import datetime
 TIME_FORMAT = '%Y_%m_%d_%H_%M_%S_%f_%z'
 def current_utctime_string(template=TIME_FORMAT):
      return datetime.datetime.now(datetime.timezone.utc).strftime(template)
@@ -37,7 +41,7 @@ def vgg11bn_gen(dataset):
     network = network.eval()
     checkpoint = torch.load(path_conf["checkpoint"]+path_conf["ba_checkpoint_file"].format( model=var_conf["vgg11bn_name"],
                                                                                             dataset=dataset,
-                                                                                            accuracy=var_conf["vgg11bn_acc"]))
+                                                                                            accuracy=var_conf["vgg11bn_{}_acc".format(dataset)]))
     network.load_state_dict(checkpoint['model_state_dict'])
     return network
 
@@ -47,7 +51,7 @@ def resnet32_gen(dataset):
     network = network.eval()
     checkpoint = torch.load(path_conf["checkpoint"]+path_conf["ba_checkpoint_file"].format( model=var_conf["resnet32_name"],
                                                                                             dataset=dataset,
-                                                                                            accuracy=var_conf["resnet32_CIFAR10_acc"]))
+                                                                                            accuracy=var_conf["resnet32_{}_acc".format(dataset)]))
     network.load_state_dict(checkpoint['model_state_dict'])
     return network
 
@@ -57,7 +61,7 @@ def lenet_gen(dataset):
     network = network.eval()
     checkpoint = torch.load(path_conf["checkpoint"]+path_conf["ba_checkpoint_file"].format( model=var_conf["lenet_name"],
                                                                                             dataset=dataset,
-                                                                                            accuracy=var_conf["lenet_acc"]))
+                                                                                            accuracy=var_conf["lenet_{}_acc".format(dataset)]))
     network.load_state_dict(checkpoint['model_state_dict'])
     return network
 
@@ -77,7 +81,7 @@ def CIFAR10_test_gen():
     ])
 
     test_set = torchvision.datasets.CIFAR10( #we are fetching our datasets
-        root=conf_path["datasets"].format(dataset="CIFAR10")
+        root=path_conf["datasets"].format(dataset="CIFAR10")
         ,train=False  #where data will be located
         ,download=True              #download if is not present offline(run only the first time)
         ,transform=transform_test
@@ -105,27 +109,28 @@ def network_analyzer_check_args(args):
             raise ValueError("Please specify a file for the network mask configuration")
 
 def evaluate_network(network,mask_table,dataset,data_loader,device='cpu',compensate=False):
-    quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=var_conf["aw_bits"], bits_parameters=mask_table.w_bits, bits_accum=var_conf["acc_bits"],
+    quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=int(var_conf["aw_bits"]), bits_parameters=mask_table.w_bits, bits_accum=int(var_conf["acc_bits"]),
                                             mode=mask_table.quant_mode, mask_table=mask_table,
-                                            scale_approx_mult_bits=var_conf["bits"])
-    quantizer.model.to(device)
+                                            scale_approx_mult_bits=int(var_conf["bits"]))
+    quantizer.model.to("cpu")
     quantizer.prepare_model(dataset.dummy_input)
     quantizer.model.eval()
-    exit()
     if compensate:
-        ref_mask_table = MaskTable(mask_table.quant_mode, MaskType.SIMPLE_MASK, network, [] , False)
-        ref = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=var_conf["aw_bits"], bits_parameters=mask_table.w_bits, bits_accum=var_conf["acc_bits"],
+        ref_mask_table = MaskTable(int(var_conf["bits"]),mask_table.quant_mode, MaskType.SIMPLE_MASK, network, [] , False)
+        ref = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=int(var_conf["aw_bits"]), bits_parameters=mask_table.w_bits, bits_accum=int(var_conf["acc_bits"]),
                                             mode=mask_table.quant_mode, mask_table=ref_mask_table,
-                                            scale_approx_mult_bits=var_conf["bits"])
+                                            scale_approx_mult_bits=int(var_conf["bits"]))
+        ref.model.to("cpu")
         ref.prepare_model(dataset.dummy_input)
         quantizer.model.to("cpu")
-        ref.model.to("cpu")
+        ref.model.eval()
         compensateNetwork( ref.model,
                         quantizer.model,
                         dataset.dbase,
+                        conf_path,
                         batch_size=500,
                         device="cpu")
-        quantizer.model.to(device)
+    quantizer.model.to(device)
     test_preds = get_all_preds(quantizer.model, data_loader,device=device)
     preds_correct = test_preds.argmax(dim=1).eq(torch.LongTensor(dataset.dbase.targets).to(device)).sum().item()
     del quantizer

@@ -1,0 +1,12 @@
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8
+	 Correct: 9234
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 7
+	 Correct: 9235
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 6
+	 Correct: 9221
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 5
+	 Correct: 9142
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 4
+	 Correct: 8979
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 3
+	 Correct: 3475
