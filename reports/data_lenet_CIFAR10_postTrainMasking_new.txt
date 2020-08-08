@@ -1,4 +1,0 @@
-Reference accuracy = 7528
-QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	 MaskMode: MaskType.ARC	 Mask: 00000001
-	BaseLine accuracy = 	7516
-	RangeCorrect accuracy = 	7516
