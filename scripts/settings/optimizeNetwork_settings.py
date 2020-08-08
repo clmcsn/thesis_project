@@ -59,7 +59,7 @@ if (network_name == "vgg11bn"):
     network = network.eval() 
     checkpoint = torch.load(checkpoint_path+checkpoint_name, map_location="cpu") #map location for avoiding conflicts
     network.load_state_dict(checkpoint['model_state_dict'])
-    network_file_descriptor = "../models/cifar10/net_architectures/vgg11_dl.txt"
+    network_file_descriptor = "../models/cifar10/net_architectures/vgg11bn_dl.txt"
     ref_correct=9240
 elif (network_name == "resnet32"):
     import distiller.models.cifar10 as models
