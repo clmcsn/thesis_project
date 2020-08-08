@@ -98,6 +98,8 @@ from common.parser import _init_parser, _check_args
 
 def network_analyzer_init_parser(parser):
     _init_parser(parser)
+    parser.add_argument("-m", "--mask", action="store", help="standard mask used for feeding the guided mask creation")
+    parser.add_argument("-am","--auto_mask", action="store_true")
     parser.add_argument("-mcf", "--mask_conf_file", action="store", help="file name of the configuration mask file")
 
 def network_analyzer_check_args(args):
@@ -105,8 +107,10 @@ def network_analyzer_check_args(args):
     if not (args.mode in var_conf["avail_modes"]):
         raise ValueError("Specified 'mode' is not in the available list")
     if args.mode=="single":
-        if not (args.mask_conf_file):
-            raise ValueError("Please specify a file for the network mask configuration")
+        """TODO in future implementation we could pass a file with the configuration"""
+        if  not (args.mask):
+            raise ValueError("Please specify a mask for the automatic processing of network")
+        
 
 def evaluate_network(network,mask_table,dataset,data_loader,device='cpu',compensate=False):
     quantizer = PostTrainLinearQuantizer(   deepcopy(network), bits_activations=int(var_conf["aw_bits"]), bits_parameters=mask_table.w_bits, bits_accum=int(var_conf["acc_bits"]),

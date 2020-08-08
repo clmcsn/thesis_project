@@ -22,9 +22,16 @@ data_loader= torch.utils.data.DataLoader(
 
 if args.mode=="single":
     print("Single analysis chosen.")
-    guided_MaskTable_creator(   network,
-                                s.path_conf["mask_config"]+s.path_conf["mask_config_file"].format(model=args.network,dataset=args.dataset), 
-                                gui=True)
+    if args.auto_mask:
+        guided_MaskTable_creator(   network,
+                                s.path_conf["mask_config"]+s.path_conf["mask_config_file"].format(model=args.network,dataset=args.dataset),
+                                std_mask=args.mask, 
+                                gui=False)
+    else:
+        guided_MaskTable_creator(   network,
+                                    s.path_conf["mask_config"]+s.path_conf["mask_config_file"].format(model=args.network,dataset=args.dataset),
+                                    std_mask=args.mask, 
+                                    gui=True)
     mask_table = MaskTable( int(s.var_conf["bits"]),
                             s.quant_mode_dic[s.var_conf["quant_mode"]],
                             s.mask_mode_dic[s.var_conf["mask_mode"]], 
