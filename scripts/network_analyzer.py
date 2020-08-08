@@ -6,6 +6,7 @@ from common.hw_lib import printer_2s
 
 import torch
 import argparse
+import time
 
 parser = argparse.ArgumentParser()
 s.network_analyzer_init_parser(parser)
@@ -22,6 +23,9 @@ data_loader= torch.utils.data.DataLoader(
 
 if args.mode=="single":
     print("Single analysis chosen.")
+    ################################
+    start_time= time.time()
+    ################################
     if args.auto_mask:
         guided_MaskTable_creator(   network,
                                 s.path_conf["mask_config"]+s.path_conf["mask_config_file"].format(model=args.network,dataset=args.dataset),
@@ -44,6 +48,7 @@ if args.mode=="single":
                                     dataset,
                                     data_loader,
                                     device=s.var_conf["server_dev"])
+    print("--- %s seconds ---" % (time.time() - start_time))
     print("Accuracy:{}".format(accuracy))
 elif args.mode=="quantization":
     with open(s.path_conf["report"]+s.path_conf["unif_quant_acc_file"].format(model=args.network,
