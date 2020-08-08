@@ -9,6 +9,7 @@ import settings.optimizeNetwork_settings as s
 
 import numpy as np
 import autograd.numpy as anp
+import time
 
 from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.optimize import minimize
@@ -85,11 +86,13 @@ algorithm = NSGA2(pop_size=s.pop_size,
                   crossover=IntegerFromFloatCrossover(clazz=SimulatedBinaryCrossover,prob=0.9,eta=15),
                   mutation=IntegerFromFloatMutation(clazz=PolynomialMutation,eta=20),
                   n_offsprings=s.n_offsprings)
+start_time = time.time()
 res = minimize(problem,
                 algorithm,
                 ('n_gen', s.n_gen),
                 seed=1,
                 verbose=True)
+print("--- %s seconds ---" % (time.time() - start_time))
 print(res.F)
 print(res.X)
 with open(s.res_file,"w") as out_pointer:

@@ -4,6 +4,7 @@ import torchvision.transforms as transforms
 
 import os
 import sys
+
 sys.path.append("../")
 
 import datetime
@@ -89,7 +90,7 @@ if dataset == "CIFAR10":
     test_set_size = int(len(test_set))
 
 #genetic algorithm setting
-pop_size=50
+pop_size=100
 n_offsprings=100
-n_gen=200
+n_gen=2
 max_top1 = 2000
