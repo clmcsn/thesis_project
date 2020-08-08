@@ -2,7 +2,7 @@
 
 import settings.optimizeNetwork_settings as s
 
-from common.mask_util import MaskTable, balanceNetwork_v2
+from common.mask_util import MaskTable, compensateNetwork
 from common.nnTools import test
 from distiller.quantization import PostTrainLinearQuantizer
 
@@ -25,9 +25,10 @@ quantizer = PostTrainLinearQuantizer( deepcopy(s.network), bits_activations=s.aw
 
 quantizer.prepare_model(s.dummy_input)
 quantizer.model.eval()
-balanceNetwork_v2(ref_quantized.model,
+compensateNetwork(ref_quantized.model,
                     quantizer.model,
                     s.test_set,
+                    "../conf_file/conf_path.json"
                     batch_size=500,
                     device="cpu")
         
