@@ -211,7 +211,7 @@ def get_mask_hwCharact(fname):
             dic[invertString(info[0],toInvert)] = float(info[1])
     return dic
 
-"""balanceNetwork(ref_model,child_model,test_set,path_conf_file,batch_size=50,device='cpu')
+"""compensateNetwork(ref_model,child_model,test_set,path_conf_file,batch_size=50,device='cpu')
     DESCRIPTION
         Given a reference quantized model this function compensates the neuron biases of a masked
         model. Activations differences are averaged for all output fmap + the batch size

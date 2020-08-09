@@ -8,7 +8,7 @@ class LeNet(nn.Module):
         super(LeNet,self).__init__() #executes nn.Module init function
         self.conv1 = nn.Conv2d(3, 6, kernel_size=5)
         self.relu1 = nn.ReLU()
-        self.maxPool1 = nn.MaxPool2d(2)
+        self.maxPool1 = nn.MaxPool2d(2) #(in MaxPool2d stride=kernel size by default)
         self.conv2 = nn.Conv2d(6, 16, kernel_size=5)
         self.relu2 = nn.ReLU()
         self.maxPool2 = nn.MaxPool2d(2)

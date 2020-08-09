@@ -22,7 +22,7 @@ data_loader= torch.utils.data.DataLoader(
     ,batch_size=args.batch_size)
 
 if args.mode=="single":
-    print("Single analysis chosen.")
+    print("Single analysis chosen. Network will be automatically bias-compensated")
     ################################
     start_time= time.time()
     ################################
@@ -47,7 +47,8 @@ if args.mode=="single":
                                     mask_table,
                                     dataset,
                                     data_loader,
-                                    device=s.var_conf["server_dev"])
+                                    device=s.var_conf["server_dev"],
+                                    compensate=True)
     print("--- %s seconds ---" % (time.time() - start_time))
     print("Accuracy:{}".format(accuracy))
 elif args.mode=="quantization":
