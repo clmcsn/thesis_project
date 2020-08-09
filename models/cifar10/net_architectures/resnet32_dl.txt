@@ -1,0 +1,202 @@
+conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.0.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.0.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.1.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.1.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.2.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.2.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.3.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.3.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.4.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer1.4.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.0.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.0.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.0.downsample.0
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.1.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.1.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.2.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.2.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.3.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.3.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.4.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer2.4.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.0.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.0.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.0.downsample.0
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.1.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.1.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.2.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.2.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.3.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.3.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.4.conv1
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+layer3.4.conv2
+    inChannels: 3
+    outChannels:6
+    inFmap_s:   32
+    kernel_s:   5
+    stride:     1
+fc
+    inChannels: 84
+    outChannels:10
+    inFmap_s:   1
