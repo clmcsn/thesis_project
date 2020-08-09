@@ -42,7 +42,7 @@ quant_mode = LinearQuantMode.ASYMMETRIC_UNSIGNED
 mask_mode = MaskType.ARC
 
 #network
-network_name = "vgg11bn"
+network_name = "lenet"
 report_fname = "data_{}_CIFAR10_postTrainMasking_new.txt".format(network_name)
 config_fname = "{}.mc".format(network_name)
 if (network_name == "vgg11bn"):
@@ -66,6 +66,14 @@ elif (network_name == "resnet32"):
     checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
     unmasked_layers = ["conv1","fc"]
     network = models.resnet_cifar.resnet32_cifar()
+elif (network_name == "lenet"):
+    import models.cifar10.LeNet as LeNet
+    checkpoint_name = "{}_CIFAR10_bestAccuracy_7528.pt".format(network_name)
+    network = LeNet.LeNet()
+    network = network.eval()
+    checkpoint = torch.load(checkpoint_path + checkpoint_name, map_location="cpu")
+    network.load_state_dict(checkpoint['model_state_dict'])
+    network_file_descriptor = "../models/cifar10/net_architectures/lenet_dl.txt"
 else:
     errorString = "No checkpoint for {} network. Provide training".format(network_name)
     raise ValueError(network_name)
@@ -90,7 +98,7 @@ if dataset == "CIFAR10":
     test_set_size = int(len(test_set))
 
 #genetic algorithm setting
-pop_size=100
-n_offsprings=100
-n_gen=2
+pop_size=50
+n_offsprings=5
+n_gen=40
 max_top1 = 2000

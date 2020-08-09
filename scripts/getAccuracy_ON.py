@@ -9,7 +9,7 @@ from distiller.quantization import PostTrainLinearQuantizer
 from copy import deepcopy
 
 #create reference model
-ref_mask_table=MaskTable(s.quant_mode, s.mask_mode, s.network, [] , False)
+ref_mask_table=MaskTable(s.bits,s.quant_mode, s.mask_mode, s.network, [] , False)
 ref_quantized = PostTrainLinearQuantizer( deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                     mode=s.quant_mode, mask_table=ref_mask_table,
                     scale_approx_mult_bits=s.bits)
@@ -18,7 +18,7 @@ ref_quantized.model.eval()
 ref_quantized.model.to("cpu")
 
 #loading mask
-mask_table = MaskTable(s.quant_mode, s.mask_mode, s.network, mask_file=s.config_fname)
+mask_table = MaskTable(s.bits,s.quant_mode, s.mask_mode, s.network, mask_file=s.config_fname)
 quantizer = PostTrainLinearQuantizer( deepcopy(s.network), bits_activations=s.aw_bits, bits_parameters=s.aw_bits, bits_accum=s.acc_bits,
                     mode=s.quant_mode, mask_table=mask_table,
                     scale_approx_mult_bits=s.bits)
@@ -28,7 +28,7 @@ quantizer.model.eval()
 compensateNetwork(ref_quantized.model,
                     quantizer.model,
                     s.test_set,
-                    "../conf_file/conf_path.json"
+                    "../conf_files/conf_path.json",
                     batch_size=500,
                     device="cpu")
         
