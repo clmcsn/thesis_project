@@ -42,7 +42,7 @@ quant_mode = LinearQuantMode.ASYMMETRIC_UNSIGNED
 mask_mode = MaskType.ARC
 
 #network
-network_name = "lenet"
+network_name = "resnet32"
 report_fname = "data_{}_CIFAR10_postTrainMasking_new.txt".format(network_name)
 config_fname = "{}.mc".format(network_name)
 if (network_name == "vgg11bn"):
@@ -64,8 +64,11 @@ if (network_name == "vgg11bn"):
 elif (network_name == "resnet32"):
     import distiller.models.cifar10 as models
     checkpoint_name = "{}_CIFAR10_bestAccuracy_9358.pt".format(network_name)
-    unmasked_layers = ["conv1","fc"]
     network = models.resnet_cifar.resnet32_cifar()
+    network = network.eval()
+    checkpoint = torch.load(checkpoint_path + checkpoint_name, map_location="cpu")
+    network.load_state_dict(checkpoint['model_state_dict'])
+    network_file_descriptor = "../models/cifar10/net_architectures/resnet32_dl.txt"
 elif (network_name == "lenet"):
     import models.cifar10.LeNet as LeNet
     checkpoint_name = "{}_CIFAR10_bestAccuracy_7528.pt".format(network_name)

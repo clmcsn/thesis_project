@@ -45,7 +45,7 @@ for mask in mask_charact_dict.keys():
     
 class MaskingDNN(Problem):
     def __init__(self):
-        super().__init__(n_var=5, n_obj=2, n_constr=1,
+        super().__init__(n_var=33, n_obj=2, n_constr=1,
                             xl=0, xu=63, type_var=np.int,
                             elementwise_evaluation=True)
         self.first=True
