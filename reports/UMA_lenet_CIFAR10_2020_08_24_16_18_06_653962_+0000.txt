@@ -1,0 +1,5 @@
+QuantMode: LinearQuantMode.ASYMMETRIC_UNSIGNED	WeightBits: 8	MaskMode: MaskType.ARC	Mask: 00000001
+	BaseLine :	 7452
+	BaseLine Compensated:	 7482
+	Correct :	 7519
+	Correct Compensated:	 7486

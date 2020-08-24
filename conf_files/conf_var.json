@@ -4,7 +4,7 @@
     "quant_mode_list"    : ["LinearQuantMode.ASYMMETRIC_UNSIGNED"],
     "mask_mode_list"     : ["MaskType.ARC"],
 
-    "highest_mask"  : "24",
+    "highest_mask"  : "31",
     "lowest_qbits"  : "3",
 
     "bits"          : "8",
