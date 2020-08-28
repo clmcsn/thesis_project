@@ -1,6 +1,7 @@
 module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
   parameter accumulationPar=32;
   parameter weightPar=8;
+  parameter SeM=1; //if activation and weights are given as Sign&Magnitude
   input clk;
   input rst_n;
   input [weightPar-1:0] activation;
@@ -38,15 +39,22 @@ module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
                                                     .sample_en(1'b1));
   //multiplier
   multiplier #( .parallelism(weightPar),
-                .ARCH_TYPE(0)) mult ( .multiplier(weightToMult),
+                .ARCH_TYPE(3)) mult ( .multiplier(weightToMult),
                                  .multiplicand(activationToMult),
                                  .product(prodToAdd));
   //adder
-  adder #(accumulationPar) add (.add1(pSumToAdd),
-                                .add0({{accumulationPar-2*weightPar{prodToAdd[2*weightPar-1]}},prodToAdd}),
-                                .carry_in(1'b0),
-                                .sum(addToOutput));
-
+  generate 
+    if (SeM) begin //it depends on the architecture, 2's or sign and magnitude
+      adder #(accumulationPar) add (.add1(pSumToAdd),
+                                    .add0({{accumulationPar-2*weightPar{prodToAdd[2*weightPar-1]}},prodToAdd}),
+                                    .carry_in(prodToAdd[2*weightPar-1]),
+                                    .sum(addToOutput));
+    end else begin
+      adder #(accumulationPar) add (.add1(pSumToAdd),
+                                    .add0({{accumulationPar-2*weightPar{prodToAdd[2*weightPar-1]}},prodToAdd}),
+                                    .carry_in(1'b0),
+                                    .sum(addToOutput));
+    end
   //pSumRegister
   register #(accumulationPar) outPartialSumRegister (  .parallelIn(addToOutput),
                                                     .parallelOut(outPartialSum),
@@ -54,5 +62,5 @@ module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
                                                     .rst_n(rst_n),
                                                     .clear(1'b0),
                                                     .sample_en(1'b1));
-
+  endgenerate
 endmodule //PE

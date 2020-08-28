@@ -24,9 +24,9 @@ module tb_PE();
     @(posedge clk);
     rst_n=1;
     @(posedge clk);
-    activation=2;
-    weight=2;
-    inPartialSum=4;
+    activation=-126;
+    weight=-122;
+    inPartialSum=-12;
   end
 
 endmodule

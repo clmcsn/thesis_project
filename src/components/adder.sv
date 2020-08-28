@@ -6,19 +6,19 @@ module adder (add1,add0,carry_in,sum);
       0 : synthesizer choose (default)
       1 : rca
   */
-  input unsigned [parallelism-1:0] add1;
-  input unsigned [parallelism-1:0] add0;
+  input signed [parallelism-1:0] add1;
+  input signed [parallelism-1:0] add0;
   input unsigned carry_in;
-  output unsigned [parallelism-1:0] sum;
-  logic unsigned [parallelism-1:0] temp_sum;
-  logic unsigned [parallelism-2:0] carrys;
+  output signed [parallelism-1:0] sum;
+  logic signed [parallelism-1:0] temp_sum;
+  logic signed [parallelism-2:0] carrys;
   assign sum = temp_sum;
 
   genvar i;
   generate
     if (ARCH_TYPE==0)
-      assign temp_sum=add1+add0+carry_in;
-    else if (ARCH_TYPE==1)
+      assign temp_sum=add1+add0+{1'b0,carry_in};
+    else if (ARCH_TYPE==1) begin
       fullAdder fh1 ( .a(add1[0]),
                       .b(add0[0]),
                       .ci(carry_in),
@@ -36,5 +36,6 @@ module adder (add1,add0,carry_in,sum);
                           .ci(carrys[parallelism-2]),
                           .s(temp_sum[parallelism-1]),
                           .co());
+    end
   endgenerate
 endmodule //adder

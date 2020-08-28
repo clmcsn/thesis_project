@@ -7,13 +7,20 @@ module multiplier (multiplier, multiplicand, product);
       1 : complete csa implmentation
       2 : row cutted implmentation*/
 
-  input unsigned [parallelism-1:0] multiplier;
-  input unsigned [parallelism-1:0] multiplicand;
-  output unsigned [2*parallelism-1:0] product;
-
-  logic unsigned [parallelism-1:0] pps    [parallelism-1:0];
-  logic unsigned [parallelism*2-1:0] sums   [parallelism-2:0];
-  logic unsigned [parallelism*2-1:0] carrys [parallelism-2:0];
+  input signed [parallelism-1:0] multiplier;
+  input signed [parallelism-1:0] multiplicand;
+  output signed [2*parallelism-1:0] product;
+  
+  //needed for Sign&Magnitude multiplier
+  logic sign;
+  logic unsigned [parallelism-2:0] SM_multiplier;
+  logic unsigned [parallelism-2:0] SM_multiplicand;
+  logic unsigned [2*(parallelism-1)-1:0] SM_product;
+  
+  //needed for csaTree
+  logic signed [parallelism-1:0] pps    [parallelism-1:0];
+  logic signed [parallelism*2-1:0] sums   [parallelism-2:0];
+  logic signed [parallelism*2-1:0] carrys [parallelism-2:0];
 
   genvar i;
   generate
@@ -53,6 +60,13 @@ module multiplier (multiplier, multiplicand, product);
         assign pps[i] = (multiplier[i]) ? multiplicand : 8'b0;
       end
       //AUTO_PRINT
+    else if (ARCH_TYPE==3) begin: behaSM //behavioural Sing and magnitude
+      // NOTE that in such implementation multiplier and multiplicand are already given in S&M format
+      assign SM_multiplicand = multiplicand[parallelism-2:0]
+      assign SM_multiplier = multiplier[parallelism-2:0]
+      assign SM_product = SM_multiplier*SM_multiplicand;
+      assign sign = multiplicand[parallelism-1] ^ multiplier[parallelism-1]
+      assign product = {2{sign},SM_product^{ $size(SM_product){sign}}
     end
   endgenerate
 endmodule //multiplier

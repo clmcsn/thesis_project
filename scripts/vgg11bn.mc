@@ -1,9 +1,0 @@
-features.0: 00000110	1
-features.5: 00000011	1
-features.10: 00010110	1
-features.14: 00001101	1
-features.19: 00000100	1
-features.23: 00000111	0
-features.28: 00010100	1
-features.32: 00011001	0
-classifier: 00000110	1
