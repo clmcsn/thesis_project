@@ -1,7 +1,7 @@
 module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
   parameter accumulationPar=32;
   parameter weightPar=8;
-  parameter SeM=1; //if activation and weights are given as Sign&Magnitude
+  parameter SeM=0; //if activation and weights are given as Sign&Magnitude
   input clk;
   input rst_n;
   input [weightPar-1:0] activation;
@@ -39,7 +39,7 @@ module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
                                                     .sample_en(1'b1));
   //multiplier
   multiplier #( .parallelism(weightPar),
-                .ARCH_TYPE(3)) mult ( .multiplier(weightToMult),
+                .ARCH_TYPE(0)) mult ( .multiplier(weightToMult),
                                  .multiplicand(activationToMult),
                                  .product(prodToAdd));
   //adder

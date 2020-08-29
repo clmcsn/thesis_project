@@ -10,7 +10,6 @@ module tb_autoCsaMultiplier();
             .ARCH_TYPE(2)) DUT(.*);
 
   integer fin_pointer,fout_pointer;
-  string s;
 
   always #1 fake_clk=~fake_clk;
 

@@ -11,28 +11,32 @@ from common.hw_lib import twos_comp, printer_2s
 #       fname:      string with complete output file path nameself.
 #       lineNum:    amount of lines.
 #       stimInLine: how many stimuli in a line.
-#       sign:       True for positive and negative, False for only positive
-#       bitDyn:     real dynamic of output numb.
-#       nBit:       number of output bit in the string.
+#       #TODO   signed is useless in fase of file creation (they will all be bit streams)
+#               it just should be used in phase of interpretation 
+#       signed:       touple with as many element as stimInLine
+#                   True for positive and negative, False for only positive
+#       bitDyn:     touple with as many element as stimInLine
+#                   real dynamic of output numb.
+#       nBit:       touple with as many element as stimInLine
+#                   number of output bit in the string.
 #       delimiter:  delimiter character between two consecutive stimuli.
+#                   default value "\t"
 # OUTPUT
 #    Creates a file of stimuli in the specified path.
-def binStimFileGen(fname,lineNum,stimInLine,sign,bitDyn,nBit,delimiter):
+def binStimFileGen(fname,lineNum,stimInLine,signed,bitDyn,nBit,delimiter="\t"):
+    if (stimInLine!=len(signed) or stimInLine!=len(bitDyn) or stimInLine!=len(nBit)):
+        raise ValueError("Incoherent data provided.")
     with open(fname,"w") as fout_pointer:
-        i=0
-        while i<lineNum:
-            j=0
+        for i in range(lineNum):
             string=""
-            while j<stimInLine:
-                if(sign):
-                    num=random.randint(-2**(bitDyn-1),2**(bitDyn-1)-1)
+            for j in range(stimInLine):
+                if(signed[j]):
+                    num=random.randint(-2**(bitDyn[j]-1),2**(bitDyn[j]-1)-1)
                 else:
-                    num=random.randint(0,2**(bitDyn)-1)
-                string+=printer_2s(num,nBit)
+                    num=random.randint(0,2**(bitDyn[j])-1)
+                string+=printer_2s(num,nBit[j])
                 string+=delimiter
-                j+=1
             fout_pointer.write(string+"\n")
-            i+=1
 
 # binStimGen(sign,bitDyn,nBit):
 #

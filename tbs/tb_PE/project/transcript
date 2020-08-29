@@ -1,64 +1,54 @@
-# Loading project tb_PE
-# reading /home/clmcasino/intel_lite/18.1/modelsim_ase/linuxaloem/../modelsim.ini
-# Loading project tb_csaRow
-# Compile of tb_csaRow.sv failed with 4 errors.
-# Compile of csaRow.sv failed with 3 errors.
-# Compile of fullAdder.sv failed with 2 errors.
-# 3 compiles, 3 failed with 9 errors.
-# Compile of tb_csaRow.sv was successful.
-# Compile of csaRow.sv failed with 1 errors.
-# Compile of fullAdder.sv was successful.
-# 3 compiles, 1 failed with 1 error.
-# Compile of tb_csaRow.sv was successful.
-# Compile of csaRow.sv failed with 1 errors.
-# Compile of fullAdder.sv was successful.
-# 3 compiles, 1 failed with 1 error.
-# Compile of tb_csaRow.sv was successful.
-# Compile of csaRow.sv failed with 1 errors.
-# Compile of fullAdder.sv was successful.
-# 3 compiles, 1 failed with 1 error.
-# Compile of tb_csaRow.sv was successful.
-# Compile of csaRow.sv was successful.
-# Compile of fullAdder.sv was successful.
-# 3 compiles, 0 failed with no errors.
-vsim work.tb_csaRow
-# vsim work.tb_csaRow 
-# Start time: 12:18:30 on Oct 19,2019
+# do ../tb-PE.tcl
+# gui
+# ** Warning: (vlib-34) Library already exists at "../work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:54:02 on Aug 29,2020
+# vlog -work ../work ../../../src/components/adder.sv ../../../src/components/csaRow.sv ../../../src/components/fullAdder.sv ../../../src/components/multiplier.sv ../../../src/components/register.sv 
+# -- Compiling module adder
+# -- Compiling module csaRow
+# -- Compiling module fullAdder
+# -- Compiling module multiplier
+# -- Compiling module register
+# 
+# Top level modules:
+# 	multiplier
+# 	register
+# End time: 18:54:02 on Aug 29,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:54:02 on Aug 29,2020
+# vlog -work ../work ../../../src/PE/PE.sv 
+# -- Compiling module PE
+# 
+# Top level modules:
+# 	PE
+# End time: 18:54:02 on Aug 29,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:54:02 on Aug 29,2020
+# vlog -work ../work "+define+NO_GUI=1" ../tb_PE.sv 
+# -- Compiling module tb_PE
+# 
+# Top level modules:
+# 	tb_PE
+# End time: 18:54:02 on Aug 29,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vsim -c ../work.tb_PE 
+# Start time: 18:54:02 on Aug 29,2020
 # Loading sv_std.std
-# Loading work.tb_csaRow
-# Loading work.csaRow
-# Loading work.fullAdder
-# WARNING: No extended dataflow license exists
-add wave sim:/tb_csaRow/*
-run
+# Loading ../work.tb_PE
+# Loading ../work.PE
+# Loading ../work.register
+# Loading ../work.multiplier
+# Loading ../work.adder
+# ** Warning: (vsim-PLI-3691) ../tb_PE.sv(36): Expected a system task, not a system function '$fscanf'.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_PE File: ../tb_PE.sv
+# ** Warning: (vsim-PLI-3691) ../tb_PE.sv(37): Expected a system task, not a system function '$fscanf'.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_PE File: ../tb_PE.sv
+# ** Warning: (vsim-PLI-3691) ../tb_PE.sv(38): Expected a system task, not a system function '$fscanf'.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_PE File: ../tb_PE.sv
 # ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
-run
-run
-run
-run
-run
-run
-run
-run
-run
-restart
-quit -sim
-# End time: 12:20:18 on Oct 19,2019, Elapsed time: 0:01:48
-# Errors: 0, Warnings: 2
-# Compile of tb_csaRow.sv was successful.
-# Compile of csaRow.sv was successful.
-# Compile of fullAdder.sv was successful.
-# 3 compiles, 0 failed with no errors.
-vsim work.tb_csaRow
-# vsim work.tb_csaRow 
-# Start time: 12:21:00 on Oct 19,2019
-# Loading sv_std.std
-# Loading work.tb_csaRow
-# Loading work.csaRow
-# Loading work.fullAdder
-# WARNING: No extended dataflow license exists
-add wave sim:/tb_csaRow/*
-run
-# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
-# End time: 12:21:46 on Oct 19,2019, Elapsed time: 0:00:46
-# Errors: 0, Warnings: 2
+# ** Note: $finish    : ../tb_PE.sv(44)
+#    Time: 6000010 ns  Iteration: 1  Instance: /tb_PE
+# End time: 18:54:31 on Aug 29,2020, Elapsed time: 0:00:29
+# Errors: 0, Warnings: 4

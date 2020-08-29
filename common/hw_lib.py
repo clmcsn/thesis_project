@@ -5,10 +5,30 @@ import os
 import datetime
 
 
+# twos_comp(value, bits):
+#
+# DESCRIPTION
+#    Out of a string of chars expressing a 2's complement number, gives the corresponding integer
+#    MSB FIRST
+# INPUT
+#    Needs as inputs:
+#       value:   int(number,2) where number is the string we want to convert.
+#       bits:    len(number), on how many bits are required.
 def twos_comp(value, bits):
+    v=value
     if (value & (1<<(bits-1))) != 0:
-        value=value - (1<<bits)
-    return value
+        v=value - (1<<bits)
+    return v
+
+def string2s_to_int(string):
+    num = twos_comp(int(string,2),len(string))
+    return num
+
+def stringSM_to_int(string):
+    num = int("0"+string[1:len(string)],2)
+    if string[0]=="1":
+        num = num*-1
+    return num
 
 def FH(A,B,C):
     propagate=xor(A,B)

@@ -15,7 +15,9 @@ cmdSetSynEnv=". /eda/synopsys/2016-17/scripts/SYN_2016.12_RHELx86.sh"
 
 #hardware settings
 weight_width=8
+psum_width=32
 max_forcedBits=5
+num_sample=1000000 #exaustive random checking
 signal_string="//AUTO_PRINT"
 
 #ssh settings

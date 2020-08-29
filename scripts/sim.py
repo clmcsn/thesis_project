@@ -3,6 +3,7 @@
 import sys
 sys.path.append('../')
 import os
+import random as rand
 
 from common.verification_util import binStimFileGen,runSimulation
 import common.settings as s
@@ -12,7 +13,7 @@ import common.hw_lib as hwl
 
 def displayMenu():
     print("Welcome to the tester, what do you want ot simulate:")
-    list=["AutoCsaMultiplier","exit"]
+    list=["AutoCsaMultiplier","PE_2s","PE_SM","exit"]
     for i in range(len(list)):
         print("{}) {}".format(i+1,list[i]))
     return len(list)
@@ -71,6 +72,47 @@ while (loop):
                     log_pointer.write("Had:     \t {} \n".format(c))
                     log_pointer.write("\n")
                 i+=1
+        if(error_count==0):
+            print("Yeeeeee")
+    elif (c=="2" or c=="3"): #complete PE
+
+        def PE(a,w,s):
+            return a*w+s
+    
+        print("Input stimuli file will be automatically create")
+        stimuli_fname = s.tbsPath+"tb_PE/tb_PE.txt"
+        binStimFileGen(fname=stimuli_fname, 
+                        lineNum=s.num_sample,
+                        stimInLine=3,
+                        signed=[True,True,True],
+                        bitDyn=[s.weight_width,s.weight_width,s.psum_width-1],
+                        nBit=[s.weight_width,s.weight_width,s.psum_width])
+        print("Runnin simulation through ModelSim")
+        with util.cd(s.tbsPath+"tb_PE/project/"):
+            process=subprocess.Popen(["vsim -c -do ../tb-PE.tcl"],shell=True,cwd=os.getcwd())
+            process.wait()
+        print("Checking results")
+        with open(s.tbsPath+"tb_PE/HWresult_PE.txt","r") as hwres_pointer, open(s.tbsPath+"tb_PE/tb_PE.txt","r") as insample_pointer, open(s.tbsPath+"tb_PE/log.txt","w") as log_pointer:
+            error_count=0
+            for i,(line_sample, line_hwres) in enumerate(zip(insample_pointer,hwres_pointer)):
+                str_in=line_sample.split()
+                if (c=="2"):
+                    a=hwl.string2s_to_int(str_in[0])
+                    w=hwl.string2s_to_int(str_in[1])
+                elif (c=="3"):
+                    a=hwl.stringSM_to_int(str_in[0])
+                    w=hwl.stringSM_to_int(str_in[1])
+                s=hwl.string2s_to_int(str_in[2])
+                sr=a*w+s
+                hr=hwl.string2s_to_int(line_hwres.split()[0])
+                if (sr!=hr):
+                    error_count+=1
+                    log_pointer.write("MISTAKE #{}\n".format(i))
+                    log_pointer.write("Sample  :\t {} \t {} \t {}\n".format(a,w,s))
+                    log_pointer.write("Expected:\t {} \n".format(sr))
+                    log_pointer.write("Had:     \t {} \n".format(hr))
+                    log_pointer.write("\n")
+                
         if(error_count==0):
             print("Yeeeeee")
     elif (c==str(l)):
