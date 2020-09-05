@@ -1,0 +1,75 @@
+Information: Updating design information... (UID-85)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : PE
+Version: M-2016.12
+Date   : Tue Sep  1 00:35:59 2020
+****************************************
+
+Operating Conditions: uk65lscllmvbbr_120c25_tc   Library: uk65lscllmvbbr_120c25_tc
+Wire Load Model Mode: top
+
+  Startpoint: activationRegister/temp_reg[6]
+              (rising edge-triggered flip-flop clocked by clock)
+  Endpoint: outPartialSumRegister/temp_reg[30]
+            (rising edge-triggered flip-flop clocked by clock)
+  Path Group: clock
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  PE                 wl0                   uk65lscllmvbbr_120c25_tc
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  activationRegister/temp_reg[6]/CK (DFRM8RA)         0.0000000000
+                                                                 0.0000000000 r
+  activationRegister/temp_reg[6]/Q (DFRM8RA)          0.1100610197
+                                                                 0.1100610197 r
+  U133/Z (ND2M6R)                                     0.0216227323
+                                                                 0.1316837519 f
+  U201/Z (CKINVM6R)                                   0.0137297511
+                                                                 0.1454135031 r
+  DP_OP_11J1_122_2482/U383/CO (AD42M4RA)              0.2369279712
+                                                                 0.3823414743 f
+  U125/Z (ND2M3R)                                     0.0365924537
+                                                                 0.4189339280 r
+  U124/Z (OAI21M12RA)                                 0.0294183493
+                                                                 0.4483522773 f
+  U132/Z (AOI21M12RA)                                 0.0354674160
+                                                                 0.4838196933 r
+  U194/Z (OAI21M16RA)                                 0.0370414555
+                                                                 0.5208611488 f
+  U5/Z (AOI21M2R)                                     0.0477539897
+                                                                 0.5686151385 r
+  U65/Z (XOR2M2RA)                                    0.0509702563
+                                                                 0.6195853949 r
+  outPartialSumRegister/temp_reg[30]/D (DFQRM1RA)     0.0000000000
+                                                                 0.6195853949 r
+  data arrival time                                              0.6195853949
+
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  outPartialSumRegister/temp_reg[30]/CK (DFQRM1RA)    0.0000000000
+                                                                 0.0000000000 r
+  library setup time                                  -0.0155789796
+                                                                 -0.0155789796
+  data required time                                             -0.0155789796
+  --------------------------------------------------------------------------
+  data required time                                             -0.0155789796
+  data arrival time                                              -0.6195853949
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                               -0.6351643801
+
+
+1

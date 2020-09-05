@@ -10,6 +10,7 @@ module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
   output [accumulationPar-1:0] outPartialSum;
 
   //signals
+  logic [weightPar-1:0] internal_weight;
   logic [weightPar-1:0] activationToMult;
   logic [weightPar-1:0] weightToMult;
   logic [2*weightPar-1:0] prodToAdd;
@@ -22,9 +23,10 @@ module PE (activation,weight,inPartialSum,outPartialSum,clk,rst_n);
                                                     .rst_n(rst_n),
                                                     .clear(1'b0),
                                                     .sample_en(1'b1));
-
+  //internal weight assignment
+  assign internal_weight = weight;
   //weight register
-  register #(weightPar) weightRegister (  .parallelIn(weight),
+  register #(weightPar) weightRegister (  .parallelIn(internal_weight),
                                                     .parallelOut(weightToMult),
                                                     .clk(clk),
                                                     .rst_n(rst_n),

@@ -1,0 +1,71 @@
+Information: Updating design information... (UID-85)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : PE
+Version: M-2016.12
+Date   : Mon Aug 31 20:02:24 2020
+****************************************
+
+Operating Conditions: uk65lscllmvbbr_120c25_tc   Library: uk65lscllmvbbr_120c25_tc
+Wire Load Model Mode: top
+
+  Startpoint: partialSumRegister/temp_reg[9]
+              (rising edge-triggered flip-flop clocked by clock)
+  Endpoint: outPartialSumRegister/temp_reg[16]
+            (rising edge-triggered flip-flop clocked by clock)
+  Path Group: clock
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  PE                 wl0                   uk65lscllmvbbr_120c25_tc
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  partialSumRegister/temp_reg[9]/CK (DFRM8RA)         0.0000000000
+                                                                 0.0000000000 r
+  partialSumRegister/temp_reg[9]/Q (DFRM8RA)          0.1022976041
+                                                                 0.1022976041 r
+  U427/S (AD42M2RA)                                   0.2283756435
+                                                                 0.3306732476 f
+  U426/S (AD42M4RA)                                   0.2096209228
+                                                                 0.5402941704 r
+  U123/Z (NR2B1M12RA)                                 0.0211519003
+                                                                 0.5614460707 f
+  U134/Z (NR2M8R)                                     0.0464187860
+                                                                 0.6078648567 r
+  U125/Z (AOI21M12RA)                                 0.0435961485
+                                                                 0.6514610052 f
+  U21/Z (OAI21M2R)                                    0.0488448739
+                                                                 0.7003058791 r
+  U385/Z (XOR2M2RA)                                   0.0516608357
+                                                                 0.7519667149 r
+  outPartialSumRegister/temp_reg[16]/D (DFQBRM1RA)    0.0000000000
+                                                                 0.7519667149 r
+  data arrival time                                              0.7519667149
+
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  outPartialSumRegister/temp_reg[16]/CK (DFQBRM1RA)   0.0000000000
+                                                                 0.0000000000 r
+  library setup time                                  -0.0150846280
+                                                                 -0.0150846280
+  data required time                                             -0.0150846280
+  --------------------------------------------------------------------------
+  data required time                                             -0.0150846280
+  data arrival time                                              -0.7519667149
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                               -0.7670513391
+
+
+1

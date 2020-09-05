@@ -1,0 +1,73 @@
+Information: Updating design information... (UID-85)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : PE
+Version: M-2016.12
+Date   : Tue Sep  1 00:47:40 2020
+****************************************
+
+Operating Conditions: uk65lscllmvbbr_120c25_tc   Library: uk65lscllmvbbr_120c25_tc
+Wire Load Model Mode: top
+
+  Startpoint: activationRegister/temp_reg[2]
+              (rising edge-triggered flip-flop clocked by clock)
+  Endpoint: outPartialSumRegister/temp_reg[12]
+            (rising edge-triggered flip-flop clocked by clock)
+  Path Group: clock
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  PE                 wl0                   uk65lscllmvbbr_120c25_tc
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  activationRegister/temp_reg[2]/CK (DFQRM8RA)        0.0000000000
+                                                                 0.0000000000 r
+  activationRegister/temp_reg[2]/Q (DFQRM8RA)         0.1082361042
+                                                                 0.1082361042 r
+  U193/Z (NR2B1M8R)                                   0.0454273224
+                                                                 0.1536634266 r
+  DP_OP_11J1_122_2482/U439/CO (AD42M4RA)              0.2363375723
+                                                                 0.3900009990 f
+  U201/Z (NR2M8R)                                     0.0373201966
+                                                                 0.4273211956 r
+  U121/Z (OAI21M8R)                                   0.0287407041
+                                                                 0.4560618997 f
+  U211/Z (AOI21M8R)                                   0.0410413146
+                                                                 0.4971032143 r
+  U216/Z (OAI21M16RA)                                 0.0454438925
+                                                                 0.5425471067 f
+  U145/Z (AOI21M2R)                                   0.0494292974
+                                                                 0.5919764042 r
+  U406/Z (XOR2M2RA)                                   0.0507708192
+                                                                 0.6427472234 r
+  outPartialSumRegister/temp_reg[12]/D (DFQBRM1RA)    0.0000000000
+                                                                 0.6427472234 r
+  data arrival time                                              0.6427472234
+
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  outPartialSumRegister/temp_reg[12]/CK (DFQBRM1RA)   0.0000000000
+                                                                 0.0000000000 r
+  library setup time                                  -0.0150847789
+                                                                 -0.0150847789
+  data required time                                             -0.0150847789
+  --------------------------------------------------------------------------
+  data required time                                             -0.0150847789
+  data arrival time                                              -0.6427472234
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                               -0.6578320265
+
+
+1

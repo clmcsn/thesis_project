@@ -25,7 +25,7 @@ ecs_user="gsarda"
 ecs_host="ssh.ecs.tuwien.ac.at"
 ecs_name="ecs_tuwien_gateway1"
 asic_user="gmsarda"
-asic_host="asic.ecs.tuwien.ac.at"
+asic_host="asic"
 asic_name="asic_tuwien_gateway1"
 
 #analysis settings

@@ -1,0 +1,79 @@
+Information: Updating design information... (UID-85)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : PE
+Version: M-2016.12
+Date   : Mon Aug 31 21:07:14 2020
+****************************************
+
+Operating Conditions: uk65lscllmvbbr_120c25_tc   Library: uk65lscllmvbbr_120c25_tc
+Wire Load Model Mode: top
+
+  Startpoint: weightRegister/temp_reg[2]
+              (rising edge-triggered flip-flop clocked by clock)
+  Endpoint: outPartialSumRegister/temp_reg[27]
+            (rising edge-triggered flip-flop clocked by clock)
+  Path Group: clock
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  PE                 wl0                   uk65lscllmvbbr_120c25_tc
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  weightRegister/temp_reg[2]/CK (DFRM8RA)             0.0000000000
+                                                                 0.0000000000 r
+  weightRegister/temp_reg[2]/Q (DFRM8RA)              0.1224457473
+                                                                 0.1224457473 r
+  U152/Z (ND2M6R)                                     0.0257002264
+                                                                 0.1481459737 f
+  U153/Z (CKINVM6R)                                   0.0181693286
+                                                                 0.1663153023 r
+  U154/Z (ND2M6R)                                     0.0167692155
+                                                                 0.1830845177 f
+  U311/Z (CKINVM6R)                                   0.0123378634
+                                                                 0.1954223812 r
+  DP_OP_11J1_122_2482/U382/S (AD42M4RA)               0.2386659682
+                                                                 0.4340883493 f
+  U183/Z (NR2M8R)                                     0.0403950512
+                                                                 0.4744834006 r
+  U181/Z (OAI21M8R)                                   0.0321605504
+                                                                 0.5066439509 f
+  U249/Z (AOI21M12RA)                                 0.0355576873
+                                                                 0.5422016382 r
+  U306/Z (OAI21M16RA)                                 0.0412833691
+                                                                 0.5834850073 f
+  U372/Z (AOI21M2R)                                   0.0486040115
+                                                                 0.6320890188 r
+  U377/Z (XOR2M2RA)                                   0.0507677197
+                                                                 0.6828567386 r
+  outPartialSumRegister/temp_reg[27]/D (DFQBRM1RA)    0.0000000000
+                                                                 0.6828567386 r
+  data arrival time                                              0.6828567386
+
+  clock clock (rise edge)                             0.0000000000
+                                                                 0.0000000000
+  clock network delay (ideal)                         0.0000000000
+                                                                 0.0000000000
+  outPartialSumRegister/temp_reg[27]/CK (DFQBRM1RA)   0.0000000000
+                                                                 0.0000000000 r
+  library setup time                                  -0.0150846839
+                                                                 -0.0150846839
+  data required time                                             -0.0150846839
+  --------------------------------------------------------------------------
+  data required time                                             -0.0150846839
+  data arrival time                                              -0.6828567386
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                               -0.6979414225
+
+
+1

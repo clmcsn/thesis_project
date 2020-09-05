@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : PE
+Version: M-2016.12
+Date   : Mon Aug 31 20:18:32 2020
+****************************************
+
+Library(s) Used:
+
+    uk65lscllmvbbr_120c25_tc (File: /opt/asiclibs/UMK65LSCLLMVBBR_B03_TAPEOUTKIT/synopsys/uk65lscllmvbbr_120c25_tc.db)
+
+Number of ports:                           82
+Number of nets:                           618
+Number of cells:                          542
+Number of combinational cells:            465
+Number of sequential cells:                77
+Number of macros/black boxes:               0
+Number of buf/inv:                        142
+Number of references:                      68
+
+Combinational area:               1218.600018
+Buf/Inv area:                      180.720007
+Noncombinational area:             663.119997
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                  1881.720015
+Total area:                 undefined
+1
