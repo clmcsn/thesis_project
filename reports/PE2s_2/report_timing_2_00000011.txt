@@ -7,15 +7,15 @@ Report : timing
         -max_paths 1
 Design : PE
 Version: M-2016.12
-Date   : Mon Aug 31 19:08:33 2020
+Date   : Sat Sep  5 17:49:48 2020
 ****************************************
 
 Operating Conditions: uk65lscllmvbbr_120c25_tc   Library: uk65lscllmvbbr_120c25_tc
 Wire Load Model Mode: top
 
-  Startpoint: activationRegister/temp_reg[4]
+  Startpoint: partialSumRegister/temp_reg[0]
               (rising edge-triggered flip-flop clocked by clock)
-  Endpoint: outPartialSumRegister/temp_reg[25]
+  Endpoint: outPartialSumRegister/temp_reg[0]
             (rising edge-triggered flip-flop clocked by clock)
   Path Group: clock
   Path Type: max
@@ -30,48 +30,65 @@ Wire Load Model Mode: top
                                                                  0.0000000000
   clock network delay (ideal)                         0.0000000000
                                                                  0.0000000000
-  activationRegister/temp_reg[4]/CK (DFQRM8RA)        0.0000000000
+  partialSumRegister/temp_reg[0]/clocked_on (**SEQGEN**)
+                                                      0.0000000000
                                                                  0.0000000000 r
-  activationRegister/temp_reg[4]/Q (DFQRM8RA)         0.1129077598
-                                                                 0.1129077598 r
-  U164/Z (XNR2M8RA)                                   0.0918987468
-                                                                 0.2048065066 f
-  U186/Z (OAI22M4R)                                   0.0450661778
-                                                                 0.2498726845 r
-  U213/ICO (AD42M4RA)                                 0.1156663597
-                                                                 0.3655390441 r
-  DP_OP_11J1_122_2482/U379/S (AD42M4RA)               0.1659484208
-                                                                 0.5314874649 r
-  U198/Z (NR2M12RA)                                   0.0216590166
-                                                                 0.5531464815 f
-  U188/Z (NR2M8R)                                     0.0351483822
-                                                                 0.5882948637 r
-  U25/Z (AOI21M16RA)                                  0.0310060382
-                                                                 0.6193009019 f
-  U192/Z (OAI21M16RA)                                 0.0513871312
-                                                                 0.6706880331 r
-  U5/Z (AOI21M2R)                                     0.0405946374
-                                                                 0.7112826705 f
-  U58/Z (XOR2M2RA)                                    0.0602179170
-                                                                 0.7715005875 r
-  outPartialSumRegister/temp_reg[25]/D (DFQRM1RA)     0.0000000000
-                                                                 0.7715005875 r
-  data arrival time                                              0.7715005875
+  partialSumRegister/temp_reg[0]/Q (**SEQGEN**)       0.0000000000
+                                                                 0.0000000000 r
+  partialSumRegister/parallelOut[0] (register_width32)
+                                                      0.0000000000
+                                                                 0.0000000000 r
+  genblk1.add/add1[0] (adder_parallelism32)           0.0000000000
+                                                                 0.0000000000 r
+  genblk1.add/add_20/A_0 (*ADD_UNS_OP_32_32_32)       0.0000000000
+                                                                 0.0000000000 r
+  genblk1.add/add_20/*cell*30/A[0] (DW01_add_width32) 0.0000000000
+                                                                 0.0000000000 r
+  ...
+  genblk1.add/add_20/*cell*30/SUM[0] (DW01_add_width32)
+                                                      0.0000000000
+                                                                 0.0000000000 r
+  genblk1.add/add_20/Z_0 (*ADD_UNS_OP_32_32_32)       0.0000000000
+                                                                 0.0000000000 r
+  genblk1.add/add_20_2/A_0 (*ADD_UNS_OP_32_1_32)      0.0000000000
+                                                                 0.0000000000 r
+  genblk1.add/add_20_2/*cell*33/A[0] (DW01_add_width32)
+                                                      0.0000000000
+                                                                 0.0000000000 r
+  ...
+  genblk1.add/add_20_2/*cell*33/SUM[0] (DW01_add_width32)
+                                                      0.0000000000
+                                                                 0.0000000000 r
+  genblk1.add/add_20_2/Z_0 (*ADD_UNS_OP_32_1_32)      0.0000000000
+                                                                 0.0000000000 r
+  genblk1.add/sum[0] (adder_parallelism32)            0.0000000000
+                                                                 0.0000000000 r
+  outPartialSumRegister/parallelIn[0] (register_width32)
+                                                      0.0000000000
+                                                                 0.0000000000 r
+  outPartialSumRegister/C182/Z_0 (*SELECT_OP_2.32_2.1_32)
+                                                      0.0000000000
+                                                                 0.0000000000 r
+  outPartialSumRegister/temp_reg[0]/next_state (**SEQGEN**)
+                                                      0.0000000000
+                                                                 0.0000000000 r
+  data arrival time                                              0.0000000000
 
   clock clock (rise edge)                             0.0000000000
                                                                  0.0000000000
   clock network delay (ideal)                         0.0000000000
                                                                  0.0000000000
-  outPartialSumRegister/temp_reg[25]/CK (DFQRM1RA)    0.0000000000
+  outPartialSumRegister/temp_reg[0]/clocked_on (**SEQGEN**)
+                                                      0.0000000000
                                                                  0.0000000000 r
-  library setup time                                  -0.0155789694
-                                                                 -0.0155789694
-  data required time                                             -0.0155789694
+  library setup time                                  0.0000000000
+                                                                 0.0000000000
+  data required time                                             0.0000000000
   --------------------------------------------------------------------------
-  data required time                                             -0.0155789694
-  data arrival time                                              -0.7715005875
+  data required time                                             0.0000000000
+  data arrival time                                              0.0000000000
   --------------------------------------------------------------------------
-  slack (VIOLATED)                                               -0.7870795727
+  slack (MET)                                                    0.0000000000
 
 
 1

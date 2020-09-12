@@ -5,10 +5,15 @@ elaborate PE -architecture verilog -library WORK
 create_clock -name "clock" -period 0 {clk}
 set_dont_touch_network clock
 
+
 # flatten hierarchy
-ungroup -all -flatten
+ ungroup -all -flatten
+
+# power constraint
+set_switching_activity -toggle_count 0.3 -type inputs registers
 
 compile_ultra -exact_map
 
 //AUTO_PRINT
+
 quit

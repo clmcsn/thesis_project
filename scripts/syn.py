@@ -106,6 +106,7 @@ elif (c==2 or c==3):
                             if s.signal_string in line:
                                 fout_pointer.write("report_timing -significant_digits 10 > ./report_timing_{}_{}.txt\n".format(forced_bits,bin_str))
                                 fout_pointer.write("report_area > ./report_area_{}_{}.txt\n".format(forced_bits,bin_str))
+                                fout_pointer.write("report_power > ./report_power_{}_{}.txt\n".format(forced_bits,bin_str))
                             else:
                                 fout_pointer.write(line)
                     #clean the synthesis directory
@@ -129,6 +130,7 @@ elif (c==2 or c==3):
                         pass
                     asic_server.copy_from(s.synPart1Path+"syn/report_timing_{}_{}.txt".format(forced_bits,bin_str),s.reportsPath+"PE{}_{}".format(arch,forced_bits))
                     asic_server.copy_from(s.synPart1Path+"syn/report_area_{}_{}.txt".format(forced_bits,bin_str),s.reportsPath+"PE{}_{}".format(arch,forced_bits))
+                    asic_server.copy_from(s.synPart1Path+"syn/report_power_{}_{}.txt".format(forced_bits,bin_str),s.reportsPath+"PE{}_{}".format(arch,forced_bits))
                     os.remove("syn.tcl")
                     os.remove("PE.sv")
 elif (c==len(choices)):

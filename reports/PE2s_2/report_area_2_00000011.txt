@@ -3,28 +3,30 @@
 Report : area
 Design : PE
 Version: M-2016.12
-Date   : Mon Aug 31 19:08:33 2020
+Date   : Sat Sep  5 17:49:48 2020
 ****************************************
 
 Library(s) Used:
 
-    uk65lscllmvbbr_120c25_tc (File: /opt/asiclibs/UMK65LSCLLMVBBR_B03_TAPEOUTKIT/synopsys/uk65lscllmvbbr_120c25_tc.db)
+    gtech (File: /eda/synopsys/2016-17/RHELx86/SYN_2016.12/libraries/syn/gtech.db)
 
-Number of ports:                           82
-Number of nets:                           588
-Number of cells:                          521
-Number of combinational cells:            443
-Number of sequential cells:                78
+Number of ports:                          809
+Number of nets:                          1330
+Number of cells:                          353
+Number of combinational cells:            246
+Number of sequential cells:                95
 Number of macros/black boxes:               0
-Number of buf/inv:                        111
-Number of references:                      71
+Number of buf/inv:                         28
+Number of references:                       4
 
-Combinational area:               1177.920019
-Buf/Inv area:                      133.200005
-Noncombinational area:             658.799997
+Combinational area:                  0.000000
+Buf/Inv area:                        0.000000
+Noncombinational area:               0.000000
 Macro/Black Box area:                0.000000
 Net Interconnect area:      undefined  (Wire load has zero net area)
 
-Total cell area:                  1836.720016
+Total cell area:                     0.000000
 Total area:                 undefined
+
+Information: This design contains unmapped logic. (RPT-7)
 1

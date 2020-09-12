@@ -1,0 +1,53 @@
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : PE
+Version: M-2016.12
+Date   : Sat Sep  5 19:06:20 2020
+****************************************
+
+
+Library(s) Used:
+
+    uk65lscllmvbbr_120c25_tc (File: /opt/asiclibs/UMK65LSCLLMVBBR_B03_TAPEOUTKIT/synopsys/uk65lscllmvbbr_120c25_tc.db)
+
+
+Operating Conditions: uk65lscllmvbbr_120c25_tc   Library: uk65lscllmvbbr_120c25_tc
+Wire Load Model Mode: top
+
+Design        Wire Load Model            Library
+------------------------------------------------
+PE                     wl0               uk65lscllmvbbr_120c25_tc
+
+
+Global Operating Voltage = 1.2  
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1pW
+
+
+  Cell Internal Power  =  13.3144 uW  (100%)
+  Net Switching Power  =  53.7577 nW    (0%)
+                         ---------
+Total Dynamic Power    =  13.3682 uW  (100%)
+
+Cell Leakage Power     = 282.3550 nW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
+register       1.3294e-02        4.1281e-06        5.7568e+04        1.3356e-02  (  97.84%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational  2.0519e-05        4.9630e-05        2.2479e+05        2.9494e-04  (   2.16%)
+--------------------------------------------------------------------------------------------------
+Total          1.3314e-02 mW     5.3758e-05 mW     2.8236e+05 pW     1.3651e-02 mW
+1
