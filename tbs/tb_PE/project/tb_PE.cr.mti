@@ -1,16 +1,16 @@
-/home/clmcasino/Desktop/Tesi/thesis_project/src/PE/PE.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/PE/PE.sv
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module PE
-
-Top level modules:
-	PE
-
-} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+/home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
 -- Compiling module adder
 
 Top level modules:
 	adder
+
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/PE/PE.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/PE/PE.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module PE
+
+Top level modules:
+	PE
 
 } {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/register.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/register.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
@@ -19,19 +19,12 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	register
 
-} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/csaRow.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/csaRow.sv
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module csaRow
+-- Compiling module tb_PE
 
 Top level modules:
-	csaRow
-
-} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/fullAdder.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/fullAdder.sv
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module fullAdder
-
-Top level modules:
-	fullAdder
+	tb_PE
 
 } {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/multiplier.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/multiplier.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
@@ -40,11 +33,18 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	multiplier
 
-} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE/tb_PE.sv
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/fullAdder.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/fullAdder.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module tb_PE
+-- Compiling module fullAdder
 
 Top level modules:
-	tb_PE
+	fullAdder
+
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/csaRow.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/csaRow.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module csaRow
+
+Top level modules:
+	csaRow
 
 } {} {}}

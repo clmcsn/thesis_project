@@ -1,0 +1,110 @@
+# Loading project tb_cBarrelShifter
+# reading /home/clmcasino/intel_lite/18.1/modelsim_ase/linuxaloem/../modelsim.ini
+# Loading project tb_PE_A
+# Compile of adder.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# Compile of register.sv was successful.
+# Compile of PE_A.sv failed with 3 errors.
+# 5 compiles, 1 failed with 3 errors.
+# Compile of adder.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# Compile of register.sv was successful.
+# Compile of PE_A.sv failed with 2 errors.
+# Compile of tb_PE_A.sv was successful.
+# 6 compiles, 1 failed with 2 errors.
+# Compile of adder.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# Compile of register.sv was successful.
+# Compile of PE_A.sv failed with 3 errors.
+# Compile of tb_PE_A.sv was successful.
+# 6 compiles, 1 failed with 3 errors.
+# Compile of adder.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# Compile of register.sv was successful.
+# Compile of PE_A.sv was successful.
+# Compile of tb_PE_A.sv was successful.
+# 6 compiles, 0 failed with no errors.
+vsim work.tb_PE_A
+# vsim work.tb_PE_A 
+# Start time: 14:45:05 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_PE_A
+# ** Error: (vsim-3033) /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE_A/tb_PE_A.sv(19): Instantiation of 'PE_A' failed. The design unit was not found.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_PE_A File: /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE_A/tb_PE_A.sv
+#         Searched libraries:
+#             /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE_A/project/work
+# Error loading design
+# End time: 14:45:05 on Sep 13,2020, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# Compile of adder.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# Compile of register.sv was successful.
+# Compile of PE_A.sv was successful.
+# Compile of tb_PE_A.sv was successful.
+# 6 compiles, 0 failed with no errors.
+vsim work.tb_PE_A
+# vsim work.tb_PE_A 
+# Start time: 14:45:41 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_PE_A
+# Loading work.PE_A
+# Loading work.register
+# Loading work.cBarrelShifter_sv_unit
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# Loading work.adder
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/PE/PE_A.sv(56): [PCDPC] - Port size (15) does not match connection size (16) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(11).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_PE_A/DUT/barrelShifter File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/PE/PE_A.sv(60): [PCDPC] - Port size (21) does not match connection size (22) for port 'add0'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv(2).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_PE_A/DUT/add File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+# WARNING: No extended dataflow license exists
+# Compile of adder.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# Compile of register.sv was successful.
+# Compile of PE_A.sv was successful.
+# Compile of tb_PE_A.sv was successful.
+# 6 compiles, 0 failed with no errors.
+vsim work.tb_PE_A
+# End time: 14:54:35 on Sep 13,2020, Elapsed time: 0:08:54
+# Errors: 0, Warnings: 3
+# vsim work.tb_PE_A 
+# Start time: 14:54:35 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_PE_A
+# Loading work.PE_A
+# Loading work.register
+# Loading work.cBarrelShifter_sv_unit
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# Loading work.adder
+# WARNING: No extended dataflow license exists
+add wave  \
+sim:/tb_PE_A/clk \
+sim:/tb_PE_A/rst_n \
+sim:/tb_PE_A/weightLoad \
+sim:/tb_PE_A/activation \
+sim:/tb_PE_A/weight \
+sim:/tb_PE_A/inPartialSum \
+sim:/tb_PE_A/outPartialSum \
+sim:/tb_PE_A/out_weight
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+# End time: 14:56:48 on Sep 13,2020, Elapsed time: 0:02:13
+# Errors: 0, Warnings: 2

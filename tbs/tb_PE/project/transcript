@@ -1,54 +1,198 @@
-# do ../tb-PE.tcl
-# gui
-# ** Warning: (vlib-34) Library already exists at "../work".
-# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 18:54:02 on Aug 29,2020
-# vlog -work ../work ../../../src/components/adder.sv ../../../src/components/csaRow.sv ../../../src/components/fullAdder.sv ../../../src/components/multiplier.sv ../../../src/components/register.sv 
-# -- Compiling module adder
-# -- Compiling module csaRow
-# -- Compiling module fullAdder
-# -- Compiling module multiplier
-# -- Compiling module register
-# 
-# Top level modules:
-# 	multiplier
-# 	register
-# End time: 18:54:02 on Aug 29,2020, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 18:54:02 on Aug 29,2020
-# vlog -work ../work ../../../src/PE/PE.sv 
-# -- Compiling module PE
-# 
-# Top level modules:
-# 	PE
-# End time: 18:54:02 on Aug 29,2020, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 18:54:02 on Aug 29,2020
-# vlog -work ../work "+define+NO_GUI=1" ../tb_PE.sv 
-# -- Compiling module tb_PE
-# 
-# Top level modules:
-# 	tb_PE
-# End time: 18:54:02 on Aug 29,2020, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# vsim -c ../work.tb_PE 
-# Start time: 18:54:02 on Aug 29,2020
+# Loading project tb_PE
+# reading /home/clmcasino/intel_lite/18.1/modelsim_ase/linuxaloem/../modelsim.ini
+# Loading project tb_cBarrelShifter
+# Compile of tb_cBarrelShifter.sv failed with 3 errors.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 3 errors.
+# 3 compiles, 2 failed with 6 errors.
+# Compile of tb_cBarrelShifter.sv failed with 3 errors.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 1 errors.
+# 3 compiles, 2 failed with 4 errors.
+# Compile of tb_cBarrelShifter.sv failed with 2 errors.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# 3 compiles, 1 failed with 2 errors.
+# Compile of tb_cBarrelShifter.sv failed with 1 errors.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# 3 compiles, 1 failed with 1 error.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_cBarrelShifter
+# vsim work.tb_cBarrelShifter 
+# Start time: 08:53:31 on Sep 13,2020
 # Loading sv_std.std
-# Loading ../work.tb_PE
-# Loading ../work.PE
-# Loading ../work.register
-# Loading ../work.multiplier
-# Loading ../work.adder
-# ** Warning: (vsim-PLI-3691) ../tb_PE.sv(36): Expected a system task, not a system function '$fscanf'.
-#    Time: 0 ns  Iteration: 0  Instance: /tb_PE File: ../tb_PE.sv
-# ** Warning: (vsim-PLI-3691) ../tb_PE.sv(37): Expected a system task, not a system function '$fscanf'.
-#    Time: 0 ns  Iteration: 0  Instance: /tb_PE File: ../tb_PE.sv
-# ** Warning: (vsim-PLI-3691) ../tb_PE.sv(38): Expected a system task, not a system function '$fscanf'.
-#    Time: 0 ns  Iteration: 0  Instance: /tb_PE File: ../tb_PE.sv
-# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
-# ** Note: $finish    : ../tb_PE.sv(44)
-#    Time: 6000010 ns  Iteration: 1  Instance: /tb_PE
-# End time: 18:54:31 on Aug 29,2020, Elapsed time: 0:00:29
-# Errors: 0, Warnings: 4
+# Loading work.tb_cBarrelShifter
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(11): [PCDPC] - Port size (9) does not match connection size (1) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (10) does not match connection size (1) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (1) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (1) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (16) does not match connection size (1) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# WARNING: No extended dataflow license exists
+vsim work.tb_cBarrelShifter
+# End time: 08:57:57 on Sep 13,2020, Elapsed time: 0:04:26
+# Errors: 0, Warnings: 6
+# vsim work.tb_cBarrelShifter 
+# Start time: 08:57:57 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_cBarrelShifter
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(11): [PCDPC] - Port size (9) does not match connection size (1) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (10) does not match connection size (1) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (1) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (1) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (16) does not match connection size (1) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# WARNING: No extended dataflow license exists
+# Break key hit
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_cBarrelShifter
+# End time: 09:01:29 on Sep 13,2020, Elapsed time: 0:03:32
+# Errors: 0, Warnings: 6
+# vsim work.tb_cBarrelShifter 
+# Start time: 09:01:29 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_cBarrelShifter
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (10) does not match connection size (9) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (10) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (10) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (16) does not match connection size (12) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# WARNING: No extended dataflow license exists
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# 3 compiles, 0 failed with no errors.
+# Break key hit
+vsim work.tb_cBarrelShifter
+# End time: 09:03:04 on Sep 13,2020, Elapsed time: 0:01:35
+# Errors: 0, Warnings: 5
+# vsim work.tb_cBarrelShifter 
+# Start time: 09:03:04 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_cBarrelShifter
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (11) does not match connection size (9) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (10) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (14) does not match connection size (10) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (16) does not match connection size (12) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# WARNING: No extended dataflow license exists
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_cBarrelShifter
+# End time: 09:03:30 on Sep 13,2020, Elapsed time: 0:00:26
+# Errors: 0, Warnings: 5
+# vsim work.tb_cBarrelShifter 
+# Start time: 09:03:30 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_cBarrelShifter
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (11) does not match connection size (9) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (10) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (14) does not match connection size (10) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (16) does not match connection size (12) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# WARNING: No extended dataflow license exists
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_cBarrelShifter
+# End time: 09:05:34 on Sep 13,2020, Elapsed time: 0:02:04
+# Errors: 0, Warnings: 5
+# vsim work.tb_cBarrelShifter 
+# Start time: 09:05:34 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_cBarrelShifter
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (11) does not match connection size (9) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (12) does not match connection size (10) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[1]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (14) does not match connection size (10) for port 'in_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# ** Warning: (vsim-3015) /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv(18): [PCDPC] - Port size (16) does not match connection size (12) for port 'out_data'. The port definition is at: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv(1).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_cBarrelShifter/DUT/genblk1[2]/bsr File: /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+# WARNING: No extended dataflow license exists
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 2 errors.
+# 3 compiles, 1 failed with 2 errors.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 2 errors.
+# 3 compiles, 1 failed with 2 errors.
+# Compile of cBarrelShifter.sv failed with 2 errors.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 2 errors.
+# 3 compiles, 1 failed with 2 errors.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 3 errors.
+# 3 compiles, 1 failed with 3 errors.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 3 errors.
+# 3 compiles, 1 failed with 3 errors.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 2 errors.
+# 3 compiles, 1 failed with 2 errors.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 2 errors.
+# 3 compiles, 1 failed with 2 errors.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv failed with 2 errors.
+# 3 compiles, 1 failed with 2 errors.
+# Compile of tb_cBarrelShifter.sv was successful.
+# Compile of barrelShifterRow.sv was successful.
+# Compile of cBarrelShifter.sv was successful.
+# 3 compiles, 0 failed with no errors.
+vsim work.tb_cBarrelShifter
+# End time: 09:56:49 on Sep 13,2020, Elapsed time: 0:51:15
+# Errors: 0, Warnings: 5
+# vsim work.tb_cBarrelShifter 
+# Start time: 09:56:49 on Sep 13,2020
+# Loading sv_std.std
+# Loading work.tb_cBarrelShifter
+# Loading work.cBarrelShifter
+# Loading work.barrelShifterRow
+# Break key hit

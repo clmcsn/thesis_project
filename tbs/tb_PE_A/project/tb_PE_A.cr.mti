@@ -1,0 +1,44 @@
+/home/clmcasino/Desktop/Tesi/thesis_project/src/PE/PE_A.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/PE/PE_A.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module PE_A
+
+Top level modules:
+	PE_A
+
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/cBarrelShifter.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling package cBarrelShifter_sv_unit
+-- Compiling module cBarrelShifter
+
+Top level modules:
+	cBarrelShifter
+
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/adder.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module adder
+
+Top level modules:
+	adder
+
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/register.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/register.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module register
+
+Top level modules:
+	register
+
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/src/components/barrelShifterRow.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module barrelShifterRow
+
+Top level modules:
+	barrelShifterRow
+
+} {} {}} /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE_A/tb_PE_A.sv {1 {vlog -work work -sv -stats=none /home/clmcasino/Desktop/Tesi/thesis_project/tbs/tb_PE_A/tb_PE_A.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module tb_PE_A
+
+Top level modules:
+	tb_PE_A
+
+} {} {}}
